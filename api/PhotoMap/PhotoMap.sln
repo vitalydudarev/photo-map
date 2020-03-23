@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoMap.Api", "PhotoMap.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yandex.Disk.Api", "Yandex.Disk.Api\Yandex.Disk.Api.csproj", "{C28C1BDF-5F71-4CD7-B0B8-F06471D845CB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yandex.Disk.Service", "Yandex.Disk.Service\Yandex.Disk.Service.csproj", "{72DD9078-1082-4D40-BD26-988B74252E46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Service", "Storage.Service\Storage.Service.csproj", "{D927ADCE-8B80-4D4B-9F03-7F414759E764}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{C28C1BDF-5F71-4CD7-B0B8-F06471D845CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C28C1BDF-5F71-4CD7-B0B8-F06471D845CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C28C1BDF-5F71-4CD7-B0B8-F06471D845CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72DD9078-1082-4D40-BD26-988B74252E46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72DD9078-1082-4D40-BD26-988B74252E46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72DD9078-1082-4D40-BD26-988B74252E46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72DD9078-1082-4D40-BD26-988B74252E46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D927ADCE-8B80-4D4B-9F03-7F414759E764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D927ADCE-8B80-4D4B-9F03-7F414759E764}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D927ADCE-8B80-4D4B-9F03-7F414759E764}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D927ADCE-8B80-4D4B-9F03-7F414759E764}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
