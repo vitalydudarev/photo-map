@@ -1,5 +1,6 @@
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace Storage.Service.Storage
 {
@@ -7,9 +8,9 @@ namespace Storage.Service.Storage
     {
         private readonly string _baseDirectory;
 
-        public FileStorage(string baseDirectory)
+        public FileStorage(IOptions<FileStorageSettings> options)
         {
-            _baseDirectory = baseDirectory;
+            _baseDirectory = options.Value.BasePath;
         }
 
         public Task<byte[]> GetAsync(string fileKey)

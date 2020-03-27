@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using PhotoMap.Api.ServiceClients.StorageService;
 
 namespace PhotoMap.Api
 {
@@ -26,6 +29,15 @@ namespace PhotoMap.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.Configure<ServicesSettings>(Configuration.GetSection("Services"));
+            services.AddHttpClient();
+            services.AddTransient<IStorageService>(provider =>
+            {
+                var clientFactory = provider.GetService<IHttpClientFactory>();
+                var url = provider.GetService<IOptions<ServicesSettings>>().Value.Storage;
+                
+                return new StorageServiceClient(clientFactory, url);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
