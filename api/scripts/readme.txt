@@ -1,0 +1,1 @@
+Use chmod u+x 'filename' to give permissions to the file.
