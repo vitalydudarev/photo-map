@@ -5,7 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Common\Common.csproj" />
       <ProjectReference Include="..\Yandex.Disk.Api\Yandex.Disk.Api.csproj" />
     </ItemGroup>
 
