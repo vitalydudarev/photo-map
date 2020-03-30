@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yandex.Disk.Service", "Yand
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Service", "Storage.Service\Storage.Service.csproj", "{D927ADCE-8B80-4D4B-9F03-7F414759E764}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Image.Service", "Image.Service\Image.Service.csproj", "{9BA86E1F-222C-4F74-ACD8-995939F003B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{D927ADCE-8B80-4D4B-9F03-7F414759E764}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D927ADCE-8B80-4D4B-9F03-7F414759E764}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D927ADCE-8B80-4D4B-9F03-7F414759E764}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BA86E1F-222C-4F74-ACD8-995939F003B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BA86E1F-222C-4F74-ACD8-995939F003B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BA86E1F-222C-4F74-ACD8-995939F003B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BA86E1F-222C-4F74-ACD8-995939F003B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
