@@ -5,8 +5,8 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Yandex.Disk.Api;
-using Yandex.Disk.Api.Models;
+using Yandex.Disk.Api.Client;
+using Yandex.Disk.Api.Client.Models;
 using Yandex.Disk.Service.Models;
 
 namespace Yandex.Disk.Service.Services
@@ -70,7 +70,7 @@ namespace Yandex.Disk.Service.Services
             }
         }
 
-        private async Task<YandexDiskFileKey> Download(Resource resource, Api.Models.Disk disk)
+        private async Task<YandexDiskFileKey> Download(Resource resource, Api.Client.Models.Disk disk)
         {
             _logger.LogInformation($"Started downloading {resource.Name}.");
 
