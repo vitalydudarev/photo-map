@@ -13,8 +13,8 @@ namespace Image.Service.Controllers
         {
             using (var imageProcessor = new ImageProcessor(bytes))
             {
-                var thumbnailBytes = imageProcessor.Resize(size);
-                var rotatedBytes = imageProcessor.Resize(size);
+                /*var thumbnailBytes = imageProcessor.Resize(size);
+                var rotatedBytes = imageProcessor.Resize(size);*/
             }
         }
     }
