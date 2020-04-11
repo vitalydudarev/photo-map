@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Storage.Service.Storage;
@@ -20,13 +21,13 @@ namespace Storage.Service.Controllers
 
         [HttpGet]
         [Route("file/{key}")]
-        public async Task<byte[]> GetFileAsync(string key)
+        public async Task<ByteArrayContent> GetFileAsync(string key)
         {
             _logger.LogInformation("Request received: " + key);
             
             var bytes = await _storage.GetAsync(key);
 
-            return bytes;
+            return new ByteArrayContent(bytes);
         }
 
         [HttpPost]

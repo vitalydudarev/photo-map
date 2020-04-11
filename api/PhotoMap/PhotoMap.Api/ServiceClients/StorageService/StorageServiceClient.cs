@@ -1,5 +1,4 @@
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PhotoMap.Api.ServiceClients.StorageService
@@ -18,9 +17,7 @@ namespace PhotoMap.Api.ServiceClients.StorageService
         public async Task<byte[]> GetFileAsync(string key)
         {
             var responseMessage = await _httpClient.GetAsync(_url + $"/storage/file/{key}");
-            var responseStream = await responseMessage.Content.ReadAsStreamAsync();
-
-            var deserialized = await System.Text.Json.JsonSerializer.DeserializeAsync<byte[]>(responseStream);
+            var deserialized = await responseMessage.Content.ReadAsByteArrayAsync();
             
             return deserialized;
         }
