@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using SkiaSharp;
 
-namespace Image.Service.Services
+namespace GraphicsLibrary
 {
     public class ImageProcessor : IDisposable
     {

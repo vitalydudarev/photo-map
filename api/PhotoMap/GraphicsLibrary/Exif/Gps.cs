@@ -1,6 +1,6 @@
 using System;
 
-namespace Image.Service.Models
+namespace GraphicsLibrary.Exif
 {
     public class Gps
     {

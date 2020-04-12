@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Image.Service.Models;
+using GraphicsLibrary.Exif;
 using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
 using Directory = MetadataExtractor.Directory;
 
-namespace Image.Service.Services
+namespace GraphicsLibrary
 {
     public class ExifExtractor
     {

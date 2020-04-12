@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Image.Service.Services;
+using GraphicsLibrary;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Image.Service.Controllers
