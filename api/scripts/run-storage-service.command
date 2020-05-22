@@ -1,6 +1,6 @@
 #!/bin/bash
 
 cd "$(dirname "$BASH_SOURCE")"
-cd ../PhotoMap/Storage.Service/bin/Debug/netcoreapp3.0
+cd ../PhotoMap/Storage.Service.Api/bin/Debug/netcoreapp3.1
 
-dotnet Storage.Service.dll
+dotnet Storage.Service.Api.dll
