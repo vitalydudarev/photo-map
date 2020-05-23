@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoMap.Api", "PhotoMap.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yandex.Disk.Api.Client", "Yandex.Disk.Api.Client\Yandex.Disk.Api.Client.csproj", "{C28C1BDF-5F71-4CD7-B0B8-F06471D845CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yandex.Disk.Service", "Yandex.Disk.Service\Yandex.Disk.Service.csproj", "{72DD9078-1082-4D40-BD26-988B74252E46}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yandex.Disk.Service.Api", "Yandex.Disk.Service.Api\Yandex.Disk.Service.Api.csproj", "{72DD9078-1082-4D40-BD26-988B74252E46}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Service.Api", "Storage.Service.Api\Storage.Service.Api.csproj", "{D927ADCE-8B80-4D4B-9F03-7F414759E764}"
 EndProject
