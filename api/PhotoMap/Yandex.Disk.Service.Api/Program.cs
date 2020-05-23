@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Yandex.Disk.Service
+namespace Yandex.Disk.Service.Api
 {
     public class Program
     {

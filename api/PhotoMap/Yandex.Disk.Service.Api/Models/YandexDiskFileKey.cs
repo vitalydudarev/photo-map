@@ -1,4 +1,4 @@
-namespace Yandex.Disk.Service.Models
+namespace Yandex.Disk.Service.Api.Models
 {
     public class YandexDiskFileKey
     {
