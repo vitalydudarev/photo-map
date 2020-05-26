@@ -28,7 +28,7 @@ namespace PhotoMap.Api
             services.AddTransient<IStorageService>(provider =>
             {
                 var clientFactory = provider.GetService<IHttpClientFactory>();
-                var url = provider.GetService<IOptions<ServicesSettings>>().Value.Storage;
+                var url = provider.GetService<IOptions<ServicesSettings>>().Value.StorageApiUrl;
                 
                 return new StorageServiceClient(clientFactory, url);
             });
