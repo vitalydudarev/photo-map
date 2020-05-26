@@ -20,12 +20,12 @@ namespace Yandex.Disk.Service.Api.Services
         private readonly ILogger<YandexDiskDownloadService> _logger;
 
         public YandexDiskDownloadService(
-            ILoggerFactory loggerFactory, 
+            ILogger<YandexDiskDownloadService> logger, 
             string accessToken/*, 
             IStorage storage, 
             IProgress progress*/)
         {
-            _logger = loggerFactory.CreateLogger<YandexDiskDownloadService>();
+            _logger = logger;
             // _storage = storage;
             _apiClient = new ApiClient(accessToken, Client);
             // _progress = progress;
