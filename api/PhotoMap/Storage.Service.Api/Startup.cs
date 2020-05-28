@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Storage.Service.Database;
 using Storage.Service.Storage;
 
 namespace Storage.Service
@@ -22,6 +23,7 @@ namespace Storage.Service
             services.AddControllers();
             services.Configure<FileStorageSettings>(Configuration.GetSection("FileStorage"));
             services.AddTransient<IStorage, FileStorage>();
+            services.AddDbContext<FileContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
