@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace Storage.Service.Storage
 {
-    public class FileStorage : IStorage
+    public class FileStorage : IFileStorage
     {
         private readonly string _baseDirectory;
 
@@ -13,20 +13,29 @@ namespace Storage.Service.Storage
             _baseDirectory = options.Value.BasePath;
         }
 
-        public Task<byte[]> GetAsync(string fileKey)
+        public Task<byte[]> GetAsync(string fileName)
         {
-            string filePath = GetFilePath(fileKey);
+            string filePath = GetFilePath(fileName);
 
             return File.ReadAllBytesAsync(filePath);
         }
 
-        public async Task SaveAsync(string fileKey, byte[] bytes)
+        public async Task<string> SaveAsync(string fileName, byte[] bytes)
         {
-            string filePath = GetFilePath(fileKey);
+            string filePath = GetFilePath(fileName);
 
             await File.WriteAllBytesAsync(filePath, bytes);
+
+            return filePath;
         }
 
-        private string GetFilePath(string fileKey) => Path.Combine(_baseDirectory, fileKey);
+        public void Delete(string fileName)
+        {
+            string filePath = GetFilePath(fileName);
+            
+            File.Delete(filePath);
+        }
+
+        private string GetFilePath(string fileName) => Path.Combine(_baseDirectory, fileName);
     }
 }

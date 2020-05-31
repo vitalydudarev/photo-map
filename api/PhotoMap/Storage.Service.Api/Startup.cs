@@ -1,3 +1,5 @@
+using System;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,8 +24,10 @@ namespace Storage.Service
         {
             services.AddControllers();
             services.Configure<FileStorageSettings>(Configuration.GetSection("FileStorage"));
-            services.AddTransient<IStorage, FileStorage>();
+            services.AddTransient<IFileStorage, FileStorage>();
             services.AddDbContext<FileContext>();
+            
+            services.AddAutoMapper(expression => expression.AddProfile(new MappingProfile()), new Type[0]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
