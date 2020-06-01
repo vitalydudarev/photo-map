@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Storage.Service.Database;
+using Storage.Service.Database.Repository;
+using Storage.Service.Service;
 using Storage.Service.Storage;
 
 namespace Storage.Service
@@ -25,6 +27,8 @@ namespace Storage.Service
             services.AddControllers();
             services.Configure<FileStorageSettings>(Configuration.GetSection("FileStorage"));
             services.AddTransient<IFileStorage, FileStorage>();
+            services.AddTransient<IFileRepository, FileRepository>();
+            services.AddTransient<IFileService, FileService>();
             services.AddDbContext<FileContext>();
             
             services.AddAutoMapper(expression => expression.AddProfile(new MappingProfile()), new Type[0]);

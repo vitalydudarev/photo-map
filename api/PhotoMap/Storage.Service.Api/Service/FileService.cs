@@ -43,8 +43,9 @@ namespace Storage.Service.Service
                 };
 
                 var incomingFileEntity = _mapper.Map<File>(incomingFile);
-                
+
                 var outgoingFileEntity = await _repository.AddAsync(incomingFileEntity);
+
                 var outgoingFile = _mapper.Map<OutgoingFile>(outgoingFileEntity);
 
                 return outgoingFile;
@@ -56,7 +57,7 @@ namespace Storage.Service.Service
             }
         }
 
-        public async Task<byte[]> GetAsync(long fileId)
+        public async Task<byte[]> GetFileContentsAsync(long fileId)
         {
             try
             {
@@ -71,6 +72,25 @@ namespace Storage.Service.Service
             catch (Exception e)
             {
                 _logger.LogError(e, $"Unable to get {fileId}: {e.Message}");
+                throw;
+            }
+
+            return null;
+        }
+
+        public async Task<OutgoingFileInfo> GetFileInfoAsync(long fileId)
+        {
+            try
+            {
+                var fileEntity = await _repository.GetAsync(fileId);
+                if (fileEntity != null)
+                {
+                    return _mapper.Map<OutgoingFileInfo>(fileEntity);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Unable to load file info for fileId {fileId}: {e.Message}");
                 throw;
             }
 

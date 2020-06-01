@@ -11,10 +11,12 @@ namespace Storage.Service.Database.Repository
         {
             _context = context;
         }
-        
+
         public async Task<File> AddAsync(File incomingFile)
         {
             var entityEntry = await _context.Files.AddAsync(incomingFile);
+
+            await _context.SaveChangesAsync();
 
             return entityEntry.Entity;
         }

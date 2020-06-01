@@ -8,7 +8,7 @@ using Storage.Service.Service;
 namespace Storage.Service.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class FilesController : ControllerBase
     {
         private readonly ILogger<FilesController> _logger;
@@ -24,11 +24,24 @@ namespace Storage.Service.Controllers
         [Route("{fileId}")]
         public async Task<IActionResult> GetFileAsync(long fileId)
         {
-            _logger.LogInformation("Request received: " + fileId);
+            _logger.LogInformation("GetFileAsync: Request received: fileId - " + fileId);
 
-            var bytes = await _fileService.GetAsync(fileId);
+            var bytes = await _fileService.GetFileContentsAsync(fileId);
             if (bytes != null)
                 return File(bytes, "image/jpeg");
+
+            return NotFound(fileId);
+        }
+
+        [HttpGet]
+        [Route("{fileId}/info")]
+        public async Task<IActionResult> GetFileInfoAsync(long fileId)
+        {
+            _logger.LogInformation("GetFileInfoAsync: request received: fileId - " + fileId);
+
+            var fileInfo = await _fileService.GetFileInfoAsync(fileId);
+            if (fileInfo != null)
+                return Ok(fileInfo);
 
             return NotFound(fileId);
         }
@@ -36,6 +49,8 @@ namespace Storage.Service.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveFileAsync([FromForm] IFormFile file)
         {
+            _logger.LogInformation("SaveFileAsync: Request received: fileName - " + file.FileName);
+
             using (var ms = new MemoryStream())
             {
                 await file.CopyToAsync(ms);

@@ -13,6 +13,8 @@ namespace Storage.Service
                 .ForMember(a => a.FullPath, expression => expression.MapFrom(b => b.Path));
 
             CreateMap<File, OutgoingFile>();
+
+            CreateMap<File, OutgoingFileInfo>();
         }
     }
 }
