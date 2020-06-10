@@ -4,13 +4,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoMap.Api", "PhotoMap.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yandex.Disk.Api.Client", "Yandex.Disk.Api.Client\Yandex.Disk.Api.Client.csproj", "{C28C1BDF-5F71-4CD7-B0B8-F06471D845CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yandex.Disk.Service.Api", "Yandex.Disk.Service.Api\Yandex.Disk.Service.Api.csproj", "{72DD9078-1082-4D40-BD26-988B74252E46}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Service.Api", "Storage.Service.Api\Storage.Service.Api.csproj", "{D927ADCE-8B80-4D4B-9F03-7F414759E764}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Image.Service.Api", "Image.Service.Api\Image.Service.Api.csproj", "{9BA86E1F-222C-4F74-ACD8-995939F003B5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphicsLibrary", "GraphicsLibrary\GraphicsLibrary.csproj", "{8FC0C7E9-8394-4975-B7CC-0E5911664A3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yandex.Disk.Worker", "Yandex.Disk.Worker\Yandex.Disk.Worker.csproj", "{148A25C2-43D8-4334-A7E5-95367064DD15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,10 +26,6 @@ Global
 		{C28C1BDF-5F71-4CD7-B0B8-F06471D845CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C28C1BDF-5F71-4CD7-B0B8-F06471D845CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C28C1BDF-5F71-4CD7-B0B8-F06471D845CB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{72DD9078-1082-4D40-BD26-988B74252E46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{72DD9078-1082-4D40-BD26-988B74252E46}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{72DD9078-1082-4D40-BD26-988B74252E46}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{72DD9078-1082-4D40-BD26-988B74252E46}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D927ADCE-8B80-4D4B-9F03-7F414759E764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D927ADCE-8B80-4D4B-9F03-7F414759E764}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D927ADCE-8B80-4D4B-9F03-7F414759E764}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -42,5 +38,9 @@ Global
 		{8FC0C7E9-8394-4975-B7CC-0E5911664A3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FC0C7E9-8394-4975-B7CC-0E5911664A3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FC0C7E9-8394-4975-B7CC-0E5911664A3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{148A25C2-43D8-4334-A7E5-95367064DD15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{148A25C2-43D8-4334-A7E5-95367064DD15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{148A25C2-43D8-4334-A7E5-95367064DD15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{148A25C2-43D8-4334-A7E5-95367064DD15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
