@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphicsLibrary", "Graphics
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yandex.Disk.Worker", "Yandex.Disk.Worker\Yandex.Disk.Worker.csproj", "{148A25C2-43D8-4334-A7E5-95367064DD15}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{064AFD86-2F8F-4FA2-BEF3-F3C3592FA9AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{148A25C2-43D8-4334-A7E5-95367064DD15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{148A25C2-43D8-4334-A7E5-95367064DD15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{148A25C2-43D8-4334-A7E5-95367064DD15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{064AFD86-2F8F-4FA2-BEF3-F3C3592FA9AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{064AFD86-2F8F-4FA2-BEF3-F3C3592FA9AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{064AFD86-2F8F-4FA2-BEF3-F3C3592FA9AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{064AFD86-2F8F-4FA2-BEF3-F3C3592FA9AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
