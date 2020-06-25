@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using PhotoMap.Api.ServiceClients.StorageService;
+using PhotoMap.Api.Services;
 using Serilog;
 
 namespace PhotoMap.Api
@@ -25,11 +26,16 @@ namespace PhotoMap.Api
             services.AddControllers();
             services.Configure<ServicesSettings>(Configuration.GetSection("Services"));
             services.AddHttpClient();
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IImageService, ImageService>();
+            services.AddScoped<IThumbnailService, ThumbnailService>();
+
             services.AddTransient<IStorageService>(provider =>
             {
                 var clientFactory = provider.GetService<IHttpClientFactory>();
                 var url = provider.GetService<IOptions<ServicesSettings>>().Value.StorageApiUrl;
-                
+
                 return new StorageServiceClient(clientFactory, url);
             });
         }
@@ -43,9 +49,9 @@ namespace PhotoMap.Api
             }
 
             app.UseHttpsRedirection();
-            
+
             app.UseSerilogRequestLogging();
-            
+
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             app.UseRouting();

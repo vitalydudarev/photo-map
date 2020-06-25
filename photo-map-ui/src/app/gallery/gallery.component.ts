@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from "rxjs";
-import { ImageService } from "../services/image.service";
 
 import { GridLayout, Image, PlainGalleryConfig, PlainGalleryStrategy } from '@ks89/angular-modal-gallery';
+import { ThumbnailService } from '../services/thumbnail.service';
+import { UserService } from '../services/user.service';
+import { ImageService } from '../services/image.service';
 
 @Component({
   selector: 'app-modal-gallery-page',
@@ -16,10 +18,13 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
   plainGalleryGridConfig: PlainGalleryConfig = {
     strategy: PlainGalleryStrategy.GRID,
-    layout: new GridLayout({ width: '128px', height: 'auto' }, { length: 10, wrap: false })
+    layout: new GridLayout({ width: '256px', height: 'auto' }, { length: 10, wrap: false })
   };
 
-  constructor(private imageService: ImageService) {
+  constructor(
+    private imageService: ImageService,
+    private thumbnailService: ThumbnailService,
+    private userService: UserService) {
   }
 
   ngOnInit(): void {
@@ -27,14 +32,14 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
     const images: Image[] = [];
 
-    this.subscription = this.imageService.getFileKeys().subscribe(files => {
+    this.subscription = this.userService.getUserImages().subscribe(files => {
       for (let fileName of files) {
         const image = new Image(i, {
-            img: this.imageService.getImageUrl(fileName),
+            img: this.imageService.getUrl(fileName),
             description: fileName
           },
           {
-            img: this.imageService.getThumbUrl(fileName),
+            img: this.thumbnailService.getUrl(fileName),
             description: fileName
           });
 

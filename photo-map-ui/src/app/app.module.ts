@@ -20,7 +20,10 @@ import { GalleryModule } from '@ks89/angular-modal-gallery';
 import 'hammerjs'; // Mandatory for angular-modal-gallery 3.x.x or greater (`npm i --save hammerjs`)
 import 'mousetrap'; // Mandatory for angular-modal-gallery 3.x.x or greater (`npm i --save mousetrap`)
 import { FormsModule } from '@angular/forms';
-import {ImageService} from "./services/image.service";
+
+import { ImageService } from "./services/image.service";
+import { ThumbnailService } from './services/thumbnail.service';
+import { UserService } from './services/user.service';
 
 
 @NgModule({
@@ -46,7 +49,7 @@ import {ImageService} from "./services/image.service";
 
     GalleryModule.forRoot()
   ],
-  providers: [ImageService],
+  providers: [ImageService, ThumbnailService, UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

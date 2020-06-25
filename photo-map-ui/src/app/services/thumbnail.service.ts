@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { environment } from "../../environments/environment";
 
 @Injectable()
-export class ImageService {
+export class ThumbnailService {
 
-  private url: string = `${environment.photoMapApiUrl}/images`;
+  private url: string = `${environment.photoMapApiUrl}/thumbs`;
 
   constructor() {
   }

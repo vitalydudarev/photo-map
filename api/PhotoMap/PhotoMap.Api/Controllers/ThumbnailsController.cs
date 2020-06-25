@@ -6,21 +6,21 @@ using PhotoMap.Api.Services;
 namespace PhotoMap.Api.Controllers
 {
     [ApiController]
-    [Route("api/images")]
-    public class ImagesController : ControllerBase
+    [Route("api/thumbs")]
+    public class ThumbnailsController : ControllerBase
     {
-        private readonly IImageService _imageService;
+        private readonly IThumbnailService _thumbnailService;
 
-        public ImagesController(IImageService imageService)
+        public ThumbnailsController(IThumbnailService thumbnailService)
         {
-            _imageService = imageService;
+            _thumbnailService = thumbnailService;
         }
 
         [HttpGet("{key}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAsync(string key)
         {
-            var bytes = await _imageService.GetContentsAsync(key);
+            var bytes = await _thumbnailService.GetContentsAsync(key);
 
             return new FileContentResult(bytes, "image/jpg");
         }
