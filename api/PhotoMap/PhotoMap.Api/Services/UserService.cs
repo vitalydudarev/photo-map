@@ -4,16 +4,16 @@ namespace PhotoMap.Api.Services
 {
     public class UserService : IUserService
     {
-        private readonly IImageService _imageService;
+        private readonly IThumbnailService _thumbnailService;
 
-        public UserService(IImageService imageService)
+        public UserService(IThumbnailService thumbnailService)
         {
-            _imageService = imageService;
+            _thumbnailService = thumbnailService;
         }
 
         public IEnumerable<string> GetUserFiles()
         {
-            return _imageService.GetFiles();
+            return _thumbnailService.GetFiles();
         }
     }
 }
