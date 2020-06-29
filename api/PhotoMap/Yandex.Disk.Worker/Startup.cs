@@ -28,7 +28,7 @@ namespace Yandex.Disk.Worker
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient();
-            services.Configure<RabbitMQSettings>(Configuration.GetSection("RabbitMQ"));
+            services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
             services.AddTransient<IStorageService, StorageServiceClient>();
             services.AddHostedService<HostedService>();
         }

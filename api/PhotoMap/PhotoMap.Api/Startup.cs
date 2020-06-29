@@ -24,6 +24,7 @@ namespace PhotoMap.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
             services.Configure<ServicesSettings>(Configuration.GetSection("Services"));
             services.AddHttpClient();
 

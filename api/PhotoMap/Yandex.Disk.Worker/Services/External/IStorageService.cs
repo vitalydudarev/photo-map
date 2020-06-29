@@ -4,6 +4,6 @@ namespace Yandex.Disk.Worker.Services.External
 {
     public interface IStorageService
     {
-        Task UploadFileAsync(string fileName, byte[] fileContents);
+        Task SaveFileAsync(string fileName, byte[] fileContents);
     }
 }

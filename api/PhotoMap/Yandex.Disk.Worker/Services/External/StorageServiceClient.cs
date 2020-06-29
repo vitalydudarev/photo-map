@@ -18,7 +18,7 @@ namespace Yandex.Disk.Worker.Services.External
             _url = url;
         }
 
-        public async Task UploadFileAsync(string fileName, byte[] fileContents)
+        public async Task SaveFileAsync(string fileName, byte[] fileContents)
         {
             using (var form = new MultipartFormDataContent())
             {
