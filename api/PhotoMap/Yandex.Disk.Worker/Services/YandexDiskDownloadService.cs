@@ -13,32 +13,27 @@ using Yandex.Disk.Worker.Services.External;
 
 namespace Yandex.Disk.Worker.Services
 {
-    public class YandexDiskDownloadService
+    public class YandexDiskDownloadService : IYandexDiskDownloadService
     {
         private static readonly HttpClient Client = new HttpClient();
-        private readonly ApiClient _apiClient;
         // private readonly IStorage _storage;
         // private readonly IProgress<> _progress;
         private readonly IStorageService _storageService;
         private readonly ILogger<YandexDiskDownloadService> _logger;
 
-        public YandexDiskDownloadService(
-            IStorageService storageService,
-            ILogger<YandexDiskDownloadService> logger,
-            string accessToken/*,
-            IStorage storage,
-            IProgress progress*/)
+        public YandexDiskDownloadService(IStorageService storageService, ILogger<YandexDiskDownloadService> logger)
         {
             _storageService = storageService;
             _logger = logger;
-            // _storage = storage;
-            _apiClient = new ApiClient(accessToken, Client);
-            // _progress = progress;
         }
 
-        public async IAsyncEnumerable<YandexDiskFileKey> DownloadFiles([EnumeratorCancellation] CancellationToken cancellationToken)
+        public async IAsyncEnumerable<YandexDiskFileKey> DownloadFiles(
+            string accessToken,
+            [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            var disk = await _apiClient.GetDiskAsync(cancellationToken);
+            var apiClient = new ApiClient(accessToken, Client);
+
+            var disk = await apiClient.GetDiskAsync(cancellationToken);
             _logger.LogInformation("GetDisk");
 
             const int limit = 100;
@@ -49,8 +44,8 @@ namespace Yandex.Disk.Worker.Services
 
             while (offset <= totalCount)
             {
-                var resource = await _apiClient.GetResourceAsync(disk.SystemFolders.Photostream, cancellationToken, offset, limit);
-                _logger.LogInformation("GetResource");
+                var resource =
+                    await apiClient.GetResourceAsync(disk.SystemFolders.Photostream, cancellationToken, offset, limit);
 
                 var items = resource.Embedded.Items;
                 if (items != null && items.Length > 0)
@@ -86,7 +81,7 @@ namespace Yandex.Disk.Worker.Services
 
                 var fileName = Path.Combine(disk.User.Login, resource.Name);
 
-                await _storageService.UploadFileAsync(fileName, bytes);
+                await _storageService.SaveFileAsync(fileName, bytes);
 
                 _logger.LogInformation($"Finished downloading {key}.");
 

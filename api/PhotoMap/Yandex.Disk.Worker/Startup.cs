@@ -29,6 +29,8 @@ namespace Yandex.Disk.Worker
         {
             services.AddHttpClient();
             services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
+
+            services.AddTransient<IYandexDiskDownloadService, YandexDiskDownloadService>();
             services.AddTransient<IStorageService, StorageServiceClient>();
             services.AddHostedService<HostedService>();
         }
