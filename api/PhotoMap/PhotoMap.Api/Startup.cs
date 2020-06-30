@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using PhotoMap.Api.Database;
 using PhotoMap.Api.ServiceClients.StorageService;
 using PhotoMap.Api.Services;
 using Serilog;
@@ -31,6 +32,8 @@ namespace PhotoMap.Api
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IThumbnailService, ThumbnailService>();
+
+            services.AddDbContext<PhotoMapContext>();
 
             services.AddTransient<IStorageService>(provider =>
             {
