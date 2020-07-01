@@ -1,3 +1,5 @@
+using System;
+
 namespace PhotoMap.Api.Database.Entities
 {
     public class Photo
@@ -16,5 +18,15 @@ namespace PhotoMap.Api.Database.Entities
         public long ThumbnailLargeFileId { get; set; }
 
         public bool HasExternalPhotoUrl { get; set; }
+
+        public DateTimeOffset DateTimeTaken { get; set; }
+
+        public double? Latitude { get; set; }
+
+        public double? Longitude { get; set; }
+
+        public bool HasGps { get; set; }
+
+        public string ExifString { get; set; }
     }
 }
