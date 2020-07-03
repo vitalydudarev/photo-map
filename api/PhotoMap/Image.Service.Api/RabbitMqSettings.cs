@@ -1,4 +1,4 @@
-namespace PhotoMap.Api
+namespace Image.Service
 {
     public class RabbitMqSettings
     {
@@ -10,7 +10,7 @@ namespace PhotoMap.Api
 
         public int Port { get; set; }
 
-        public string CommandsQueueName { get; set; }
+        public string ProcessingQueueName { get; set; }
 
         public string ResultsQueueName { get; set; }
     }

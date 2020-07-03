@@ -40,10 +40,10 @@ namespace Yandex.Disk.Worker.Services
 
             _connection = connectionFactory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(_rabbitMqSettings.IncomingQueueName);
+            _channel.QueueDeclare(_rabbitMqSettings.CommandsQueueName);
             _channel.BasicQos(0, 1, false);
 
-            _logger.LogInformation($"Queue [{_rabbitMqSettings.IncomingQueueName}] is waiting for messages.");
+            _logger.LogInformation($"Queue [{_rabbitMqSettings.CommandsQueueName}] is waiting for messages.");
 
             return base.StartAsync(stoppingToken);
         }
@@ -93,7 +93,7 @@ namespace Yandex.Disk.Worker.Services
                 }
             };
 
-            _channel.BasicConsume(queue: _rabbitMqSettings.IncomingQueueName, autoAck: false, consumer: consumer);
+            _channel.BasicConsume(queue: _rabbitMqSettings.CommandsQueueName, autoAck: false, consumer: consumer);
 
             await Task.CompletedTask;
         }

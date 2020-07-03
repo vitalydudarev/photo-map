@@ -36,19 +36,19 @@ namespace PhotoMap.Api.Controllers
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
 
-            channel.QueueDeclare(queue: _rabbitMqSettings.OutgoingQueueName, durable: false, exclusive: false,
+            channel.QueueDeclare(queue: _rabbitMqSettings.CommandsQueueName, durable: false, exclusive: false,
                 autoDelete: false, arguments: null);
 
-            _logger.LogInformation($"Queue {_rabbitMqSettings.OutgoingQueueName} initialized.");
+            _logger.LogInformation($"Queue {_rabbitMqSettings.CommandsQueueName} initialized.");
 
             var runProcessingCommand = new RunProcessingCommand { Token = accessToken };
             var serialized = JsonConvert.SerializeObject(runProcessingCommand);
             var body = Encoding.UTF8.GetBytes(serialized);
 
-            channel.BasicPublish(exchange: "", routingKey: _rabbitMqSettings.OutgoingQueueName, basicProperties: null,
+            channel.BasicPublish(exchange: "", routingKey: _rabbitMqSettings.CommandsQueueName, basicProperties: null,
                 body: body);
 
-            _logger.LogInformation($"Message {runProcessingCommand} sent to {_rabbitMqSettings.OutgoingQueueName} queue.");
+            _logger.LogInformation($"Message {runProcessingCommand} sent to {_rabbitMqSettings.CommandsQueueName} queue.");
 
             return Ok();
         }
