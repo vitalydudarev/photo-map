@@ -28,8 +28,6 @@ namespace PhotoMap.Messaging.MessageListener
             _rabbitMqConfiguration = rabbitMqConfiguration;
             _commandHandlerManager = commandHandlerManager;
             _logger = logger;
-
-            InitializeConnection();
         }
 
         public void Listen(CancellationToken cancellationToken)
@@ -77,7 +75,7 @@ namespace PhotoMap.Messaging.MessageListener
             _connection.Close();
         }
 
-        private void InitializeConnection()
+        public void InitializeConnection()
         {
             var connectionFactory = new ConnectionFactory
             {
@@ -92,6 +90,8 @@ namespace PhotoMap.Messaging.MessageListener
             _channel = _connection.CreateModel();
             _channel.QueueDeclare(_rabbitMqConfiguration.ConsumeQueueName);
             _channel.BasicQos(0, 1, false);
+
+            _logger.LogInformation($"Queue [{_rabbitMqConfiguration.ConsumeQueueName}] is waiting for messages.");
         }
     }
 }
