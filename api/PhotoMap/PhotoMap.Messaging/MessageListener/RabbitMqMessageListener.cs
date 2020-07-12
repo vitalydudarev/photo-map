@@ -32,8 +32,8 @@ namespace PhotoMap.Messaging.MessageListener
 
         public void Listen(CancellationToken cancellationToken)
         {
-            var consumer = new AsyncEventingBasicConsumer(_channel);
-            consumer.Received += async (bc, ea) =>
+            var consumer = new EventingBasicConsumer(_channel);
+            consumer.Received += (bc, ea) =>
             {
                 var message = Encoding.UTF8.GetString(ea.Body.ToArray());
 
@@ -45,7 +45,7 @@ namespace PhotoMap.Messaging.MessageListener
                     var commandHandler = _commandHandlerManager.GetHandler(command);
                     if (commandHandler != null)
                     {
-                        await Task.Run(async () => await commandHandler.HandleAsync(command, cancellationToken),
+                        Task.Run(async () => await commandHandler.HandleAsync(command, cancellationToken),
                             cancellationToken);
                     }
 
@@ -84,8 +84,7 @@ namespace PhotoMap.Messaging.MessageListener
                 UserName = _rabbitMqConfiguration.UserName,
                 Password = _rabbitMqConfiguration.Password,
                 HostName = _rabbitMqConfiguration.HostName,
-                Port = _rabbitMqConfiguration.Port,
-                DispatchConsumersAsync = true
+                Port = _rabbitMqConfiguration.Port
             };
 
             _connection = connectionFactory.CreateConnection();
