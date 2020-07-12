@@ -73,6 +73,8 @@ namespace PhotoMap.Messaging.MessageListener
         {
             _channel.Close();
             _connection.Close();
+
+            _logger.LogInformation("Connection closed.");
         }
 
         public void InitializeConnection()
@@ -88,7 +90,7 @@ namespace PhotoMap.Messaging.MessageListener
 
             _connection = connectionFactory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(_rabbitMqConfiguration.ConsumeQueueName);
+            _channel.QueueDeclare(_rabbitMqConfiguration.ConsumeQueueName, durable: false, exclusive: false, autoDelete: false);
             _channel.BasicQos(0, 1, false);
 
             _logger.LogInformation($"Queue [{_rabbitMqConfiguration.ConsumeQueueName}] is waiting for messages.");

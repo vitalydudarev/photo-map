@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace Yandex.Disk.Worker.Services.External
 {
@@ -12,10 +13,12 @@ namespace Yandex.Disk.Worker.Services.External
         private readonly string _url;
         private readonly HttpClient _httpClient;
 
-        public StorageServiceClient(IHttpClientFactory clientFactory, string url)
+        public StorageServiceClient(
+            IHttpClientFactory clientFactory,
+            IOptions<StorageServiceSettings> storageServiceOptions)
         {
             _httpClient = clientFactory.CreateClient("storageClient");
-            _url = url;
+            _url = storageServiceOptions.Value.ApiUrl;
         }
 
         public async Task SaveFileAsync(string fileName, byte[] fileContents)

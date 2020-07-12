@@ -27,7 +27,7 @@ namespace Yandex.Disk.Worker.Services
             _logger = logger;
         }
 
-        public async IAsyncEnumerable<YandexDiskFileKey> DownloadFiles(
+        public async IAsyncEnumerable<YandexDiskFileKey> DownloadFilesAsync(
             string accessToken,
             [EnumeratorCancellation] CancellationToken cancellationToken)
         {

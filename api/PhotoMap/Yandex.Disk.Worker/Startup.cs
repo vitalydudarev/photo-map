@@ -10,6 +10,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using PhotoMap.Messaging;
+using PhotoMap.Messaging.CommandHandler;
+using PhotoMap.Messaging.CommandHandlerManager;
+using PhotoMap.Messaging.MessageListener;
 using Yandex.Disk.Worker.Services;
 using Yandex.Disk.Worker.Services.External;
 
@@ -28,7 +33,28 @@ namespace Yandex.Disk.Worker
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient();
+
+            services.Configure<StorageServiceSettings>(Configuration.GetSection("Storage"));
             services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
+            services.AddTransient(a =>
+            {
+                var settings = a.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+
+                return new RabbitMqConfiguration
+                {
+                    HostName = settings.HostName,
+                    Port = settings.Port,
+                    UserName = settings.UserName,
+                    Password = settings.Password,
+                    ConsumeQueueName = settings.CommandsQueueName,
+                    ResponseQueueName = settings.ProcessingQueueName
+                };
+            });
+
+            // register command handlers
+            services.AddTransient<ICommandHandler, RunProcessingCommandHandler>();
+            services.AddTransient<IMessageListener, RabbitMqMessageListener>();
+            services.AddTransient<ICommandHandlerManager, CommandHandlerManager>();
 
             services.AddTransient<IYandexDiskDownloadService, YandexDiskDownloadService>();
             services.AddTransient<IStorageService, StorageServiceClient>();
