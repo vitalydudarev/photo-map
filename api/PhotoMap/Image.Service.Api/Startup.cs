@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Image.Service.Services;
+using Image.Service.Services.StorageService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Image.Service
 {
@@ -26,6 +21,11 @@ namespace Image.Service
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.Configure<StorageServiceSettings>(Configuration.GetSection("Storage"));
+            services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
+            services.AddTransient<IStorageService, StorageServiceClient>();
+            services.AddHostedService<HostedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

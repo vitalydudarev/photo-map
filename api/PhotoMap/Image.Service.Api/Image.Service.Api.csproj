@@ -15,6 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\GraphicsLibrary\GraphicsLibrary.csproj" />
+      <ProjectReference Include="..\PhotoMap.Messaging\PhotoMap.Messaging.csproj" />
     </ItemGroup>
 
 </Project>
