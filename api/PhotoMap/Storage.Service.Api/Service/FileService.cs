@@ -96,5 +96,23 @@ namespace Storage.Service.Service
 
             return null;
         }
+
+        public async Task DeleteFileAsync(long fileId)
+        {
+            try
+            {
+                var fileEntity = await _repository.GetAsync(fileId);
+                if (fileEntity != null)
+                {
+                    _fileStorage.Delete(fileEntity.FileName);
+                    await _repository.DeleteAsync(fileId);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Unable to delete file for fileId {fileId}: {e.Message}");
+                throw;
+            }
+        }
     }
 }

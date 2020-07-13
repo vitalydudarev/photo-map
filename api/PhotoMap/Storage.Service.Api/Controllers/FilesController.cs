@@ -60,5 +60,15 @@ namespace Storage.Service.Controllers
                 return Created("uri", result);
             }
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteFileAsync(long fileId)
+        {
+            _logger.LogInformation("DeleteFileAsync: Request received: fileId - " + fileId);
+
+            await _fileService.DeleteFileAsync(fileId);
+
+            return NoContent();
+        }
     }
 }

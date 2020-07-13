@@ -28,7 +28,9 @@ namespace Storage.Service.Database.Repository
 
         public async Task DeleteAsync(long fileId)
         {
-            throw new System.NotImplementedException();
+            var file = await _context.Files.FindAsync(fileId);
+            if (file != null)
+                _context.Files.Remove(file);
         }
     }
 }
