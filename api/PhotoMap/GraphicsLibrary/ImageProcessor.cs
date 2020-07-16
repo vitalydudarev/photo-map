@@ -17,19 +17,19 @@ namespace GraphicsLibrary
         public ImageProcessor(string filePath) : this(File.ReadAllBytes(filePath))
         {
         }
-        
+
         public ImageProcessor(byte[] bytes) : this(new MemoryStream(bytes))
         {
             _disposeStream = true;
         }
-        
+
         public ImageProcessor(Stream stream)
         {
             _stream = stream;
             _codec = SKCodec.Create(stream);
             _bitmap = SKBitmap.Decode(_codec);
         }
-        
+
         public void Crop(int size)
         {
             int width, height;
@@ -49,11 +49,9 @@ namespace GraphicsLibrary
                 int x = (width - size) / 2;
                 int y = (height - size) / 2;
 
-                using (var image = SKImage.FromBitmap(resizedBitmap))
-                {
-                    _image = image.Subset(SKRectI.Create(x, y, size, size));
-                    _bitmap = SKBitmap.FromImage(_image);
-                }
+                var image = SKImage.FromBitmap(resizedBitmap);
+                _image = image.Subset(SKRectI.Create(x, y, size, size));
+                _bitmap = SKBitmap.FromImage(_image);
             }
         }
 
@@ -75,7 +73,7 @@ namespace GraphicsLibrary
             _bitmap?.Dispose();
             _codec?.Dispose();
             _image?.Dispose();
-            
+
             if (_disposeStream)
                 _stream?.Dispose();
         }
@@ -87,7 +85,7 @@ namespace GraphicsLibrary
             int width, height;
             float dx, dy;
             float degrees;
-            
+
             switch (orientation)
             {
                 case SKEncodedOrigin.BottomRight:
@@ -97,7 +95,7 @@ namespace GraphicsLibrary
                     dx = _bitmap.Width;
                     dy = _bitmap.Height;
                     degrees = 180;
-                    
+
                     break;
                 }
 
@@ -108,7 +106,7 @@ namespace GraphicsLibrary
                     dx = _bitmap.Height;
                     dy = 0;
                     degrees = 90;
-                    
+
                     break;
                 }
 
@@ -119,14 +117,14 @@ namespace GraphicsLibrary
                     dx = 0;
                     dy = _bitmap.Height;
                     degrees = 270;
-                    
+
                     break;
                 }
 
                 default:
                     return _bitmap;
             }
-            
+
             var rotated = new SKBitmap(width, height);
 
             using (var canvas = new SKCanvas(rotated))
