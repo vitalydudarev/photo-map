@@ -36,6 +36,8 @@ namespace Yandex.Disk.Worker
 
             services.Configure<StorageServiceSettings>(Configuration.GetSection("Storage"));
             services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
+            services.Configure<ImageProcessingSettings>(Configuration.GetSection("ImageProcessing"));
+
             services.AddTransient(a =>
             {
                 var settings = a.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
