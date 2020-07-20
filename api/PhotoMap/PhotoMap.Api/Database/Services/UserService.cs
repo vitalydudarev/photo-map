@@ -34,6 +34,8 @@ namespace PhotoMap.Api.Database.Services
 
                 _context.Users.Update(user);
             }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

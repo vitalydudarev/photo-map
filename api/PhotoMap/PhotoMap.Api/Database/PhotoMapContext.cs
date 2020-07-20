@@ -11,6 +11,7 @@ namespace PhotoMap.Api.Database
         private readonly IConfiguration _configuration;
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
         public PhotoMapContext(IConfiguration configuration, DbContextOptions<PhotoMapContext> options)
             : base(options)

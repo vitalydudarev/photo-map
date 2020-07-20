@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,24 +19,24 @@ namespace PhotoMap.Api.Controllers
 
         public YandexDiskController(
             IUserService userService,
-            IMessageSender messageSender,
+            // IMessageSender messageSender,
             ILogger<YandexDiskController> logger)
         {
             _userService = userService;
-            _messageSender = messageSender;
+            // _messageSender = messageSender;
             _logger = logger;
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult AddToken([FromBody] AddUserDto addUserDto)
+        public async Task<IActionResult> AddTokenAsync([FromBody] AddUserDto addUserDto)
         {
-            _userService.AddAsync(addUserDto);
+            await _userService.AddAsync(addUserDto);
 
             return Ok();
         }
 
-        [HttpPost]
+        /*[HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult RunProcessing([FromBody] string accessToken)
         {
@@ -44,6 +45,6 @@ namespace PhotoMap.Api.Controllers
             _messageSender.Send(runProcessingCommand);
 
             return Ok();
-        }
+        }*/
     }
 }

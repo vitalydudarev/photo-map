@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using PhotoMap.Api.Database;
 using PhotoMap.Api.ServiceClients.StorageService;
 using PhotoMap.Api.Services;
+using PhotoMap.Messaging.MessageSender;
 using Serilog;
 
 namespace PhotoMap.Api
@@ -32,6 +33,9 @@ namespace PhotoMap.Api
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IThumbnailService, ThumbnailService>();
+
+            // services.AddScoped<IMessageSender, RabbitMqMessageSender>();
+            services.AddScoped<Database.Services.IUserService, Database.Services.UserService>();
 
             services.AddDbContext<PhotoMapContext>();
 
