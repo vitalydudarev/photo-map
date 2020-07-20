@@ -24,12 +24,15 @@ import { FormsModule } from '@angular/forms';
 import { ImageService } from "./services/image.service";
 import { ThumbnailService } from './services/thumbnail.service';
 import { UserService } from './services/user.service';
+import { YandexDiskComponent } from './yandex-disk/yandex-disk.component';
+import { YandexDiskService } from './services/yandex-disk.service';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    GalleryComponent
+    GalleryComponent,
+    YandexDiskComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +52,12 @@ import { UserService } from './services/user.service';
 
     GalleryModule.forRoot()
   ],
-  providers: [ImageService, ThumbnailService, UserService],
+  providers: [
+    ImageService,
+    ThumbnailService,
+    UserService,
+    YandexDiskService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
