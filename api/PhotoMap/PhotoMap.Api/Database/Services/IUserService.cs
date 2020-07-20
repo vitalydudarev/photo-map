@@ -6,5 +6,7 @@ namespace PhotoMap.Api.Database.Services
     public interface IUserService
     {
         Task AddAsync(AddUserDto addUserDto);
+
+        Task<UserDto> GetAsync(int id);
     }
 }

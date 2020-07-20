@@ -1,6 +1,8 @@
+using System;
+
 namespace PhotoMap.Api.DTOs
 {
-    public class AddUserDto
+    public class UserDto
     {
         public int Id { get; set; }
 
@@ -8,6 +10,6 @@ namespace PhotoMap.Api.DTOs
 
         public string YandexDiskAccessToken { get; set; }
 
-        public int YandexDiskTokenExpiresIn { get; set; }
+        public DateTimeOffset YandexDiskTokenExpiresOn { get; set; }
     }
 }

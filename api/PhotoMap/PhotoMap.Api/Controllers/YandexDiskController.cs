@@ -36,6 +36,17 @@ namespace PhotoMap.Api.Controllers
             return Ok();
         }
 
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetUserAsync(int id)
+        {
+            var user = await _userService.GetAsync(id);
+            if (user != null)
+                return Ok(user);
+
+            return NotFound();
+        }
+
         /*[HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult RunProcessing([FromBody] string accessToken)
