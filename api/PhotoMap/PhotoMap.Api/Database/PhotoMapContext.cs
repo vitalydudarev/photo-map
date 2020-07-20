@@ -1,6 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using PhotoMap.Api.Database.Configurations;
 using PhotoMap.Api.Database.Entities;
 
 namespace PhotoMap.Api.Database
@@ -19,8 +20,7 @@ namespace PhotoMap.Api.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .HasKey(a => a.Id);
+            modelBuilder.ApplyConfiguration(new UserTypeConfiguration());
 
             modelBuilder.Entity<Photo>()
                 .HasKey(a => a.Id);

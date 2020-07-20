@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using PhotoMap.Api.Database.Services;
+using PhotoMap.Api.DTOs;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
 
@@ -10,13 +12,27 @@ namespace PhotoMap.Api.Controllers
     [Route("api/yandex-disk")]
     public class YandexDiskController : ControllerBase
     {
+        private readonly IUserService _userService;
         private readonly IMessageSender _messageSender;
         private readonly ILogger<YandexDiskController> _logger;
 
-        public YandexDiskController(IMessageSender messageSender, ILogger<YandexDiskController> logger)
+        public YandexDiskController(
+            IUserService userService,
+            IMessageSender messageSender,
+            ILogger<YandexDiskController> logger)
         {
+            _userService = userService;
             _messageSender = messageSender;
             _logger = logger;
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult AddToken([FromBody] AddUserDto addUserDto)
+        {
+            _userService.AddAsync(addUserDto);
+
+            return Ok();
         }
 
         [HttpPost]

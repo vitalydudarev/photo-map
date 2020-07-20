@@ -1,3 +1,5 @@
+using System;
+
 namespace PhotoMap.Api.Database.Entities
 {
     public class User
@@ -6,6 +8,8 @@ namespace PhotoMap.Api.Database.Entities
 
         public string Name { get; set; }
 
-        public string Token { get; set; }
+        public string YandexDiskToken { get; set; }
+
+        public DateTimeOffset YandexDiskTokenExpiresOn { get; set; }
     }
 }

@@ -1,7 +1,9 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PhotoMap.Api.Database.Entities
 {
+    [Table("Photos")]
     public class Photo
     {
         public int Id { get; set; }
