@@ -5,6 +5,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Yandex.Disk.Worker.Services.DTOs;
 
 namespace Yandex.Disk.Worker.Services.External
 {
@@ -21,7 +23,7 @@ namespace Yandex.Disk.Worker.Services.External
             _url = storageServiceOptions.Value.ApiUrl;
         }
 
-        public async Task SaveFileAsync(string fileName, byte[] fileContents)
+        public async Task<StorageServiceFileDto> SaveFileAsync(string fileName, byte[] fileContents)
         {
             using (var form = new MultipartFormDataContent())
             {
@@ -40,6 +42,11 @@ namespace Yandex.Disk.Worker.Services.External
                             var response = await _httpClient.PostAsync(_url, form);
                             if (response.StatusCode != HttpStatusCode.Created)
                                 throw new Exception($"Error during uploading {fileName}.");
+
+                            var responseContent = await response.Content.ReadAsStringAsync();
+                            var deserialized = JsonConvert.DeserializeObject<StorageServiceFileDto>(responseContent);
+
+                            return deserialized;
                         }
                     }
                 }
