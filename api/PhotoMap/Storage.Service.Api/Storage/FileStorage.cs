@@ -24,6 +24,10 @@ namespace Storage.Service.Storage
         {
             string filePath = GetFilePath(fileName);
 
+            var dir = Path.GetDirectoryName(filePath);
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
             await File.WriteAllBytesAsync(filePath, bytes);
 
             return filePath;
@@ -32,7 +36,7 @@ namespace Storage.Service.Storage
         public void Delete(string fileName)
         {
             string filePath = GetFilePath(fileName);
-            
+
             File.Delete(filePath);
         }
 
