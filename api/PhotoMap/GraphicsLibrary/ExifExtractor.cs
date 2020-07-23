@@ -15,9 +15,9 @@ namespace GraphicsLibrary
         public ExifData GetDataAsync(byte[] bytes)
         {
             var stream = new MemoryStream(bytes);
-            
+
             var data = ImageMetadataReader.ReadMetadata(stream);
-            
+
             return new ExifData { Ifd = ParseIfd(data), Gps = ParseGps(data) };
         }
 
@@ -30,7 +30,7 @@ namespace GraphicsLibrary
                 {
                     Altitude = ParseRational(gpsDirectory, GpsDirectory.TagAltitude, Convert.ToDouble),
                     AltitudeRef = ParseByte(gpsDirectory, GpsDirectory.TagAltitudeRef),
-                    DateTimeStamp = ParseDateTime(gpsDirectory),
+                    DateTimeStamp = ParseDateTime(gpsDirectory, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal),
                     DestBearing = ParseRational(gpsDirectory, GpsDirectory.TagDestBearing, Convert.ToDouble),
                     DestBearingRef = ParseString(gpsDirectory, GpsDirectory.TagDestBearingRef),
                     HorizontalPositioningError = ParseRational(gpsDirectory, GpsDirectory.TagHPositioningError,
@@ -48,16 +48,16 @@ namespace GraphicsLibrary
 
             return null;
         }
-        
-        private Ifd ParseIfd(IEnumerable<Directory> data)
+
+        private static Ifd ParseIfd(IEnumerable<Directory> data)
         {
             var subIfd = data.OfType<ExifSubIfdDirectory>().FirstOrDefault();
             if (subIfd != null)
             {
                 return new Ifd
                 {
-                    DateTimeDigitized = ParseString(subIfd, ExifDirectoryBase.TagDateTimeDigitized),
-                    DateTimeOriginal = ParseString(subIfd, ExifDirectoryBase.TagDateTimeOriginal),
+                    DateTimeDigitized = ParseDateTime(ParseString(subIfd, ExifDirectoryBase.TagDateTimeDigitized), DateTimeStyles.AssumeLocal),
+                    DateTimeOriginal = ParseDateTime(ParseString(subIfd, ExifDirectoryBase.TagDateTimeOriginal), DateTimeStyles.AssumeLocal),
                     TimeZone = ParseString(subIfd, ExifDirectoryBase.TagTimeZone),
                     TimeZoneOriginal = ParseString(subIfd, ExifDirectoryBase.TagTimeZoneOriginal),
                     TimeZoneDigitized = ParseString(subIfd, ExifDirectoryBase.TagTimeZoneDigitized)
@@ -75,7 +75,7 @@ namespace GraphicsLibrary
 
             return null;
         }
-        
+
         private static byte? ParseByte(Directory subIfd, int tag)
         {
             if (subIfd.TryGetByte(tag, out var byteValue))
@@ -83,7 +83,7 @@ namespace GraphicsLibrary
 
             return null;
         }
-        
+
         private static T ParseRational<T>(Rational rational)
         {
             // causes boxing and unboxing
@@ -92,7 +92,7 @@ namespace GraphicsLibrary
             var unboxed = (T) boxed;
             return (T)(object)(rational.Numerator / (double) rational.Denominator);
         }
-        
+
         private static T ParseRational<T>(Rational rational, Func<object, T> convert)
         {
             // causes boxing and unboxing
@@ -100,11 +100,11 @@ namespace GraphicsLibrary
             var boxed = (object) orig;
 
             return convert(boxed);
-            
+
             var unboxed = (T) boxed;
             return (T)(object)(rational.Numerator / (double) rational.Denominator);
         }
-        
+
         private static T? ParseRational<T>(Directory directory, int tag, Func<double, T> convert) where T : struct
         {
             if (directory.TryGetRational(tag, out var rational))
@@ -132,11 +132,11 @@ namespace GraphicsLibrary
             return null;
         }
 
-        private static DateTime? ParseDateTime(Directory gpsDirectory)
+        private static DateTime? ParseDateTime(Directory gpsDirectory, DateTimeStyles dateTimeStyles)
         {
             var timeStamp = gpsDirectory.GetRationalArray(GpsDirectory.TagTimeStamp);
             var dateStamp = gpsDirectory.GetString(GpsDirectory.TagDateStamp);
-            
+
             if (timeStamp != null && dateStamp != null)
             {
                 var hour = ParseRational(timeStamp[0], Convert.ToInt32);
@@ -146,12 +146,21 @@ namespace GraphicsLibrary
                 static string Format(int i) => i < 10 ? $"0{i}" : i.ToString();
 
                 var dateTimeStr = $"{dateStamp} {Format(hour)}:{Format(minute)}:{Format(second)}Z";
-                const string dateTimeFormat = "yyyy:MM:dd HH:mm:ssZ";
 
-                if (DateTime.TryParseExact(dateTimeStr, dateTimeFormat, CultureInfo.InvariantCulture,
-                    DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out var dateTime))
-                    return dateTime;
+                return ParseDateTime(dateTimeStr, dateTimeStyles);
             }
+
+            return null;
+        }
+
+        private static DateTime? ParseDateTime(string dateTimeStr, DateTimeStyles dateTimeStyles)
+        {
+            const string dateTimeFormat1 = "yyyy:MM:dd HH:mm:ssZ";
+            const string dateTimeFormat2 = "yyyy:MM:dd HH:mm:ss";
+
+            if (DateTime.TryParseExact(dateTimeStr, new [] { dateTimeFormat1, dateTimeFormat2 }, CultureInfo.InvariantCulture,
+                dateTimeStyles, out var dateTime))
+                return dateTime;
 
             return null;
         }
