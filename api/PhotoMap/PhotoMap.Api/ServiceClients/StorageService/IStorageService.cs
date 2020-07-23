@@ -4,6 +4,6 @@ namespace PhotoMap.Api.ServiceClients.StorageService
 {
     public interface IStorageService
     {
-        Task<byte[]> GetFileAsync(string key);
+        Task<byte[]> GetFileAsync(long fileId);
     }
 }

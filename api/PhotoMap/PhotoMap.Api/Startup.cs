@@ -1,14 +1,11 @@
-using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using PhotoMap.Api.Database;
 using PhotoMap.Api.ServiceClients.StorageService;
 using PhotoMap.Api.Services;
-using PhotoMap.Messaging.MessageSender;
 using Serilog;
 
 namespace PhotoMap.Api
@@ -27,7 +24,7 @@ namespace PhotoMap.Api
         {
             services.AddControllers();
             services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
-            services.Configure<ServicesSettings>(Configuration.GetSection("Services"));
+            services.Configure<StorageServiceSettings>(Configuration.GetSection("Storage"));
             services.AddHttpClient();
 
             services.AddScoped<IUserService, UserService>();
@@ -36,16 +33,9 @@ namespace PhotoMap.Api
 
             // services.AddScoped<IMessageSender, RabbitMqMessageSender>();
             services.AddScoped<Database.Services.IUserService, Database.Services.UserService>();
+            services.AddScoped<IStorageService, StorageServiceClient>();
 
             services.AddDbContext<PhotoMapContext>();
-
-            services.AddTransient<IStorageService>(provider =>
-            {
-                var clientFactory = provider.GetService<IHttpClientFactory>();
-                var url = provider.GetService<IOptions<ServicesSettings>>().Value.StorageApiUrl;
-
-                return new StorageServiceClient(clientFactory, url);
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

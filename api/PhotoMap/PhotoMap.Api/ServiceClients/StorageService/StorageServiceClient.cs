@@ -1,24 +1,26 @@
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace PhotoMap.Api.ServiceClients.StorageService
 {
     public class StorageServiceClient : IStorageService
     {
-        private readonly string _url;
         private readonly HttpClient _httpClient;
+        private readonly StorageServiceSettings _settings;
 
-        public StorageServiceClient(IHttpClientFactory clientFactory, string url)
+        public StorageServiceClient(IHttpClientFactory clientFactory, IOptions<StorageServiceSettings> options)
         {
             _httpClient = clientFactory.CreateClient("storageClient");
-            _url = url;
+            _settings = options.Value;
         }
-        
-        public async Task<byte[]> GetFileAsync(string key)
+
+        public async Task<byte[]> GetFileAsync(long fileId)
         {
-            var responseMessage = await _httpClient.GetAsync(_url + $"/storage/file/{key}");
+            var url = _settings.ApiUrl + "/" + _settings.GetFileEndpoint + fileId;
+            var responseMessage = await _httpClient.GetAsync(url);
             var deserialized = await responseMessage.Content.ReadAsByteArrayAsync();
-            
+
             return deserialized;
         }
     }
