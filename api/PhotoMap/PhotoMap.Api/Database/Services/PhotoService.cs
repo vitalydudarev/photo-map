@@ -24,5 +24,11 @@ namespace PhotoMap.Api.Database.Services
         {
             return await _context.Photos.Where(a => a.UserId == userId).ToListAsync();
         }
+
+        public async Task DeleteByUserId(int userId)
+        {
+            var entities = await _context.Photos.Where(a => a.UserId == userId).ToListAsync();
+            _context.Photos.RemoveRange(entities);
+        }
     }
 }
