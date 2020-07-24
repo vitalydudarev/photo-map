@@ -1,21 +1,24 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using GraphicsLibrary;
-using GraphicsLibrary.Exif;
 using Image.Service.Services.StorageService;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
+using PhotoMap.Messaging.MessageSender;
 
 namespace Image.Service
 {
     public class ProcessingCommandHandler : CommandHandler<ProcessingCommand>
     {
         private readonly IStorageService _storageService;
+        private readonly IMessageSender _messageSender;
 
-        public ProcessingCommandHandler(IStorageService storageService)
+        public ProcessingCommandHandler(IStorageService storageService, IMessageSender messageSender)
         {
             _storageService = storageService;
+            _messageSender = messageSender;
         }
 
         public override async Task HandleAsync(CommandBase command, CancellationToken cancellationToken)
@@ -35,6 +38,8 @@ namespace Image.Service
                 var extension = Path.GetExtension(relativeFilePath);
                 var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(relativeFilePath);
 
+                var sizeFileIdMap = new Dictionary<int, long>();
+
                 foreach (var size in processingCommand.Sizes)
                 {
                     var fileName = $"{fileNameWithoutExtension}_{size}.{extension}";
@@ -44,13 +49,24 @@ namespace Image.Service
                     var bytes = imageProcessor.GetImageBytes();
 
                     var savedFile = await _storageService.SaveFileAsync(path, bytes);
-                }
-            }
-        }
 
-        private double ConvertLatLng(LatLng latLng)
-        {
-            return latLng.Degrees + latLng.Minutes / 60 + latLng.Seconds / 3600;
+                    sizeFileIdMap.Add(size, savedFile.Id);
+                }
+
+                if (processingCommand.DeleteAfterProcessing)
+                    await _storageService.DeleteFileAsync(processingCommand.FileId);
+
+                var resultsCommand = new ResultsCommand
+                {
+                    UserId = processingCommand.UserId,
+                    FileId = processingCommand.FileId,
+                    Exif = exif,
+                    ThumbsSizes = sizeFileIdMap,
+                    PhotoUrl = processingCommand.FileUrl
+                };
+
+                _messageSender.Send(resultsCommand);
+            }
         }
     }
 }

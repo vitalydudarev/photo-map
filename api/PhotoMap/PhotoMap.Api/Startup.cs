@@ -31,6 +31,8 @@ namespace PhotoMap.Api
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IThumbnailService, ThumbnailService>();
 
+            services.AddHostedService<HostedService>();
+
             // services.AddScoped<IMessageSender, RabbitMqMessageSender>();
             services.AddScoped<Database.Services.IUserService, Database.Services.UserService>();
             services.AddScoped<IStorageService, StorageServiceClient>();
