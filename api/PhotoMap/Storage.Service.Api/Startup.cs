@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Storage.Service.Database;
 using Storage.Service.Database.Repository;
 using Storage.Service.Service;
@@ -30,7 +31,12 @@ namespace Storage.Service
             services.AddTransient<IFileRepository, FileRepository>();
             services.AddTransient<IFileService, FileService>();
             services.AddDbContext<FileContext>();
-            
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PhotoMap.Storage.Service API V1", Version = "v1" });
+            });
+
             services.AddAutoMapper(expression => expression.AddProfile(new MappingProfile()), new Type[0]);
         }
 
@@ -49,6 +55,13 @@ namespace Storage.Service
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "PhotoMap.Storage.Service API V1");
+            });
         }
     }
 }
