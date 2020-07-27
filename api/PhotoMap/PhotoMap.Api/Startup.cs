@@ -3,10 +3,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using PhotoMap.Api.Database;
 using PhotoMap.Api.ServiceClients.StorageService;
 using PhotoMap.Api.Services;
+using PhotoMap.Messaging;
+using PhotoMap.Messaging.CommandHandlerManager;
+using PhotoMap.Messaging.MessageListener;
+using PhotoMap.Messaging.MessageSender;
 using Serilog;
 
 namespace PhotoMap.Api
@@ -26,6 +31,21 @@ namespace PhotoMap.Api
             services.AddControllers();
             services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
             services.Configure<StorageServiceSettings>(Configuration.GetSection("Storage"));
+
+            services.AddScoped(a =>
+            {
+                var settings = a.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+
+                return new RabbitMqConfiguration
+                {
+                    HostName = settings.HostName,
+                    Port = settings.Port,
+                    UserName = settings.UserName,
+                    Password = settings.Password,
+                    ConsumeQueueName = settings.ResultsQueueName
+                };
+            });
+
             services.AddHttpClient();
 
             services.AddScoped<IUserService, UserService>();
@@ -34,7 +54,9 @@ namespace PhotoMap.Api
 
             services.AddHostedService<HostedService>();
 
-            // services.AddScoped<IMessageSender, RabbitMqMessageSender>();
+            services.AddScoped<IMessageSender, RabbitMqMessageSender>();
+            services.AddScoped<IMessageListener, RabbitMqMessageListener>();
+            services.AddScoped<ICommandHandlerManager, CommandHandlerManager>();
             services.AddScoped<Database.Services.IUserService, Database.Services.UserService>();
             services.AddScoped<IStorageService, StorageServiceClient>();
 
