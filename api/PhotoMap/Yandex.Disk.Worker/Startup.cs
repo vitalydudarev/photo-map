@@ -15,6 +15,7 @@ using PhotoMap.Messaging;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.CommandHandlerManager;
 using PhotoMap.Messaging.MessageListener;
+using PhotoMap.Messaging.MessageSender;
 using Yandex.Disk.Worker.Services;
 using Yandex.Disk.Worker.Services.External;
 
@@ -38,7 +39,7 @@ namespace Yandex.Disk.Worker
             services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
             services.Configure<ImageProcessingSettings>(Configuration.GetSection("ImageProcessing"));
 
-            services.AddTransient(a =>
+            services.AddScoped(a =>
             {
                 var settings = a.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
 
@@ -54,12 +55,13 @@ namespace Yandex.Disk.Worker
             });
 
             // register command handlers
-            services.AddTransient<ICommandHandler, RunProcessingCommandHandler>();
-            services.AddTransient<IMessageListener, RabbitMqMessageListener>();
-            services.AddTransient<ICommandHandlerManager, CommandHandlerManager>();
+            services.AddScoped<ICommandHandler, RunProcessingCommandHandler>();
+            services.AddScoped<IMessageListener, RabbitMqMessageListener>();
+            services.AddScoped<IMessageSender, RabbitMqMessageSender>();
+            services.AddScoped<ICommandHandlerManager, CommandHandlerManager>();
 
-            services.AddTransient<IYandexDiskDownloadService, YandexDiskDownloadService>();
-            services.AddTransient<IStorageService, StorageServiceClient>();
+            services.AddScoped<IYandexDiskDownloadService, YandexDiskDownloadService>();
+            services.AddScoped<IStorageService, StorageServiceClient>();
             services.AddHostedService<HostedService>();
         }
 

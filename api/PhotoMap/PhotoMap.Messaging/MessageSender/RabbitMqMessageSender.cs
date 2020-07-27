@@ -51,8 +51,8 @@ namespace PhotoMap.Messaging.MessageSender
 
         public void Dispose()
         {
-            _channel.Close();
-            _connection.Close();
+            _channel?.Close();
+            _connection?.Close();
 
             _logger.LogInformation("Connection closed.");
         }
