@@ -21,8 +21,6 @@ namespace Yandex.Disk.Worker.Services
         {
             _logger.LogInformation("Hosted Service running.");
 
-            _messageListener.InitializeConnection();
-
             return base.StartAsync(stoppingToken);
         }
 

@@ -28,6 +28,8 @@ namespace PhotoMap.Messaging.MessageListener
             _rabbitMqConfiguration = rabbitMqConfiguration;
             _commandHandlerManager = commandHandlerManager;
             _logger = logger;
+
+            InitializeConnection();
         }
 
         public void Listen(CancellationToken cancellationToken)
@@ -77,7 +79,7 @@ namespace PhotoMap.Messaging.MessageListener
             _logger.LogInformation("Connection closed.");
         }
 
-        public void InitializeConnection()
+        private void InitializeConnection()
         {
             var connectionFactory = new ConnectionFactory
             {
