@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { map, switchMap, filter } from 'rxjs/operators';
-import { YandexDiskService } from '../services/yandex-disk.service';
 import { UserModel } from '../models/user.model';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-yandex-disk',
@@ -19,11 +19,11 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
   private user: UserModel;
 
-  constructor(private activatedRoute: ActivatedRoute, private yandexDiskService: YandexDiskService) {
+  constructor(private activatedRoute: ActivatedRoute, private userService: UserService) {
   }
 
   ngOnInit(): void {
-    const sub1 = this.yandexDiskService.getUser(1).subscribe((userModel) => {
+    const sub1 = this.userService.getUser(1).subscribe((userModel) => {
       this.user = userModel;
 
       if (Date.now() < new Date(this.user.yandexDiskTokenExpiresOn).getTime()) {
@@ -40,7 +40,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
         expiresIn: params.get('expires_in')
       })),
       switchMap(result => {
-        return this.yandexDiskService.addUser(1, 'user', result.accessToken, parseInt(result.expiresIn));
+        return this.userService.addUser(1, 'user', result.accessToken, parseInt(result.expiresIn));
       })
     )
     .subscribe(() => console.log('done'));
