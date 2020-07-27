@@ -5,6 +5,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using PhotoMap.Messaging;
+using PhotoMap.Messaging.CommandHandlerManager;
+using PhotoMap.Messaging.MessageListener;
+using PhotoMap.Messaging.MessageSender;
 
 namespace Image.Service
 {
@@ -24,7 +29,26 @@ namespace Image.Service
 
             services.Configure<StorageServiceSettings>(Configuration.GetSection("Storage"));
             services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
-            services.AddTransient<IStorageService, StorageServiceClient>();
+
+            services.AddScoped(a =>
+            {
+                var settings = a.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+
+                return new RabbitMqConfiguration
+                {
+                    HostName = settings.HostName,
+                    Port = settings.Port,
+                    UserName = settings.UserName,
+                    Password = settings.Password,
+                    ConsumeQueueName = settings.ProcessingQueueName,
+                    ResponseQueueName = settings.ResultsQueueName
+                };
+            });
+
+            services.AddScoped<ICommandHandlerManager, CommandHandlerManager>();
+            services.AddScoped<IMessageListener, RabbitMqMessageListener>();
+            services.AddScoped<IMessageSender, RabbitMqMessageSender>();
+            services.AddScoped<IStorageService, StorageServiceClient>();
             services.AddHostedService<HostedService>();
         }
 
