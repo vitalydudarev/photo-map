@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using PhotoMap.Messaging;
+using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.CommandHandlerManager;
 using PhotoMap.Messaging.MessageListener;
 using PhotoMap.Messaging.MessageSender;
@@ -25,12 +26,14 @@ namespace Image.Service
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient();
+
             services.AddControllers();
 
             services.Configure<StorageServiceSettings>(Configuration.GetSection("Storage"));
             services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
 
-            services.AddScoped(a =>
+            services.AddSingleton(a =>
             {
                 var settings = a.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
 
@@ -45,10 +48,11 @@ namespace Image.Service
                 };
             });
 
-            services.AddScoped<ICommandHandlerManager, CommandHandlerManager>();
+            services.AddSingleton<ICommandHandler, ProcessingCommandHandler>();
+            services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
             services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
-            services.AddScoped<IMessageSender, RabbitMqMessageSender>();
-            services.AddScoped<IStorageService, StorageServiceClient>();
+            services.AddSingleton<IMessageSender, RabbitMqMessageSender>();
+            services.AddSingleton<IStorageService, StorageServiceClient>();
             services.AddHostedService<HostedService>();
         }
 

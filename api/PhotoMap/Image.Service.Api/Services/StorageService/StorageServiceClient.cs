@@ -23,7 +23,7 @@ namespace Image.Service.Services.StorageService
 
         public async Task<byte[]> GetFileAsync(long fileId)
         {
-            var url = _settings.ApiUrl + "/" + _settings.GetFileEndpoint + fileId;
+            var url = _settings.ApiUrl + _settings.GetFileEndpoint + fileId;
             var responseMessage = await _httpClient.GetAsync(url);
             var deserialized = await responseMessage.Content.ReadAsByteArrayAsync();
 
