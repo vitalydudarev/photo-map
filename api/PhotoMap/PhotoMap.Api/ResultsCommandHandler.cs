@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GraphicsLibrary.Exif;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using PhotoMap.Api.Database.Entities;
 using PhotoMap.Api.Database.Services;
@@ -13,11 +14,11 @@ namespace PhotoMap.Api
 {
     public class ResultsCommandHandler : CommandHandler<ResultsCommand>
     {
-        private readonly IPhotoService _photoService;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public ResultsCommandHandler(IPhotoService photoService)
+        public ResultsCommandHandler(IServiceScopeFactory serviceScopeFactory)
         {
-            _photoService = photoService;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         public override async Task HandleAsync(CommandBase command, CancellationToken cancellationToken)
@@ -61,7 +62,9 @@ namespace PhotoMap.Api
                     photoEntity.ExifString = JsonConvert.SerializeObject(resultsCommand.Exif);
                 }
 
-                await _photoService.AddAsync(photoEntity);
+                var scope = _serviceScopeFactory.CreateScope();
+                var photoService = scope.ServiceProvider.GetService<IPhotoService>();
+                await photoService.AddAsync(photoEntity);
             }
         }
 

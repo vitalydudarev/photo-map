@@ -18,6 +18,7 @@ namespace PhotoMap.Api.Database.Services
         public async Task AddAsync(Photo photo)
         {
             await _context.Photos.AddAsync(photo);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Photo>> GetByUserIdAsync(int userId)

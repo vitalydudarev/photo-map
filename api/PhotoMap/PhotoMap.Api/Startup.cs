@@ -6,13 +6,17 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using PhotoMap.Api.Database;
+using PhotoMap.Api.Database.Services;
 using PhotoMap.Api.ServiceClients.StorageService;
 using PhotoMap.Api.Services;
 using PhotoMap.Messaging;
+using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.CommandHandlerManager;
 using PhotoMap.Messaging.MessageListener;
 using PhotoMap.Messaging.MessageSender;
 using Serilog;
+using IUserService = PhotoMap.Api.Services.IUserService;
+using UserService = PhotoMap.Api.Services.UserService;
 
 namespace PhotoMap.Api
 {
@@ -32,7 +36,7 @@ namespace PhotoMap.Api
             services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
             services.Configure<StorageServiceSettings>(Configuration.GetSection("Storage"));
 
-            services.AddScoped(a =>
+            services.AddSingleton(a =>
             {
                 var settings = a.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
 
@@ -49,15 +53,17 @@ namespace PhotoMap.Api
 
             services.AddHttpClient();
 
+            services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IThumbnailService, ThumbnailService>();
 
             services.AddHostedService<HostedService>();
 
-            services.AddScoped<IMessageSender, RabbitMqMessageSender>();
+            services.AddSingleton<ICommandHandler, ResultsCommandHandler>();
+            services.AddSingleton<IMessageSender, RabbitMqMessageSender>();
             services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
-            services.AddScoped<ICommandHandlerManager, CommandHandlerManager>();
+            services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
             services.AddScoped<Database.Services.IUserService, Database.Services.UserService>();
             services.AddScoped<IStorageService, StorageServiceClient>();
 
