@@ -42,7 +42,8 @@ namespace PhotoMap.Api
                     Port = settings.Port,
                     UserName = settings.UserName,
                     Password = settings.Password,
-                    ConsumeQueueName = settings.ResultsQueueName
+                    ConsumeQueueName = settings.ResultsQueueName,
+                    ResponseQueueName = settings.CommandsQueueName
                 };
             });
 
@@ -55,7 +56,7 @@ namespace PhotoMap.Api
             services.AddHostedService<HostedService>();
 
             services.AddScoped<IMessageSender, RabbitMqMessageSender>();
-            services.AddScoped<IMessageListener, RabbitMqMessageListener>();
+            services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
             services.AddScoped<ICommandHandlerManager, CommandHandlerManager>();
             services.AddScoped<Database.Services.IUserService, Database.Services.UserService>();
             services.AddScoped<IStorageService, StorageServiceClient>();

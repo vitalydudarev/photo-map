@@ -46,7 +46,7 @@ namespace Image.Service
             });
 
             services.AddScoped<ICommandHandlerManager, CommandHandlerManager>();
-            services.AddScoped<IMessageListener, RabbitMqMessageListener>();
+            services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
             services.AddScoped<IMessageSender, RabbitMqMessageSender>();
             services.AddScoped<IStorageService, StorageServiceClient>();
             services.AddHostedService<HostedService>();

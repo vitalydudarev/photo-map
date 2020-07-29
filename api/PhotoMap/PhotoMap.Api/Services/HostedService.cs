@@ -1,7 +1,5 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PhotoMap.Messaging.MessageListener;
@@ -10,13 +8,13 @@ namespace PhotoMap.Api.Services
 {
     public class HostedService : BackgroundService
     {
+        private readonly IMessageListener _messageListener;
         private readonly ILogger<HostedService> _logger;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public HostedService(ILogger<HostedService> logger, IServiceScopeFactory serviceScopeFactory)
+        public HostedService(IMessageListener messageListener, ILogger<HostedService> logger)
         {
+            _messageListener = messageListener;
             _logger = logger;
-            _serviceScopeFactory = serviceScopeFactory;
         }
 
         public override Task StartAsync(CancellationToken stoppingToken)
@@ -37,10 +35,7 @@ namespace PhotoMap.Api.Services
 
             _logger.LogInformation("ExecuteAsync");
 
-            using var scope = _serviceScopeFactory.CreateScope();
-
-            var messageListener = scope.ServiceProvider.GetService<IMessageListener>();
-            messageListener.Listen(stoppingToken);
+            _messageListener.Listen(stoppingToken);
 
             await Task.CompletedTask;
         }
