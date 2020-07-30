@@ -30,5 +30,9 @@ namespace PhotoMap.Api.Database.Entities
         public bool HasGps { get; set; }
 
         public string ExifString { get; set; }
+
+        public string Source { get; set; }
+
+        public string FileName { get; set; }
     }
 }
