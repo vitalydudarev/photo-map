@@ -60,6 +60,8 @@ namespace Image.Service
                 {
                     UserId = processingCommand.UserId,
                     FileId = processingCommand.FileId,
+                    FileName = processingCommand.FileName,
+                    FileSource = processingCommand.FileSource,
                     Exif = exif,
                     ThumbsSizes = sizeFileIdMap,
                     PhotoUrl = processingCommand.FileUrl

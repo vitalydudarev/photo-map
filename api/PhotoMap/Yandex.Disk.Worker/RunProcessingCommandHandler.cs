@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PhotoMap.Messaging.CommandHandler;
@@ -11,18 +12,18 @@ namespace Yandex.Disk.Worker
 {
     public class RunProcessingCommandHandler : CommandHandler<RunProcessingCommand>
     {
-        private readonly IYandexDiskDownloadService _yandexDiskDownloadService;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ILogger<RunProcessingCommandHandler> _logger;
         private readonly IMessageSender _messageSender;
         private readonly ImageProcessingSettings _imageProcessingSettings;
 
         public RunProcessingCommandHandler(
-            IYandexDiskDownloadService yandexDiskDownloadService,
+            IServiceScopeFactory serviceScopeFactory,
             IMessageSender messageSender,
             IOptions<ImageProcessingSettings> imageProcessingOptions,
             ILogger<RunProcessingCommandHandler> logger)
         {
-            _yandexDiskDownloadService = yandexDiskDownloadService;
+            _serviceScopeFactory = serviceScopeFactory;
             _messageSender = messageSender;
             _imageProcessingSettings = imageProcessingOptions.Value;
             _logger = logger;
@@ -32,13 +33,18 @@ namespace Yandex.Disk.Worker
         {
             if (command is RunProcessingCommand runProcessingCommand)
             {
-                await foreach (var file in _yandexDiskDownloadService.DownloadFilesAsync(runProcessingCommand.Token, cancellationToken))
+                var scope = _serviceScopeFactory.CreateScope();
+                var yandexDiskDownloadService = scope.ServiceProvider.GetService<IYandexDiskDownloadService>();
+
+                await foreach (var file in yandexDiskDownloadService.DownloadFilesAsync(runProcessingCommand.Token, cancellationToken))
                 {
                     var processingCommand = new ProcessingCommand
                     {
                         UserId = runProcessingCommand.UserId,
+                        FileName = file.Name,
                         FileId = file.StorageFileId,
                         FileUrl = file.FileUrl,
+                        FileSource = "Yandex.Disk",
                         DeleteAfterProcessing = _imageProcessingSettings.DeleteAfterProcessing,
                         Sizes = _imageProcessingSettings.Sizes,
                         RelativeFilePath = file.RelativeFilePath

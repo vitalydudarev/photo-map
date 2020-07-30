@@ -9,6 +9,10 @@ namespace PhotoMap.Messaging.Commands
 
         public long FileId { get; set; }
 
+        public string FileName { get; set; }
+
+        public string FileSource { get; set; }
+
         public ExifData Exif { get; set; }
 
         public Dictionary<int, long> ThumbsSizes { get; set; }

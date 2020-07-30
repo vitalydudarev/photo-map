@@ -35,6 +35,8 @@ namespace PhotoMap.Api
                     PhotoUrl = resultsCommand.PhotoUrl,
                     HasExternalPhotoUrl = true,
                     PhotoFileId = resultsCommand.FileId,
+                    FileName = resultsCommand.FileName,
+                    Source = resultsCommand.FileSource,
                     ThumbnailSmallFileId = thumbSmall,
                     ThumbnailLargeFileId = thumbLarge
                 };
