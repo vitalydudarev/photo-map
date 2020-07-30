@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PhotoMap.Api.Database.Services;
 using PhotoMap.Api.DTOs;
-using PhotoMap.Api.Services;
+using IUserService = PhotoMap.Api.Services.IUserService;
 
 namespace PhotoMap.Api.Controllers
 {
@@ -11,11 +12,13 @@ namespace PhotoMap.Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IPhotoService _photoService;
         private readonly Database.Services.IUserService _dbUserService;
 
-        public UsersController(IUserService userService, Database.Services.IUserService dbUserService)
+        public UsersController(IUserService userService, IPhotoService photoService, Database.Services.IUserService dbUserService)
         {
             _userService = userService;
+            _photoService = photoService;
             _dbUserService = dbUserService;
         }
 
@@ -44,6 +47,14 @@ namespace PhotoMap.Api.Controllers
         public IActionResult GetUserImages()
         {
             return Ok(_userService.GetUserFiles());
+        }
+
+        [HttpGet("{id}/photos")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetUserPhotos(int id)
+        {
+            var userPhotos = await _photoService.GetByUserIdAsync(id);
+            return Ok(userPhotos);
         }
     }
 }

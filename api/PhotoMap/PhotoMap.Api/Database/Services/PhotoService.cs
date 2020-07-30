@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PhotoMap.Api.Database.Entities;
+using PhotoMap.Api.DTOs;
 
 namespace PhotoMap.Api.Database.Services
 {
@@ -21,9 +22,22 @@ namespace PhotoMap.Api.Database.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Photo>> GetByUserIdAsync(int userId)
+        public async Task<IEnumerable<PhotoDto>> GetByUserIdAsync(int userId)
         {
-            return await _context.Photos.Where(a => a.UserId == userId).ToListAsync();
+            var photos = await _context.Photos.Where(a => a.UserId == userId).ToListAsync();
+
+            return photos.Select(a => new PhotoDto
+            {
+                DateTimeTaken = a.DateTimeTaken,
+                FileName = a.FileName,
+                Id = a.Id,
+                Latitude = a.Latitude,
+                Longitude = a.Longitude,
+                PhotoUrl = a.PhotoUrl,
+                ThumbnailLargeFileId = a.ThumbnailLargeFileId,
+                ThumbnailSmallFileId = a.ThumbnailSmallFileId,
+                ThumbnailUrl = "api/photos/" + a.ThumbnailSmallFileId
+            });
         }
 
         public async Task DeleteByUserId(int userId)

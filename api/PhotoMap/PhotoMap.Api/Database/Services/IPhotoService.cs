@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PhotoMap.Api.Database.Entities;
+using PhotoMap.Api.DTOs;
 
 namespace PhotoMap.Api.Database.Services
 {
@@ -8,7 +9,7 @@ namespace PhotoMap.Api.Database.Services
     {
         Task AddAsync(Photo photo);
 
-        Task<IEnumerable<Photo>> GetByUserIdAsync(int userId);
+        Task<IEnumerable<PhotoDto>> GetByUserIdAsync(int userId);
 
         Task DeleteByUserId(int userId);
     }
