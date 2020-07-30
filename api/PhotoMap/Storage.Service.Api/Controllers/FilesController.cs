@@ -20,8 +20,7 @@ namespace Storage.Service.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        [Route("{fileId}")]
+        [HttpGet("{fileId}")]
         public async Task<IActionResult> GetFileAsync(long fileId)
         {
             _logger.LogInformation("GetFileAsync: Request received: fileId - " + fileId);
@@ -33,8 +32,7 @@ namespace Storage.Service.Controllers
             return NotFound(fileId);
         }
 
-        [HttpGet]
-        [Route("{fileId}/info")]
+        [HttpGet("{fileId}/info")]
         public async Task<IActionResult> GetFileInfoAsync(long fileId)
         {
             _logger.LogInformation("GetFileInfoAsync: request received: fileId - " + fileId);
@@ -61,7 +59,7 @@ namespace Storage.Service.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{fileId}")]
         public async Task<IActionResult> DeleteFileAsync(long fileId)
         {
             _logger.LogInformation("DeleteFileAsync: Request received: fileId - " + fileId);
