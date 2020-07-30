@@ -39,7 +39,7 @@ namespace Yandex.Disk.Worker
             services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
             services.Configure<ImageProcessingSettings>(Configuration.GetSection("ImageProcessing"));
 
-            services.AddScoped(a =>
+            services.AddSingleton(a =>
             {
                 var settings = a.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
 
@@ -55,10 +55,10 @@ namespace Yandex.Disk.Worker
             });
 
             // register command handlers
-            services.AddScoped<ICommandHandler, RunProcessingCommandHandler>();
+            services.AddSingleton<ICommandHandler, RunProcessingCommandHandler>();
             services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
-            services.AddScoped<IMessageSender, RabbitMqMessageSender>();
-            services.AddScoped<ICommandHandlerManager, CommandHandlerManager>();
+            services.AddSingleton<IMessageSender, RabbitMqMessageSender>();
+            services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
 
             services.AddScoped<IYandexDiskDownloadService, YandexDiskDownloadService>();
             services.AddScoped<IStorageService, StorageServiceClient>();
