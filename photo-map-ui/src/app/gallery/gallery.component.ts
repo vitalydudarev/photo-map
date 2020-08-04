@@ -2,9 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from "rxjs";
 
 import { GridLayout, Image, PlainGalleryConfig, PlainGalleryStrategy } from '@ks89/angular-modal-gallery';
-import { ThumbnailService } from '../services/thumbnail.service';
-import { UserService } from '../services/user.service';
-import { ImageService } from '../services/image.service';
+import { UserPhotosService } from '../services/user-photos.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-modal-gallery-page',
@@ -15,16 +14,15 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
   images: Image[] = [];
   private subscription: Subscription;
+  private apiUrl: string = `${environment.photoMapApiUrl}`;
 
   plainGalleryGridConfig: PlainGalleryConfig = {
     strategy: PlainGalleryStrategy.GRID,
-    layout: new GridLayout({ width: '256px', height: 'auto' }, { length: 10, wrap: false })
+    layout: new GridLayout({ width: '128px', height: 'auto' }, { length: 20, wrap: true })
   };
 
   constructor(
-    private imageService: ImageService,
-    private thumbnailService: ThumbnailService,
-    private userService: UserService) {
+    private userPhotosService: UserPhotosService) {
   }
 
   ngOnInit(): void {
@@ -32,15 +30,15 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
     const images: Image[] = [];
 
-    this.subscription = this.userService.getUserImages().subscribe(files => {
-      for (let fileName of files) {
+    this.subscription = this.userPhotosService.getUserPhotos(1).subscribe(photos => {
+      for (let photo of photos) {
         const image = new Image(i, {
-            img: this.imageService.getUrl(fileName),
-            description: fileName
+            img: `${this.apiUrl}/${photo.photoUrl}`,
+            description: photo.fileName
           },
           {
-            img: this.thumbnailService.getUrl(fileName),
-            description: fileName
+            img: `${this.apiUrl}/${photo.thumbnailUrl}`,
+            description: photo.fileName
           });
 
         images.push(image);

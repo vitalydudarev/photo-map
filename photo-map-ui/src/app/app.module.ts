@@ -22,11 +22,10 @@ import 'hammerjs'; // Mandatory for angular-modal-gallery 3.x.x or greater (`npm
 import 'mousetrap'; // Mandatory for angular-modal-gallery 3.x.x or greater (`npm i --save mousetrap`)
 import { FormsModule } from '@angular/forms';
 
-import { ImageService } from "./services/image.service";
-import { ThumbnailService } from './services/thumbnail.service';
 import { UserService } from './services/user.service';
 import { YandexDiskComponent } from './yandex-disk/yandex-disk.component';
 import { YandexDiskService } from './services/yandex-disk.service';
+import { UserPhotosService } from './services/user-photos.service';
 
 
 @NgModule({
@@ -55,10 +54,9 @@ import { YandexDiskService } from './services/yandex-disk.service';
     GalleryModule.forRoot()
   ],
   providers: [
-    ImageService,
-    ThumbnailService,
     UserService,
-    YandexDiskService
+    YandexDiskService,
+    UserPhotosService
   ],
   bootstrap: [AppComponent]
 })
