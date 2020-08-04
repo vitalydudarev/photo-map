@@ -22,6 +22,11 @@ namespace PhotoMap.Api.Database.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task<Photo> GetAsync(int id)
+        {
+            return await _context.Photos.FindAsync(id);
+        }
+
         public async Task<IEnumerable<PhotoDto>> GetByUserIdAsync(int userId)
         {
             var photos = await _context.Photos.Where(a => a.UserId == userId).ToListAsync();
@@ -33,10 +38,10 @@ namespace PhotoMap.Api.Database.Services
                 Id = a.Id,
                 Latitude = a.Latitude,
                 Longitude = a.Longitude,
-                PhotoUrl = a.PhotoUrl,
+                PhotoUrl = "yandex-disk/photos/" + a.Id,
                 ThumbnailLargeFileId = a.ThumbnailLargeFileId,
                 ThumbnailSmallFileId = a.ThumbnailSmallFileId,
-                ThumbnailUrl = "api/photos/" + a.ThumbnailSmallFileId
+                ThumbnailUrl = "photos/" + a.ThumbnailSmallFileId
             });
         }
 

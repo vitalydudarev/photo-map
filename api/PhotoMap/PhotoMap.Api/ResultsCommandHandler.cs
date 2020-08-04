@@ -33,7 +33,7 @@ namespace PhotoMap.Api
                 {
                     UserId = resultsCommand.UserId,
                     PhotoUrl = resultsCommand.PhotoUrl,
-                    HasExternalPhotoUrl = true,
+                    HasExternalPhotoUrl = false,
                     PhotoFileId = resultsCommand.FileId,
                     FileName = resultsCommand.FileName,
                     Source = resultsCommand.FileSource,

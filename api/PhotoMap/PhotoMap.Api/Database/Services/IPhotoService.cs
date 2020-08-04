@@ -9,6 +9,8 @@ namespace PhotoMap.Api.Database.Services
     {
         Task AddAsync(Photo photo);
 
+        Task<Photo> GetAsync(int id);
+
         Task<IEnumerable<PhotoDto>> GetByUserIdAsync(int userId);
 
         Task DeleteByUserId(int userId);

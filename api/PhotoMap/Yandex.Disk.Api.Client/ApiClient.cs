@@ -25,7 +25,7 @@ namespace Yandex.Disk.Api.Client
             _httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse($"OAuth {oAuthToken}");
             _urlBuilder = new UrlBuilder(NamingConvention.SnakeCase);
         }
-        
+
         public async Task<Models.Disk> GetDiskAsync(CancellationToken cancellationToken)
         {
             return await GetAsync<Models.Disk>(Url, cancellationToken);
@@ -41,10 +41,22 @@ namespace Yandex.Disk.Api.Client
             };
 
             var url = _urlBuilder.Build(Url, "resources", parameters);
-            
+
             return await GetAsync<Resource>(url, cancellationToken);
         }
-        
+
+        public async Task<DownloadUrl> GetDownloadUrlAsync(string path, CancellationToken cancellationToken)
+        {
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(path), path }
+            };
+
+            var url = _urlBuilder.Build(Url, "resources/download", parameters);
+
+            return await GetAsync<DownloadUrl>(url, cancellationToken);
+        }
+
         public async Task<FilesResourceList> GetFlatFilesListAsync(CancellationToken cancellationToken, string mediaType = null, int limit = 20)
         {
             var parameters = new Dictionary<string, string>
@@ -67,7 +79,7 @@ namespace Yandex.Disk.Api.Client
                 return await JsonSerializer.DeserializeAsync<T>(responseStream, _jsonSerializerOptions, cancellationToken);
 
             var error = await JsonSerializer.DeserializeAsync<ApiError>(responseStream, _jsonSerializerOptions, cancellationToken);
-            
+
             throw new ApiException(error);
         }
     }
