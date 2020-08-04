@@ -9,7 +9,7 @@ namespace PhotoMap.Messaging.Commands
         public long FileId { get; set; }
 
         public string FileUrl { get; set; }
-        
+
         public string FileSource { get; set; }
 
         public bool DeleteAfterProcessing { get; set; }
@@ -17,5 +17,7 @@ namespace PhotoMap.Messaging.Commands
         public int[] Sizes { get; set; }
 
         public string RelativeFilePath { get; set; }
+        
+        public string Path { get; set; }
     }
 }

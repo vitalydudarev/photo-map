@@ -18,5 +18,7 @@ namespace PhotoMap.Messaging.Commands
         public Dictionary<int, long> ThumbsSizes { get; set; }
 
         public string PhotoUrl { get; set; }
+
+        public string Path { get; set; }
     }
 }

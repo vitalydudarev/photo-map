@@ -8,8 +8,10 @@ namespace Yandex.Disk.Worker.Models
         public string RelativeFilePath { get; set; }
         public long StorageFileId { get; set; }
         public string FileUrl { get; set; }
+        public string Path { get; set; }
 
-        public YandexDiskFileKey(string login, string uid, string name, string relativeFilePath, long storageFileId, string fileUrl)
+        public YandexDiskFileKey(string login, string uid, string name, string relativeFilePath, long storageFileId,
+            string fileUrl, string path)
         {
             Login = login;
             Uid = uid;
@@ -17,6 +19,7 @@ namespace Yandex.Disk.Worker.Models
             RelativeFilePath = relativeFilePath;
             StorageFileId = storageFileId;
             FileUrl = fileUrl;
+            Path = path;
         }
 
         public override string ToString()

@@ -64,7 +64,8 @@ namespace Image.Service
                     FileSource = processingCommand.FileSource,
                     Exif = exif,
                     ThumbsSizes = sizeFileIdMap,
-                    PhotoUrl = processingCommand.FileUrl
+                    PhotoUrl = processingCommand.FileUrl,
+                    Path = processingCommand.Path
                 };
 
                 _messageSender.Send(resultsCommand);

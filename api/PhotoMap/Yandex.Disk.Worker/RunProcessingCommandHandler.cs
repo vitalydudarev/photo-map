@@ -44,6 +44,7 @@ namespace Yandex.Disk.Worker
                         FileName = file.Name,
                         FileId = file.StorageFileId,
                         FileUrl = file.FileUrl,
+                        Path = file.Path,
                         FileSource = "Yandex.Disk",
                         DeleteAfterProcessing = _imageProcessingSettings.DeleteAfterProcessing,
                         Sizes = _imageProcessingSettings.Sizes,

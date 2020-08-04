@@ -38,7 +38,8 @@ namespace PhotoMap.Api
                     FileName = resultsCommand.FileName,
                     Source = resultsCommand.FileSource,
                     ThumbnailSmallFileId = thumbSmall,
-                    ThumbnailLargeFileId = thumbLarge
+                    ThumbnailLargeFileId = thumbLarge,
+                    Path = resultsCommand.Path
                 };
 
                 if (resultsCommand.Exif != null)

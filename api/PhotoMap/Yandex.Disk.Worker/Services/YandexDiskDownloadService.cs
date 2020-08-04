@@ -81,7 +81,7 @@ namespace Yandex.Disk.Worker.Services
 
                 var savedFile = await _storageService.SaveFileAsync(filePath, bytes);
 
-                var key = new YandexDiskFileKey(disk.User.Login, disk.User.Uid, resource.Name, filePath, savedFile.Id, resource.File);
+                var key = new YandexDiskFileKey(disk.User.Login, disk.User.Uid, resource.Name, filePath, savedFile.Id, resource.File, resource.Path);
 
                 _logger.LogInformation($"Finished downloading {key}.");
 
