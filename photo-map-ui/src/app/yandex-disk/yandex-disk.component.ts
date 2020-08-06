@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { map, switchMap, filter } from 'rxjs/operators';
+import { map, switchMap, filter, take } from 'rxjs/operators';
 import { UserModel } from '../models/user.model';
 import { UserService } from '../services/user.service';
 
@@ -34,6 +34,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
 
     const sub2 = this.activatedRoute.fragment.pipe(
       filter(fragment => fragment !== null && fragment !== ''),
+      take(1),
       map(fragment => new URLSearchParams(fragment)),
       map(params => ({
         accessToken: params.get('access_token'),
