@@ -1,0 +1,6 @@
+dotnet ef migrations add InitialMigration -s PhotoMap.Api -p PhotoMap.Api --verbose
+dotnet ef migrations add InitialMigration -s Storage.Service.Api -p Storage.Service.Api --verbose
+
+dotnet ef migrations remove InitialMigration -s PhotoMap.Api -p PhotoMap.Api --verbose
+
+dotnet ef database update
