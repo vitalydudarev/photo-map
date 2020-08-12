@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PhotoMap.Api.Database.Services;
-using PhotoMap.Api.DTOs;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
 using Yandex.Disk.Api.Client;
@@ -35,14 +34,26 @@ namespace PhotoMap.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> RunProcessing()
+        public async Task<IActionResult> RunProcessing(int userId)
         {
-            var user = await _userService.GetAsync(1);
-            var runProcessingCommand = new RunProcessingCommand { UserId = 1, Token = user.YandexDiskAccessToken };
+            var user = await _userService.GetAsync(userId);
+            var runProcessingCommand = new RunProcessingCommand { UserId = userId, Token = user.YandexDiskAccessToken };
 
             _messageSender.Send(runProcessingCommand);
 
             return Ok();
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> StopProcessing(int userId)
+        {
+            var user = await _userService.GetAsync(userId);
+            var stopProcessingCommand = new StopProcessingCommand { UserId = userId };
+
+            _messageSender.Send(stopProcessingCommand);
+
+            return NoContent();
         }
 
         [HttpGet("photos/{id}")]
