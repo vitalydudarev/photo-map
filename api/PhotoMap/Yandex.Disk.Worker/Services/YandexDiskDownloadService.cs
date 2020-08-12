@@ -13,13 +13,14 @@ using Yandex.Disk.Worker.Services.External;
 
 namespace Yandex.Disk.Worker.Services
 {
-    public class YandexDiskDownloadService : IYandexDiskDownloadService
+    public class YandexDiskDownloadService : IYandexDiskDownloadService, IDisposable
     {
         private static readonly HttpClient Client = new HttpClient();
         // private readonly IStorage _storage;
         // private readonly IProgress<> _progress;
         private readonly IStorageService _storageService;
         private readonly ILogger<YandexDiskDownloadService> _logger;
+        private int _currentOffset;
 
         public YandexDiskDownloadService(IStorageService storageService, ILogger<YandexDiskDownloadService> logger)
         {
@@ -29,12 +30,16 @@ namespace Yandex.Disk.Worker.Services
 
         public async IAsyncEnumerable<YandexDiskFileKey> DownloadFilesAsync(
             string accessToken,
-            [EnumeratorCancellation] CancellationToken cancellationToken)
+            [EnumeratorCancellation] CancellationToken cancellationToken,
+            StoppingAction stoppingAction)
         {
             var apiClient = new ApiClient(accessToken, Client);
 
-            var disk = await apiClient.GetDiskAsync(cancellationToken);
-            _logger.LogInformation("GetDisk");
+            var diskResult = await WrapApiCallAsync(() => apiClient.GetDiskAsync(cancellationToken));
+            if (diskResult.HasError)
+                yield break;
+
+            var disk = diskResult.Result;
 
             const int limit = 100;
 
@@ -44,9 +49,16 @@ namespace Yandex.Disk.Worker.Services
 
             while (offset <= totalCount)
             {
-                var resource =
-                    await apiClient.GetResourceAsync(disk.SystemFolders.Photostream, cancellationToken, offset, limit);
+                if (cancellationToken.IsCancellationRequested || stoppingAction.IsStopRequested)
+                    yield break;
 
+                var resourceResult =
+                    await WrapApiCallAsync(() =>
+                        apiClient.GetResourceAsync(disk.SystemFolders.Photostream, cancellationToken, offset, limit));
+                if (resourceResult.HasError)
+                    yield break;
+
+                var resource = resourceResult.Result;
                 var items = resource.Embedded.Items;
                 if (items != null && items.Length > 0)
                 {
@@ -67,7 +79,30 @@ namespace Yandex.Disk.Worker.Services
                 }
 
                 offset += limit;
+                _currentOffset = offset;
             }
+        }
+
+        public void Dispose()
+        {
+            _logger.LogInformation("Download service disposed.");
+            _logger.LogInformation("Current offset: " + _currentOffset);
+        }
+
+        private async Task<ApiCallResult<T>> WrapApiCallAsync<T>(Func<Task<T>> apiCall)
+        {
+            try
+            {
+                var result = await apiCall();
+
+                return new ApiCallResult<T> { Result = result };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+            }
+
+            return new ApiCallResult<T> { HasError = true };
         }
 
         private async Task<YandexDiskFileKey> DownloadAsync(Resource resource, Disk.Api.Client.Models.Disk disk)
@@ -94,5 +129,11 @@ namespace Yandex.Disk.Worker.Services
 
             return null;
         }
+    }
+
+    public class ApiCallResult<T>
+    {
+        public T Result { get; set; }
+        public bool HasError { get; set; }
     }
 }

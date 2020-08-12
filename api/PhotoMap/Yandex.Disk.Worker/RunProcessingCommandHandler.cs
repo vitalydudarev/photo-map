@@ -16,16 +16,19 @@ namespace Yandex.Disk.Worker
         private readonly ILogger<RunProcessingCommandHandler> _logger;
         private readonly IMessageSender _messageSender;
         private readonly ImageProcessingSettings _imageProcessingSettings;
+        private readonly DownloadServiceManager _downloadServiceManager;
 
         public RunProcessingCommandHandler(
             IServiceScopeFactory serviceScopeFactory,
             IMessageSender messageSender,
             IOptions<ImageProcessingSettings> imageProcessingOptions,
+            DownloadServiceManager downloadServiceManager,
             ILogger<RunProcessingCommandHandler> logger)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _messageSender = messageSender;
             _imageProcessingSettings = imageProcessingOptions.Value;
+            _downloadServiceManager = downloadServiceManager;
             _logger = logger;
         }
 
@@ -36,7 +39,11 @@ namespace Yandex.Disk.Worker
                 var scope = _serviceScopeFactory.CreateScope();
                 var yandexDiskDownloadService = scope.ServiceProvider.GetService<IYandexDiskDownloadService>();
 
-                await foreach (var file in yandexDiskDownloadService.DownloadFilesAsync(runProcessingCommand.Token, cancellationToken))
+                var stoppingAction = new StoppingAction();
+                _downloadServiceManager.Start(runProcessingCommand.UserId, stoppingAction);
+
+                await foreach (var file in yandexDiskDownloadService.DownloadFilesAsync(runProcessingCommand.Token,
+                    cancellationToken, stoppingAction))
                 {
                     var processingCommand = new ProcessingCommand
                     {
@@ -53,6 +60,8 @@ namespace Yandex.Disk.Worker
 
                     _messageSender.Send(processingCommand);
                 }
+
+                _logger.LogInformation("Processing finished.");
             }
         }
     }

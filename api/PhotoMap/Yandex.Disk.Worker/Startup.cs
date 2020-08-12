@@ -59,6 +59,7 @@ namespace Yandex.Disk.Worker
             services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
             services.AddSingleton<IMessageSender, RabbitMqMessageSender>();
             services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
+            services.AddSingleton<DownloadServiceManager>();
 
             services.AddScoped<IYandexDiskDownloadService, YandexDiskDownloadService>();
             services.AddScoped<IStorageService, StorageServiceClient>();
