@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  photoMapApiUrl: 'https://localhost:5001/api'
+  photoMapApiUrl: 'https://localhost:5001/api',
+  yandexDiskHub: 'https://localhost:5001/yandex-disk-hub'
 };
 
 /*

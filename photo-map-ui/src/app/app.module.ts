@@ -13,9 +13,7 @@ import { MatCardModule } from '@angular/material/card';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from  '@angular/material/button';
 
-import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { HttpClientModule } from '@angular/common/http';
-import { MasonryGalleryModule } from 'ngx-masonry-gallery';
 import { GalleryModule } from '@ks89/angular-modal-gallery';
 
 import 'hammerjs'; // Mandatory for angular-modal-gallery 3.x.x or greater (`npm i --save hammerjs`)
@@ -26,6 +24,8 @@ import { UserService } from './services/user.service';
 import { YandexDiskComponent } from './yandex-disk/yandex-disk.component';
 import { YandexDiskService } from './services/yandex-disk.service';
 import { UserPhotosService } from './services/user-photos.service';
+import { SignalRService } from './services/signalr.service';
+import { YandexDiskHubService } from './services/yandex-disk-hub.service';
 
 
 @NgModule({
@@ -48,15 +48,13 @@ import { UserPhotosService } from './services/user-photos.service';
     MatButtonModule,
     MatCardModule,
 
-    NgxGalleryModule,
-    MasonryGalleryModule,
-
     GalleryModule.forRoot()
   ],
   providers: [
     UserService,
     YandexDiskService,
-    UserPhotosService
+    UserPhotosService,
+    YandexDiskHubService
   ],
   bootstrap: [AppComponent]
 })
