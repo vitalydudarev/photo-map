@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using PhotoMap.Messaging.MessageSender;
 using Yandex.Disk.Api.Client;
 using Yandex.Disk.Api.Client.Models;
 using Yandex.Disk.Worker.Models;
@@ -22,7 +23,9 @@ namespace Yandex.Disk.Worker.Services
         private readonly ILogger<YandexDiskDownloadService> _logger;
         private int _currentOffset;
 
-        public YandexDiskDownloadService(IStorageService storageService, ILogger<YandexDiskDownloadService> logger)
+        public YandexDiskDownloadService(
+            IStorageService storageService,
+            ILogger<YandexDiskDownloadService> logger)
         {
             _storageService = storageService;
             _logger = logger;
@@ -37,15 +40,18 @@ namespace Yandex.Disk.Worker.Services
 
             var diskResult = await WrapApiCallAsync(() => apiClient.GetDiskAsync(cancellationToken));
             if (diskResult.HasError)
-                yield break;
+                throw new YandexDiskException(diskResult.Error);
 
             var disk = diskResult.Result;
 
-            const int limit = 100;
+            const int limit = 10;
 
             int offset = 0;
             int totalCount = 0;
             int downloadedCount = 0;
+
+            int testLimit = 1;
+            totalCount = testLimit;
 
             while (offset <= totalCount)
             {
@@ -56,13 +62,13 @@ namespace Yandex.Disk.Worker.Services
                     await WrapApiCallAsync(() =>
                         apiClient.GetResourceAsync(disk.SystemFolders.Photostream, cancellationToken, offset, limit));
                 if (resourceResult.HasError)
-                    yield break;
+                    throw new YandexDiskException(resourceResult.Error);
 
                 var resource = resourceResult.Result;
                 var items = resource.Embedded.Items;
                 if (items != null && items.Length > 0)
                 {
-                    totalCount = resource.Embedded.Total;
+                    // totalCount = resource.Embedded.Total;
 
                     // var progressStat = new ProgressStat { Total = totalCount };
                     // _progress.SetProgress(progressStat);
@@ -100,9 +106,9 @@ namespace Yandex.Disk.Worker.Services
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
-            }
 
-            return new ApiCallResult<T> { HasError = true };
+                return new ApiCallResult<T> { HasError = true, Error = e.Message };
+            }
         }
 
         private async Task<YandexDiskFileKey> DownloadAsync(Resource resource, Disk.Api.Client.Models.Disk disk)
@@ -135,5 +141,6 @@ namespace Yandex.Disk.Worker.Services
     {
         public T Result { get; set; }
         public bool HasError { get; set; }
+        public string Error { get; set; }
     }
 }

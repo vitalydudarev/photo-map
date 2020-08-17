@@ -34,7 +34,7 @@ namespace PhotoMap.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> RunProcessing(int userId)
+        public async Task<IActionResult> RunProcessing([FromBody] int userId)
         {
             var user = await _userService.GetAsync(userId);
             var runProcessingCommand = new RunProcessingCommand { UserId = userId, Token = user.YandexDiskAccessToken };

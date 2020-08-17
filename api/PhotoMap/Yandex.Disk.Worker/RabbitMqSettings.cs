@@ -10,8 +10,8 @@ namespace Yandex.Disk.Worker
 
         public int Port { get; set; }
 
-        public string CommandsQueueName { get; set; }
+        public string InQueueName { get; set; }
 
-        public string ProcessingQueueName { get; set; }
+        public string OutQueueName { get; set; }
     }
 }

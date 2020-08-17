@@ -14,7 +14,10 @@ namespace Yandex.Disk.Worker
         public void Stop(int userId)
         {
             if (_map.TryGetValue(userId, out var stoppingAction))
+            {
                 stoppingAction.IsStopRequested = true;
+                _map.Remove(userId);
+            }
         }
     }
 }

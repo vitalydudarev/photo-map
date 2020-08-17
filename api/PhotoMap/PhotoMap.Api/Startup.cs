@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using PhotoMap.Api.Database;
 using PhotoMap.Api.Database.Services;
+using PhotoMap.Api.Hubs;
 using PhotoMap.Api.ServiceClients.StorageService;
 using PhotoMap.Api.Services;
 using PhotoMap.Messaging;
@@ -60,7 +61,10 @@ namespace PhotoMap.Api
 
             services.AddHostedService<HostedService>();
 
+            services.AddSingleton<YandexDiskHub>();
+
             services.AddSingleton<ICommandHandler, ResultsCommandHandler>();
+            services.AddSingleton<ICommandHandler, YandexDiskNotificationHandler>();
             services.AddSingleton<IMessageSender, RabbitMqMessageSender>();
             services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
             services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
@@ -73,6 +77,8 @@ namespace PhotoMap.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PhotoMap API V1", Version = "v1" });
             });
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,13 +93,21 @@ namespace PhotoMap.Api
 
             app.UseSerilogRequestLogging();
 
-            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            app.UseCors(builder => builder
+                .WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials());
 
             app.UseRouting();
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<YandexDiskHub>("/yandex-disk-hub");
+                endpoints.MapControllers();
+            });
 
             app.UseSwagger();
 

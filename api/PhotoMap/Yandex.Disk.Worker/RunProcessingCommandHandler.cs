@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
+using Yandex.Disk.Worker.Models;
 using Yandex.Disk.Worker.Services;
 
 namespace Yandex.Disk.Worker
@@ -14,13 +15,13 @@ namespace Yandex.Disk.Worker
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ILogger<RunProcessingCommandHandler> _logger;
-        private readonly IMessageSender _messageSender;
+        private readonly IMessageSender2 _messageSender;
         private readonly ImageProcessingSettings _imageProcessingSettings;
         private readonly DownloadServiceManager _downloadServiceManager;
 
         public RunProcessingCommandHandler(
             IServiceScopeFactory serviceScopeFactory,
-            IMessageSender messageSender,
+            IMessageSender2 messageSender,
             IOptions<ImageProcessingSettings> imageProcessingOptions,
             DownloadServiceManager downloadServiceManager,
             ILogger<RunProcessingCommandHandler> logger)
@@ -42,27 +43,51 @@ namespace Yandex.Disk.Worker
                 var stoppingAction = new StoppingAction();
                 _downloadServiceManager.Start(runProcessingCommand.UserId, stoppingAction);
 
-                await foreach (var file in yandexDiskDownloadService.DownloadFilesAsync(runProcessingCommand.Token,
-                    cancellationToken, stoppingAction))
+                try
                 {
-                    var processingCommand = new ProcessingCommand
+                    await foreach (var file in yandexDiskDownloadService.DownloadFilesAsync(runProcessingCommand.Token,
+                        cancellationToken, stoppingAction))
                     {
-                        UserId = runProcessingCommand.UserId,
-                        FileName = file.Name,
-                        FileId = file.StorageFileId,
-                        FileUrl = file.FileUrl,
-                        Path = file.Path,
-                        FileSource = "Yandex.Disk",
-                        DeleteAfterProcessing = _imageProcessingSettings.DeleteAfterProcessing,
-                        Sizes = _imageProcessingSettings.Sizes,
-                        RelativeFilePath = file.RelativeFilePath
+                        var processingCommand = CreateProcessingCommand(runProcessingCommand, file);
+
+                        _messageSender.Send(processingCommand, Constants.ImageServiceApi);
+                    }
+                }
+                catch (YandexDiskException e)
+                {
+                    _downloadServiceManager.Stop(runProcessingCommand.UserId);
+
+                    _logger.LogError(e.Message);
+
+                    var notification = new YandexDiskNotification
+                    {
+                        Error = e.Message,
+                        UserId = runProcessingCommand.UserId
                     };
 
-                    _messageSender.Send(processingCommand);
+                    _messageSender.Send(notification, Constants.PhotoMapApi);
                 }
 
                 _logger.LogInformation("Processing finished.");
             }
+        }
+
+        private ProcessingCommand CreateProcessingCommand(
+            RunProcessingCommand runProcessingCommand,
+            YandexDiskFileKey file)
+        {
+            return new ProcessingCommand
+            {
+                UserId = runProcessingCommand.UserId,
+                FileName = file.Name,
+                FileId = file.StorageFileId,
+                FileUrl = file.FileUrl,
+                Path = file.Path,
+                FileSource = "Yandex.Disk",
+                DeleteAfterProcessing = _imageProcessingSettings.DeleteAfterProcessing,
+                Sizes = _imageProcessingSettings.Sizes,
+                RelativeFilePath = file.RelativeFilePath
+            };
         }
     }
 }

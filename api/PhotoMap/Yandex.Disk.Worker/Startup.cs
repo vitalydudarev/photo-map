@@ -36,12 +36,28 @@ namespace Yandex.Disk.Worker
             services.AddHttpClient();
 
             services.Configure<StorageServiceSettings>(Configuration.GetSection("Storage"));
-            services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
             services.Configure<ImageProcessingSettings>(Configuration.GetSection("ImageProcessing"));
+            services.Configure<Dictionary<string, RabbitMqSettings>>(Configuration.GetSection("RabbitMQ"));
 
             services.AddSingleton(a =>
             {
-                var settings = a.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+                var settingsDictionary = a.GetRequiredService<IOptions<Dictionary<string, RabbitMqSettings>>>().Value;
+
+                return settingsDictionary.ToDictionary(a => a.Key, b => new RabbitMqConfiguration
+                {
+                    HostName = b.Value.HostName,
+                    Port = b.Value.Port,
+                    UserName = b.Value.UserName,
+                    Password = b.Value.Password,
+                    ConsumeQueueName = b.Value.InQueueName,
+                    ResponseQueueName = b.Value.OutQueueName
+                });
+            });
+
+            services.AddSingleton(a =>
+            {
+                var settingsDictionary = a.GetRequiredService<IOptions<Dictionary<string, RabbitMqSettings>>>().Value;
+                var settings = settingsDictionary.First(key => key.Key == Constants.ImageServiceApi).Value;
 
                 return new RabbitMqConfiguration
                 {
@@ -49,15 +65,15 @@ namespace Yandex.Disk.Worker
                     Port = settings.Port,
                     UserName = settings.UserName,
                     Password = settings.Password,
-                    ConsumeQueueName = settings.CommandsQueueName,
-                    ResponseQueueName = settings.ProcessingQueueName
+                    ConsumeQueueName = settings.InQueueName,
+                    ResponseQueueName = settings.OutQueueName
                 };
             });
 
             // register command handlers
             services.AddSingleton<ICommandHandler, RunProcessingCommandHandler>();
             services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
-            services.AddSingleton<IMessageSender, RabbitMqMessageSender>();
+            services.AddSingleton<IMessageSender2, RabbitMqMessageSender2>();
             services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
             services.AddSingleton<DownloadServiceManager>();
 
