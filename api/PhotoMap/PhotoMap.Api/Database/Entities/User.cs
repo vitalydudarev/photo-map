@@ -11,5 +11,7 @@ namespace PhotoMap.Api.Database.Entities
         public string YandexDiskToken { get; set; }
 
         public DateTimeOffset YandexDiskTokenExpiresOn { get; set; }
+
+        public YandexDiskStatus YandexDiskStatus { get; set; }
     }
 }

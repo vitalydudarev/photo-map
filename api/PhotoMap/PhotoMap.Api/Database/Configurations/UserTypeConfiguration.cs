@@ -16,6 +16,8 @@ namespace PhotoMap.Api.Database.Configurations
                 .Property(a => a.YandexDiskToken);
             builder
                 .Property(a => a.YandexDiskTokenExpiresOn);
+            builder
+                .Property(a => a.YandexDiskStatus);
             builder.ToTable("Users");
         }
     }
