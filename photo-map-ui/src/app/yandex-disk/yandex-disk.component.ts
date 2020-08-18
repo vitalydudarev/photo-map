@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, from } from 'rxjs';
 import { map, switchMap, filter, take } from 'rxjs/operators';
-import { UserModel } from '../models/user.model';
+import { User } from '../models/user.model';
 import { UserService } from '../services/user.service';
 import { YandexDiskHubService } from '../services/yandex-disk-hub.service';
 import { YandexDiskService } from '../services/yandex-disk.service';
@@ -17,10 +17,12 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   yandexDiskUri: string = `https://oauth.yandex.ru/authorize?response_type=token&client_id=${this.clientId}&redirect_uri=${this.redirectUri}`;
   needsAuthorization: boolean = true;
   tokenExpires: string;
+  status: string = 'Not started';
 
   private subscription: Subscription = new Subscription();
-  private user: UserModel;
+  private user: User;
   private userId: number = 1;
+  private userName: string = 'user';
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -48,7 +50,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
         expiresIn: params.get('expires_in')
       })),
       switchMap(result => {
-        return this.userService.addUser(this.userId, 'user', result.accessToken, parseInt(result.expiresIn));
+        return this.userService.addUser(this.userId, this.userName, result.accessToken, parseInt(result.expiresIn));
       })
     )
     .subscribe(() => console.log('done'));
@@ -68,7 +70,10 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     
 
     this.yandexDiskHubService.yandexDiskError().subscribe({
-      next: () => console.log('yandex disk error')
+      next: (error) => {
+        console.log('yandex disk error');
+        this.status = error;
+      }
     });
   }
 
@@ -83,7 +88,10 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
 
   startProcessing() {
     this.yandexDiskService.startProcessing(this.userId).subscribe({
-      next: () => console.log('started processing')
+      next: () => {
+        console.log('started processing');
+        this.status = 'Started';
+      }
     });
   }
 }
