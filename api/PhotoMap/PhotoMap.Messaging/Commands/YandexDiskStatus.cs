@@ -1,4 +1,4 @@
-namespace PhotoMap.Api.Database.Entities
+namespace PhotoMap.Messaging.Commands
 {
     public enum YandexDiskStatus
     {

@@ -1,4 +1,5 @@
 using System;
+using PhotoMap.Api.Database.Entities;
 
 namespace PhotoMap.Api.DTOs
 {
@@ -11,5 +12,7 @@ namespace PhotoMap.Api.DTOs
         public string YandexDiskAccessToken { get; set; }
 
         public DateTimeOffset YandexDiskTokenExpiresOn { get; set; }
+
+        public YandexDiskStatus YandexDiskStatus { get; set; }
     }
 }

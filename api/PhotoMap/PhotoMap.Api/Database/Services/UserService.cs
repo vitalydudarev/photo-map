@@ -49,8 +49,22 @@ namespace PhotoMap.Api.Database.Services
                 Id = user.Id,
                 Name = user.Name,
                 YandexDiskAccessToken = user.YandexDiskToken,
-                YandexDiskTokenExpiresOn = user.YandexDiskTokenExpiresOn
+                YandexDiskTokenExpiresOn = user.YandexDiskTokenExpiresOn,
+                YandexDiskStatus = user.YandexDiskStatus
             };
+        }
+
+        public async Task UpdateAsync(int id, UpdateUserDto updateUserDto)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
+            {
+                user.YandexDiskStatus = updateUserDto.Status;
+
+                _context.Users.Update(user);
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

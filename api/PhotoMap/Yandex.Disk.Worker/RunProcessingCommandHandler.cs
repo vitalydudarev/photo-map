@@ -43,6 +43,14 @@ namespace Yandex.Disk.Worker
                 var stoppingAction = new StoppingAction();
                 _downloadServiceManager.Start(runProcessingCommand.UserId, stoppingAction);
 
+                var startedNotification = new YandexDiskNotification
+                {
+                    UserId = runProcessingCommand.UserId,
+                    Status = PhotoMap.Messaging.Commands.YandexDiskStatus.Running
+                };
+
+                _messageSender.Send(startedNotification, Constants.PhotoMapApi);
+
                 try
                 {
                     await foreach (var file in yandexDiskDownloadService.DownloadFilesAsync(runProcessingCommand.Token,
@@ -61,8 +69,10 @@ namespace Yandex.Disk.Worker
 
                     var notification = new YandexDiskNotification
                     {
-                        Error = e.Message,
-                        UserId = runProcessingCommand.UserId
+                        Message = e.Message,
+                        UserId = runProcessingCommand.UserId,
+                        HasError = true,
+                        Status = PhotoMap.Messaging.Commands.YandexDiskStatus.Stopped
                     };
 
                     _messageSender.Send(notification, Constants.PhotoMapApi);

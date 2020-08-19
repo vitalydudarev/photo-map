@@ -8,5 +8,7 @@ namespace PhotoMap.Api.Database.Services
         Task AddAsync(AddUserDto addUserDto);
 
         Task<UserDto> GetAsync(int id);
+
+        Task UpdateAsync(int id, UpdateUserDto updateUserDto);
     }
 }
