@@ -1,6 +1,7 @@
 <mat-card *ngIf="!needsAuthorization">You are authorized. Token expires on {{tokenExpires}}</mat-card>
 <mat-card *ngIf="needsAuthorization">You are not authorized.</mat-card>
-<mat-card>{{status}}</mat-card>
+<mat-card>Status: {{status}}</mat-card>
+<mat-card *ngIf="hasError">Error: {{error}}</mat-card>
 <a mat-stroked-button href="{{yandexDiskUri}}">Authorize using Yandex.Disk account</a>
 
 <button mat-raised-button (click)="startProcessing()">Run photo processing</button>

@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription, from } from 'rxjs';
-import { map, switchMap, filter, take } from 'rxjs/operators';
+import { Subscription, from, Observable } from 'rxjs';
+import { map, switchMap, filter, take, tap } from 'rxjs/operators';
 import { User } from '../models/user.model';
 import { UserService } from '../services/user.service';
 import { YandexDiskHubService } from '../services/yandex-disk-hub.service';
 import { YandexDiskService } from '../services/yandex-disk.service';
+import { YandexDiskStatus } from '../models/yandex-disk-status.enum';
 
 @Component({
   selector: 'app-yandex-disk',
@@ -17,7 +18,9 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   yandexDiskUri: string = `https://oauth.yandex.ru/authorize?response_type=token&client_id=${this.clientId}&redirect_uri=${this.redirectUri}`;
   needsAuthorization: boolean = true;
   tokenExpires: string;
-  status: string = 'Not started';
+  status: string = '';
+  hasError: boolean = false;
+  error: string = '';
 
   private subscription: Subscription = new Subscription();
   private user: User;
@@ -32,12 +35,12 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    const sub1 = this.userService.getUser(this.userId).subscribe((userModel) => {
-      this.user = userModel;
-
-      if (Date.now() < new Date(this.user.yandexDiskTokenExpiresOn).getTime()) {
-        this.needsAuthorization = false;
-        this.tokenExpires = new Date(this.user.yandexDiskTokenExpiresOn).toLocaleString();
+    const sub1 = this.getUser().subscribe({
+      next: () => {
+        if (Date.now() < new Date(this.user.yandexDiskTokenExpiresOn).getTime()) {
+          this.needsAuthorization = false;
+          this.tokenExpires = new Date(this.user.yandexDiskTokenExpiresOn).toLocaleString();
+        }
       }
     });
 
@@ -70,9 +73,10 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     
 
     this.yandexDiskHubService.yandexDiskError().subscribe({
-      next: (error) => {
-        console.log('yandex disk error');
-        this.status = error;
+      next: async (error) => {
+        this.hasError = true;
+        this.error = error;
+        await this.getUser().toPromise();
       }
     });
   }
@@ -88,10 +92,19 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
 
   startProcessing() {
     this.yandexDiskService.startProcessing(this.userId).subscribe({
-      next: () => {
+      next: async () => {
         console.log('started processing');
-        this.status = 'Started';
+        this.hasError = false;
+        this.error = '';
+        await this.getUser().toPromise();
       }
     });
+  }
+
+  private getUser(): Observable<User> {
+    return this.userService.getUser(this.userId).pipe(tap((user: User) => {
+      this.user = user;
+      this.status = YandexDiskStatus[user.yandexDiskStatus];
+    }));
   }
 }
