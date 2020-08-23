@@ -114,5 +114,25 @@ namespace Storage.Service.Service
                 throw;
             }
         }
+
+        public async Task DeleteAllFilesAsync()
+        {
+            try
+            {
+                var files = await _repository.GetAllAsync();
+
+                foreach (var file in files)
+                {
+                    _fileStorage.Delete(file.FileName);
+                }
+
+                await _repository.DeleteAllAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Unable to delete all files: {e.Message}");
+                throw;
+            }
+        }
     }
 }

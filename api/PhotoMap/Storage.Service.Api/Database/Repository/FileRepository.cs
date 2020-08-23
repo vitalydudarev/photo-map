@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Storage.Service.Database.Entities;
 
 namespace Storage.Service.Database.Repository
@@ -26,11 +28,26 @@ namespace Storage.Service.Database.Repository
             return await _context.Files.FindAsync(fileId);
         }
 
+        public async Task<IEnumerable<File>> GetAllAsync()
+        {
+            return await _context.Files.ToListAsync();
+        }
+
         public async Task DeleteAsync(long fileId)
         {
             var file = await _context.Files.FindAsync(fileId);
             if (file != null)
                 _context.Files.Remove(file);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAllAsync()
+        {
+            var file = await _context.Files.ToListAsync();
+            _context.Files.RemoveRange(file);
+
+            await _context.SaveChangesAsync();
         }
     }
 }

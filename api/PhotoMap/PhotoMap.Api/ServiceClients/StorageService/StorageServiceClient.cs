@@ -23,5 +23,12 @@ namespace PhotoMap.Api.ServiceClients.StorageService
 
             return deserialized;
         }
+
+        public async Task DeleteAllFilesAsync()
+        {
+            var url = _settings.ApiUrl + "/" + _settings.DeleteAllFilesEndpoint;
+            var responseMessage = await _httpClient.DeleteAsync(url);
+            var deserialized = await responseMessage.Content.ReadAsByteArrayAsync();
+        }
     }
 }

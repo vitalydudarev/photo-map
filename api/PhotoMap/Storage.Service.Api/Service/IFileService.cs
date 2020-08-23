@@ -9,5 +9,6 @@ namespace Storage.Service.Service
         Task<byte[]> GetFileContentsAsync(long fileId);
         Task<OutgoingFileInfo> GetFileInfoAsync(long fileId);
         Task DeleteFileAsync(long fileId);
+        Task DeleteAllFilesAsync();
     }
 }

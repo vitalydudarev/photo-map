@@ -68,5 +68,15 @@ namespace Storage.Service.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete()]
+        public async Task<IActionResult> DeleteAllFilesAsync(long fileId)
+        {
+            _logger.LogInformation("DeleteAllFilesAsync: Request received");
+
+            await _fileService.DeleteAllFilesAsync();
+
+            return NoContent();
+        }
     }
 }

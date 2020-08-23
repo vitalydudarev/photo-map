@@ -14,5 +14,7 @@ namespace PhotoMap.Api.Database.Services
         Task<IEnumerable<PhotoDto>> GetByUserIdAsync(int userId);
 
         Task DeleteByUserId(int userId);
+
+        Task DeleteAllAsync();
     }
 }

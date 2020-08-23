@@ -50,5 +50,13 @@ namespace PhotoMap.Api.Database.Services
             var entities = await _context.Photos.Where(a => a.UserId == userId).ToListAsync();
             _context.Photos.RemoveRange(entities);
         }
+
+        public async Task DeleteAllAsync()
+        {
+            var entities = await _context.Photos.ToListAsync();
+            _context.Photos.RemoveRange(entities);
+
+            await _context.SaveChangesAsync();
+        }
     }
 }
