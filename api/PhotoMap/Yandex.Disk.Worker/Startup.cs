@@ -72,6 +72,7 @@ namespace Yandex.Disk.Worker
 
             // register command handlers
             services.AddSingleton<ICommandHandler, RunProcessingCommandHandler>();
+            services.AddSingleton<ICommandHandler, StopProcessingCommandHandler>();
             services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
             services.AddSingleton<IMessageSender2, RabbitMqMessageSender2>();
             services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
