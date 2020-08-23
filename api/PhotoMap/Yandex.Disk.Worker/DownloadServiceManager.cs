@@ -6,12 +6,12 @@ namespace Yandex.Disk.Worker
     {
         private readonly Dictionary<int, StoppingAction> _map = new Dictionary<int, StoppingAction>();
 
-        public void Start(int userId, StoppingAction stoppingAction)
+        public void Add(int userId, StoppingAction stoppingAction)
         {
             _map.Add(userId, stoppingAction);
         }
 
-        public void Stop(int userId)
+        public void Remove(int userId)
         {
             if (_map.TryGetValue(userId, out var stoppingAction))
             {

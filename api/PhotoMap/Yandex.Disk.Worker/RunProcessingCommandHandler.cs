@@ -37,11 +37,11 @@ namespace Yandex.Disk.Worker
         {
             if (command is RunProcessingCommand runProcessingCommand)
             {
-                var scope = _serviceScopeFactory.CreateScope();
+                using var scope = _serviceScopeFactory.CreateScope();
                 var yandexDiskDownloadService = scope.ServiceProvider.GetService<IYandexDiskDownloadService>();
 
                 var stoppingAction = new StoppingAction();
-                _downloadServiceManager.Start(runProcessingCommand.UserId, stoppingAction);
+                _downloadServiceManager.Add(runProcessingCommand.UserId, stoppingAction);
 
                 var startedNotification = new YandexDiskNotification
                 {
@@ -53,8 +53,8 @@ namespace Yandex.Disk.Worker
 
                 try
                 {
-                    await foreach (var file in yandexDiskDownloadService.DownloadFilesAsync(runProcessingCommand.Token,
-                        cancellationToken, stoppingAction))
+                    await foreach (var file in yandexDiskDownloadService.DownloadFilesAsync(runProcessingCommand.UserId,
+                        runProcessingCommand.Token, cancellationToken, stoppingAction))
                     {
                         var processingCommand = CreateProcessingCommand(runProcessingCommand, file);
 
@@ -63,8 +63,6 @@ namespace Yandex.Disk.Worker
                 }
                 catch (YandexDiskException e)
                 {
-                    _downloadServiceManager.Stop(runProcessingCommand.UserId);
-
                     _logger.LogError(e.Message);
 
                     var notification = new YandexDiskNotification
@@ -77,6 +75,16 @@ namespace Yandex.Disk.Worker
 
                     _messageSender.Send(notification, Constants.PhotoMapApi);
                 }
+
+                _downloadServiceManager.Remove(runProcessingCommand.UserId);
+
+                var notification1 = new YandexDiskNotification
+                {
+                    UserId = runProcessingCommand.UserId,
+                    Status = PhotoMap.Messaging.Commands.YandexDiskStatus.Finished
+                };
+
+                _messageSender.Send(notification1, Constants.PhotoMapApi);
 
                 _logger.LogInformation("Processing finished.");
             }

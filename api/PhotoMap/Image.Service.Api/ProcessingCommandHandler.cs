@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using GraphicsLibrary;
 using Image.Service.Services.StorageService;
+using Microsoft.Extensions.Logging;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
@@ -12,11 +14,16 @@ namespace Image.Service
 {
     public class ProcessingCommandHandler : CommandHandler<ProcessingCommand>
     {
+        private readonly ILogger<ProcessingCommandHandler> _logger;
         private readonly IStorageService _storageService;
         private readonly IMessageSender _messageSender;
 
-        public ProcessingCommandHandler(IStorageService storageService, IMessageSender messageSender)
+        public ProcessingCommandHandler(
+            ILogger<ProcessingCommandHandler> logger,
+            IStorageService storageService,
+            IMessageSender messageSender)
         {
+            _logger = logger;
             _storageService = storageService;
             _messageSender = messageSender;
         }
@@ -25,7 +32,17 @@ namespace Image.Service
         {
             if (command is ProcessingCommand processingCommand)
             {
-                var fileContents = await _storageService.GetFileAsync(processingCommand.FileId);
+                byte[] fileContents;
+
+                try
+                {
+                    fileContents = await _storageService.GetFileAsync(processingCommand.FileId);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError($"Failed to download file {processingCommand.FileId}: {e.Message}");
+                    return;
+                }
 
                 var exifExtractor = new ExifExtractor();
                 var exif = exifExtractor.GetDataAsync(fileContents);
@@ -42,7 +59,7 @@ namespace Image.Service
 
                 foreach (var size in processingCommand.Sizes)
                 {
-                    var fileName = $"{fileNameWithoutExtension}_{size}.{extension}";
+                    var fileName = $"{fileNameWithoutExtension}_{size}{extension}";
                     var path = Path.Combine(directory, "thumbs", fileName);
 
                     imageProcessor.Crop(size);

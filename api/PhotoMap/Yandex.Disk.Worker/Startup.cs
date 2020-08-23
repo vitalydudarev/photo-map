@@ -77,6 +77,7 @@ namespace Yandex.Disk.Worker
             services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
             services.AddSingleton<DownloadServiceManager>();
 
+            services.AddSingleton<IYandexDiskService, YandexDiskService>();
             services.AddScoped<IYandexDiskDownloadService, YandexDiskDownloadService>();
             services.AddScoped<IStorageService, StorageServiceClient>();
             services.AddHostedService<HostedService>();

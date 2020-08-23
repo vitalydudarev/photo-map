@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using PhotoMap.Messaging.Commands;
@@ -11,8 +12,8 @@ namespace PhotoMap.Messaging.MessageSender
     {
         private readonly Dictionary<string, RabbitMqConfiguration> _configurations;
         private readonly ILogger<RabbitMqMessageSender2> _logger;
-        private IConnection _connection;
-        private IModel _channel;
+        private readonly Dictionary<string, IConnection> _connections = new Dictionary<string, IConnection>();
+        private readonly Dictionary<string ,IModel> _channels = new Dictionary<string, IModel>();
 
         public RabbitMqMessageSender2(
             Dictionary<string, RabbitMqConfiguration> configurations,
@@ -24,8 +25,77 @@ namespace PhotoMap.Messaging.MessageSender
 
         public void Send(CommandBase commandBase, string consumerApi)
         {
-            var configuration = _configurations[consumerApi];
+            if (_configurations.TryGetValue(consumerApi, out var configuration))
+            {
+                if (!_connections.TryGetValue(consumerApi, out _))
+                    TryCreateConnection(configuration, consumerApi);
 
+                try
+                {
+                    var serializedCommand = commandBase.Serialize();
+                    var body = Encoding.UTF8.GetBytes(serializedCommand);
+
+                    var channel = _channels[consumerApi];
+                    channel.BasicPublish(exchange: "",
+                        routingKey: configuration.ResponseQueueName,
+                        basicProperties: null,
+                        body: body);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError($"Failed to send message: {e.Message}");
+                    return;
+                }
+
+                _logger.LogInformation($"Message to {consumerApi} sent.");
+            }
+            else
+                _logger.LogWarning($"RabbitMQ configuration for {consumerApi} not found.");
+        }
+
+        public void Dispose()
+        {
+            var keys = _connections.Keys.ToList();
+
+            foreach (var key in keys)
+            {
+                var configuration = _configurations[key];
+
+                _channels[key].Close();
+                _connections[key].Close();
+
+                _logger.LogInformation($"RabbitMQ connection to {configuration.HostName}:{configuration.Port}, queue \'{configuration.ResponseQueueName}\' closed.");
+            }
+        }
+
+        private void TryCreateConnection(RabbitMqConfiguration configuration, string consumerApi)
+        {
+            const int retryCount = 3;
+
+            for (int i = 0; i < retryCount; i++)
+            {
+                try
+                {
+                    CreateConnection(configuration, consumerApi);
+
+                    return;
+                }
+                catch (Exception e)
+                {
+                    if (i == retryCount - 1)
+                    {
+                        var errorMessage =
+                            $"Unable to establish RabbitMQ connection to {configuration.HostName}:{configuration.Port}, queue {configuration.ResponseQueueName}: {e.Message}";
+                        _logger.LogError(errorMessage);
+
+                        throw new Exception(errorMessage);
+                    }
+                }
+            }
+        }
+
+        private void CreateConnection(RabbitMqConfiguration configuration, string consumerApi)
+        {
             var connectionFactory = new ConnectionFactory
             {
                 UserName = configuration.UserName,
@@ -34,32 +104,17 @@ namespace PhotoMap.Messaging.MessageSender
                 Port = configuration.Port
             };
 
-            _connection = connectionFactory.CreateConnection();
-            _channel = _connection.CreateModel();
+            var connection = connectionFactory.CreateConnection();
+            var channel = connection.CreateModel();
 
-            _channel.QueueDeclare(queue: configuration.ResponseQueueName,
+            channel.QueueDeclare(queue: configuration.ResponseQueueName,
                 durable: false,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null);
 
-            var serializedCommand = commandBase.Serialize();
-            var body = Encoding.UTF8.GetBytes(serializedCommand);
-
-            _channel.BasicPublish(exchange: "",
-                routingKey: configuration.ResponseQueueName,
-                basicProperties: null,
-                body: body);
-
-            _logger.LogInformation("Message sent.");
-        }
-
-        public void Dispose()
-        {
-            _channel?.Close();
-            _connection?.Close();
-
-            _logger.LogInformation("Connection closed.");
+            _connections.Add(consumerApi, connection);
+            _channels.Add(consumerApi, channel);
         }
     }
 }
