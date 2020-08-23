@@ -21,6 +21,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   status: string = '';
   hasError: boolean = false;
   error: string = '';
+  isRunning: boolean = false;
 
   private subscription: Subscription = new Subscription();
   private user: User;
@@ -76,6 +77,8 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
       next: async (error) => {
         this.hasError = true;
         this.error = error;
+        this.isRunning = false;
+        console.log('processing error.')
         await this.getUser().toPromise();
       }
     });
@@ -96,6 +99,19 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
         console.log('started processing');
         this.hasError = false;
         this.error = '';
+        this.isRunning = true;
+        await this.getUser().toPromise();
+      }
+    });
+  }
+
+  stopProcessing() {
+    this.yandexDiskService.stopProcessing(this.userId).subscribe({
+      next: async () => {
+        console.log('stopped processing');
+        this.hasError = false;
+        this.error = '';
+        this.isRunning = false;
         await this.getUser().toPromise();
       }
     });

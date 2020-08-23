@@ -14,4 +14,8 @@ export class YandexDiskService {
   startProcessing(userId: number): Observable<any> {
     return this._httpClient.post(this.url, userId);
   }
+
+  stopProcessing(userId: number): Observable<any> {
+    return this._httpClient.delete(this.url + '?userId=' + userId);
+  }
 }

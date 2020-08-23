@@ -4,4 +4,5 @@
 <mat-card *ngIf="hasError">Error: {{error}}</mat-card>
 <a mat-stroked-button href="{{yandexDiskUri}}">Authorize using Yandex.Disk account</a>
 
-<button mat-raised-button (click)="startProcessing()">Run photo processing</button>
+<button mat-raised-button (click)="startProcessing()" *ngIf="!isRunning">Start photo processing</button>
+<button mat-raised-button (click)="stopProcessing()" *ngIf="isRunning">Stop photo processing</button>
