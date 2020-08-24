@@ -26,6 +26,7 @@ import { YandexDiskService } from './services/yandex-disk.service';
 import { UserPhotosService } from './services/user-photos.service';
 import { SignalRService } from './services/signalr.service';
 import { YandexDiskHubService } from './services/yandex-disk-hub.service';
+import { DataService } from './services/data.service';
 
 
 @NgModule({
@@ -54,7 +55,8 @@ import { YandexDiskHubService } from './services/yandex-disk-hub.service';
     UserService,
     YandexDiskService,
     UserPhotosService,
-    YandexDiskHubService
+    YandexDiskHubService,
+    DataService
   ],
   bootstrap: [AppComponent]
 })

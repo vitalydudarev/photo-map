@@ -7,6 +7,7 @@ import { UserService } from '../services/user.service';
 import { YandexDiskHubService } from '../services/yandex-disk-hub.service';
 import { YandexDiskService } from '../services/yandex-disk.service';
 import { YandexDiskStatus } from '../models/yandex-disk-status.enum';
+import { DataService } from '../services/data.service';
 
 @Component({
   selector: 'app-yandex-disk',
@@ -32,7 +33,8 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
     private yandexDiskService: YandexDiskService,
-    private yandexDiskHubService: YandexDiskHubService) {
+    private yandexDiskHubService: YandexDiskHubService,
+    private dataService: DataService) {
   }
 
   async ngOnInit(): Promise<void> {
@@ -115,6 +117,12 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
         await this.getUser().toPromise();
       }
     });
+  }
+
+  deleteAllData() {
+    this.dataService.deleteAllData().subscribe({
+      next: () => console.log('data deleted')
+    })
   }
 
   private getUser(): Observable<User> {
