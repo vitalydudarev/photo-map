@@ -63,13 +63,14 @@ namespace Yandex.Disk.Worker.Services
             int offset = firstStart ? 0 : _data.CurrentIndex;
             int totalCount = 0;
             int downloadedCount = 0;
+            bool firstIteration = true;
 
-            int testLimit = 500;
-            totalCount = testLimit;
+            // int testLimit = 500;
+            // totalCount = testLimit;
 
             _currentOffset = offset;
 
-            while (offset <= totalCount)
+            while (offset <= totalCount || firstIteration)
             {
                 var resourceResult =
                     await WrapApiCallAsync(() =>
@@ -83,7 +84,7 @@ namespace Yandex.Disk.Worker.Services
                 var items = resource.Embedded.Items;
                 if (items != null && items.Length > 0)
                 {
-                    // totalCount = resource.Embedded.Total;
+                    totalCount = resource.Embedded.Total;
 
                     // var progressStat = new ProgressStat { Total = totalCount };
                     // _progress.SetProgress(progressStat);
@@ -111,6 +112,7 @@ namespace Yandex.Disk.Worker.Services
                 }
 
                 offset += limit;
+                firstIteration = false;
             }
         }
 

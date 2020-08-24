@@ -17,6 +17,8 @@ namespace Yandex.Disk.Worker
         {
             _logger = logger;
 
+            _logger.LogInformation("Directory: " + Directory.GetCurrentDirectory());
+
             if (File.Exists(FileName))
             {
                 var fileContents = File.ReadAllText(FileName);
