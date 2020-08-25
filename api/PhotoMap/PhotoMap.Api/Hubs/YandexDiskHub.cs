@@ -26,5 +26,13 @@ namespace PhotoMap.Api.Hubs
                 await Clients.Clients(connectionIds.ToList()).SendAsync("YandexDiskError", errorText);
             }
         }
+
+        public async Task SendProgressAsync(int userId, Progress processed)
+        {
+            if (_map.TryGetValue(userId, out var connectionIds))
+            {
+                await Clients.Clients(connectionIds.ToList()).SendAsync("YandexDiskProgress", processed);
+            }
+        }
     }
 }

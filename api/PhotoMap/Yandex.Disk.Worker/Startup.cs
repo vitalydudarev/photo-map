@@ -77,6 +77,7 @@ namespace Yandex.Disk.Worker
             services.AddSingleton<IMessageSender2, RabbitMqMessageSender2>();
             services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
             services.AddSingleton<DownloadServiceManager>();
+            services.AddSingleton<IProgressReporter, RabbitMqProgressReporter>();
 
             services.AddSingleton<IYandexDiskService, YandexDiskService>();
             services.AddScoped<IYandexDiskDownloadService, YandexDiskDownloadService>();

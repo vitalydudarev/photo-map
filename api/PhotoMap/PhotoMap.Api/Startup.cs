@@ -63,6 +63,7 @@ namespace PhotoMap.Api
 
             services.AddSingleton<YandexDiskHub>();
 
+            services.AddSingleton<ICommandHandler, ProgressMessageHandler>();
             services.AddSingleton<ICommandHandler, ResultsCommandHandler>();
             services.AddSingleton<ICommandHandler, YandexDiskNotificationHandler>();
             services.AddSingleton<IMessageSender, RabbitMqMessageSender>();

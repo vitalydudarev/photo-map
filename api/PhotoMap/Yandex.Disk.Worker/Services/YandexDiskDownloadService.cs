@@ -16,6 +16,7 @@ namespace Yandex.Disk.Worker.Services
     public class YandexDiskDownloadService : IYandexDiskDownloadService, IDisposable
     {
         private static readonly HttpClient Client = new HttpClient();
+        private readonly IProgressReporter _progressReporter;
         private readonly IYandexDiskService _yandexDiskService;
         // private readonly IStorage _storage;
         // private readonly IProgress<> _progress;
@@ -26,10 +27,12 @@ namespace Yandex.Disk.Worker.Services
         private YandexDiskData _data;
 
         public YandexDiskDownloadService(
+            IProgressReporter progressReporter,
             IYandexDiskService yandexDiskService,
             IStorageService storageService,
             ILogger<YandexDiskDownloadService> logger)
         {
+            _progressReporter = progressReporter;
             _yandexDiskService = yandexDiskService;
             _storageService = storageService;
             _logger = logger;
@@ -104,6 +107,8 @@ namespace Yandex.Disk.Worker.Services
                         downloadedCount++;
 
                         _currentOffset++;
+
+                        _progressReporter.Report(userId, _currentOffset, totalCount);
 
                         // progressStat.Downloaded = downloadedCount;
 
