@@ -23,6 +23,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   hasError: boolean = false;
   error: string = '';
   isRunning: boolean = false;
+  progressString: string = '';
 
   private subscription: Subscription = new Subscription();
   private user: User;
@@ -74,7 +75,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     }));
 
 
-    this.yandexDiskHubService.yandexDiskError().subscribe({
+    const sub3 = this.yandexDiskHubService.yandexDiskError().subscribe({
       next: async (error) => {
         this.hasError = true;
         this.error = error;
@@ -83,6 +84,15 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
         await this.getUser().toPromise();
       }
     });
+
+    const sub4 = this.yandexDiskHubService.yandexDiskProgress().subscribe({
+      next: (progress) => {
+        this.progressString = `Processed ${progress.processed} of ${progress.total}`;
+      }
+    });
+
+    this.subscription.add(sub3);
+    this.subscription.add(sub4);
   }
 
   ngOnDestroy(): void {

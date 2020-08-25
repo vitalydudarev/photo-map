@@ -12,7 +12,7 @@ export class YandexDiskHubService extends SignalRService {
 
     constructor() {
         super();
-        this.hubEvents = ['YandexDiskError'];
+        this.hubEvents = ['YandexDiskError', 'YandexDiskProgress'];
         this.createSubjects();
     }
 
@@ -24,12 +24,20 @@ export class YandexDiskHubService extends SignalRService {
         return this.subjects['YandexDiskError'].asObservable();
     }
 
+    yandexDiskProgress(): Observable<any> {
+        return this.subjects['YandexDiskProgress'].asObservable();
+    }
+
     buildHubConnection() {
         super.buildHubConnection(this.hubUrl);
     }
 
     private YandexDiskError(errorMessage: string) {
         this.subjects['YandexDiskError'].next(errorMessage);
+    }
+
+    private YandexDiskProgress(progress: any) {
+        this.subjects['YandexDiskProgress'].next(progress);
     }
 
     private createSubjects() {
