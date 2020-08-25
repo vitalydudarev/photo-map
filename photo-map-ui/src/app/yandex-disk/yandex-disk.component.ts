@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, from, Observable } from 'rxjs';
-import { map, switchMap, filter, take, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { User } from '../models/user.model';
 import { UserService } from '../services/user.service';
 import { YandexDiskHubService } from '../services/yandex-disk-hub.service';
@@ -48,15 +48,14 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     });
 
     const sub2 = this.activatedRoute.fragment.pipe(
-      filter(fragment => fragment !== null && fragment !== ''),
-      take(1),
-      map(fragment => new URLSearchParams(fragment)),
-      map(params => ({
-        accessToken: params.get('access_token'),
-        expiresIn: params.get('expires_in')
-      })),
-      switchMap(result => {
-        return this.userService.addUser(this.userId, this.userName, result.accessToken, parseInt(result.expiresIn));
+      map(fragment => {
+        if (fragment) {
+          const params = new URLSearchParams(fragment);
+          const accessToken = params.get('access_token')
+          const expiresIn = params.get('expires_in');
+
+          return this.userService.addUser(this.userId, this.userName, accessToken, parseInt(expiresIn));
+        }
       })
     )
     .subscribe(() => console.log('done'));
@@ -73,7 +72,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
       },
       error: (error) => console.log('An error has occurred while connecting to SignalR hub. ' + error)
     }));
-    
+
 
     this.yandexDiskHubService.yandexDiskError().subscribe({
       next: async (error) => {
@@ -129,6 +128,9 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     return this.userService.getUser(this.userId).pipe(tap((user: User) => {
       this.user = user;
       this.status = YandexDiskStatus[user.yandexDiskStatus];
+      if (user.yandexDiskStatus == YandexDiskStatus.Running) {
+        this.isRunning = true;
+      }
     }));
   }
 }
