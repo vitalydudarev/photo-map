@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from "rxjs";
 
-import { GridLayout, Image, PlainGalleryConfig, PlainGalleryStrategy } from '@ks89/angular-modal-gallery';
+import { GridLayout, Image, PlainGalleryConfig, PlainGalleryStrategy, DotsConfig } from '@ks89/angular-modal-gallery';
 import { UserPhotosService } from '../services/user-photos.service';
 import { environment } from 'src/environments/environment';
+import { ButtonsStrategy, ButtonsConfig } from '@ks89/angular-modal-gallery';
 
 @Component({
   selector: 'app-modal-gallery-page',
@@ -16,9 +17,18 @@ export class GalleryComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   private apiUrl: string = `${environment.photoMapApiUrl}`;
 
+  dotsConfig: DotsConfig = {
+    visible: false
+  }
+
+  buttonsConfig: ButtonsConfig = {
+    visible: true,
+    strategy: ButtonsStrategy.SIMPLE
+  };
+
   plainGalleryGridConfig: PlainGalleryConfig = {
     strategy: PlainGalleryStrategy.GRID,
-    layout: new GridLayout({ width: '128px', height: 'auto' }, { length: 20, wrap: true })
+    layout: new GridLayout({ width: '128px', height: 'auto' }, { length: 20, wrap: true }),
   };
 
   constructor(

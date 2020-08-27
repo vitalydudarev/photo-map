@@ -1,4 +1,10 @@
-
 <section>
-  <ks-modal-gallery [modalImages]="images" [plainGalleryConfig]="plainGalleryGridConfig" [id]="1"></ks-modal-gallery>
+    <ks-modal-gallery
+        [id]="1"
+        [modalImages]="images"
+        [previewConfig]="{visible: false}"
+        [dotsConfig]="dotsConfig"
+        [buttonsConfig]="buttonsConfig"
+        [plainGalleryConfig]="plainGalleryGridConfig">
+    </ks-modal-gallery>
 </section>

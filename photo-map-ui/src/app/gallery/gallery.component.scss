@@ -1,13 +1,12 @@
 $image-width: 128px;
 
-/*:host ::ng-deep .plain-container {
-  display: block !important;
-
-  .image {
-    width: $image-width !important;
-  }
-}*/
-
 :host ::ng-deep .plain-container {
   display: table-cell !important;
+}
+
+::ng-deep #current-image {
+  max-height: 85vh !important;
+  max-width: 85vw !important;
+  height: auto !important;
+  width: auto !important;
 }
