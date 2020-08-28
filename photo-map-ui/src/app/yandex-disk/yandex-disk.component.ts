@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, from, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { tap, switchMap } from 'rxjs/operators';
 import { User } from '../models/user.model';
 import { UserService } from '../services/user.service';
 import { YandexDiskHubService } from '../services/yandex-disk-hub.service';
@@ -49,7 +49,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     });
 
     const sub2 = this.activatedRoute.fragment.pipe(
-      map(fragment => {
+      switchMap(fragment => {
         if (fragment) {
           const params = new URLSearchParams(fragment);
           const accessToken = params.get('access_token')
