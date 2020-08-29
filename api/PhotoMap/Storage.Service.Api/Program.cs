@@ -26,6 +26,8 @@ namespace Storage.Service
                     webBuilder
                         .UseConfiguration(config)
                         .UseStartup<Startup>();
+
+                    webBuilder.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 1 * 1024 * 1024 * 1024);
                 });
         }
     }
