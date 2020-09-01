@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription, from, Observable } from 'rxjs';
+import { Subscription, from, Observable, of } from 'rxjs';
 import { tap, switchMap } from 'rxjs/operators';
 import { User } from '../models/user.model';
 import { UserService } from '../services/user.service';
@@ -57,6 +57,8 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
 
           return this.userService.addUser(this.userId, this.userName, accessToken, parseInt(expiresIn));
         }
+
+        return of({});
       })
     )
     .subscribe(() => console.log('done'));
