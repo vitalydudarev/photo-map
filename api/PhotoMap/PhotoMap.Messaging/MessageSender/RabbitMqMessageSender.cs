@@ -29,8 +29,11 @@ namespace PhotoMap.Messaging.MessageSender
                 Port = _rabbitMqConfiguration.Port
             };
 
-            _connection = connectionFactory.CreateConnection();
-            _channel = _connection.CreateModel();
+            if (_connection == null)
+                _connection = connectionFactory.CreateConnection();
+
+            if (_channel == null)
+                _channel = _connection.CreateModel();
 
             _channel.QueueDeclare(queue: _rabbitMqConfiguration.ResponseQueueName,
                 durable: false,
