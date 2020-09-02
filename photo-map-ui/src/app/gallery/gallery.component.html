@@ -1,3 +1,5 @@
+<div #scrollTo></div>
+
 <section>
     <ks-modal-gallery
         [id]="1"
@@ -8,3 +10,5 @@
         [plainGalleryConfig]="plainGalleryGridConfig">
     </ks-modal-gallery>
 </section>
+
+<app-scroll-top [scrollToElement]="scrollTo"></app-scroll-top>

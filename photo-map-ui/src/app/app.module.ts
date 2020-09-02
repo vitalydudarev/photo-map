@@ -27,6 +27,7 @@ import { UserPhotosService } from './services/user-photos.service';
 import { SignalRService } from './services/signalr.service';
 import { YandexDiskHubService } from './services/yandex-disk-hub.service';
 import { DataService } from './services/data.service';
+import { SharedModule } from './modules/shared/shared.module';
 
 
 @NgModule({
@@ -49,7 +50,9 @@ import { DataService } from './services/data.service';
     MatButtonModule,
     MatCardModule,
 
-    GalleryModule.forRoot()
+    GalleryModule.forRoot(),
+
+    SharedModule
   ],
   providers: [
     UserService,
