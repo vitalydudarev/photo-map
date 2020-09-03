@@ -8,15 +8,13 @@ import { YandexDiskHubService } from '../services/yandex-disk-hub.service';
 import { YandexDiskService } from '../services/yandex-disk.service';
 import { YandexDiskStatus } from '../models/yandex-disk-status.enum';
 import { DataService } from '../services/data.service';
+import { OAuthService } from '../services/oauth.service';
 
 @Component({
   selector: 'app-yandex-disk',
   templateUrl: './yandex-disk.component.html'
 })
 export class YandexDiskComponent implements OnInit, OnDestroy {
-  clientId: string = '66de926ff5be4d2da65e5eb64435687b';
-  redirectUri: string = 'http://localhost:4200/yandex-disk';
-  yandexDiskUri: string = `https://oauth.yandex.ru/authorize?response_type=token&client_id=${this.clientId}&redirect_uri=${this.redirectUri}`;
   needsAuthorization: boolean = true;
   tokenExpires: string;
   status: string = '';
@@ -31,6 +29,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   private userName: string = 'user';
 
   constructor(
+    private oAuthService: OAuthService,
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
     private yandexDiskService: YandexDiskService,
@@ -51,11 +50,13 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     const sub2 = this.activatedRoute.fragment.pipe(
       switchMap(fragment => {
         if (fragment) {
-          const params = new URLSearchParams(fragment);
+          /*const params = new URLSearchParams(fragment);
           const accessToken = params.get('access_token')
-          const expiresIn = params.get('expires_in');
+          const expiresIn = params.get('expires_in');*/
 
-          return this.userService.addUser(this.userId, this.userName, accessToken, parseInt(expiresIn));
+          const oAuthToken = this.oAuthService.parseAuthResponse(fragment);
+
+          return this.userService.addUser(this.userId, this.userName, oAuthToken.accessToken, oAuthToken.expiresIn);
         }
 
         return of({});
@@ -104,6 +105,10 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     }));
 
     this.subscription.unsubscribe();
+  }
+
+  authorize() {
+    this.oAuthService.authorize();
   }
 
   startProcessing() {

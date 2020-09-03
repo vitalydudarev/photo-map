@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, InjectionToken } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -28,7 +28,10 @@ import { SignalRService } from './services/signalr.service';
 import { YandexDiskHubService } from './services/yandex-disk-hub.service';
 import { DataService } from './services/data.service';
 import { SharedModule } from './modules/shared/shared.module';
+import { OAuthConfiguration } from './models/oauth-configuration.model';
+import { environment } from 'src/environments/environment';
 
+const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
 
 @NgModule({
   declarations: [
@@ -59,8 +62,13 @@ import { SharedModule } from './modules/shared/shared.module';
     YandexDiskService,
     UserPhotosService,
     YandexDiskHubService,
-    DataService
+    DataService,
+    {
+      provide: oAuthConfiguration,
+      useValue: environment.oAuth as OAuthConfiguration
+    }
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

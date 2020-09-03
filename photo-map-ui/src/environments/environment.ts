@@ -5,7 +5,13 @@
 export const environment = {
   production: false,
   photoMapApiUrl: 'https://localhost:5001/api',
-  yandexDiskHub: 'https://localhost:5001/yandex-disk-hub'
+  yandexDiskHub: 'https://localhost:5001/yandex-disk-hub',
+  oAuth: {
+    clientId: '66de926ff5be4d2da65e5eb64435687b',
+    redirectUri: 'http://localhost:4200/yandex-disk',
+    responseType: 'token',
+    uri: 'https://oauth.yandex.ru/authorize'
+  }
 };
 
 /*
