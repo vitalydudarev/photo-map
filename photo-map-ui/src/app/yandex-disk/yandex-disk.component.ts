@@ -9,10 +9,12 @@ import { YandexDiskService } from '../services/yandex-disk.service';
 import { YandexDiskStatus } from '../models/yandex-disk-status.enum';
 import { DataService } from '../services/data.service';
 import { OAuthService } from '../services/oauth.service';
+import { OAuthConfiguration } from '../models/oauth-configuration.model';
 
 @Component({
   selector: 'app-yandex-disk',
-  templateUrl: './yandex-disk.component.html'
+  templateUrl: './yandex-disk.component.html',
+  providers: [OAuthConfiguration]
 })
 export class YandexDiskComponent implements OnInit, OnDestroy {
   needsAuthorization: boolean = true;

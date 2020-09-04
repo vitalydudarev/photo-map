@@ -31,6 +31,8 @@ import { DataService } from './services/data.service';
 import { SharedModule } from './modules/shared/shared.module';
 import { OAuthConfiguration } from './models/oauth-configuration.model';
 import { environment } from 'src/environments/environment';
+import { OAuthService } from './services/oauth.service';
+import { OAuthModule } from './oauth.module';
 
 const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
 
@@ -57,18 +59,16 @@ const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
 
     GalleryModule.forRoot(),
 
-    SharedModule
+    SharedModule,
+
+    OAuthModule.forRoot(environment.oAuth as OAuthConfiguration)
   ],
   providers: [
     UserService,
     YandexDiskService,
     UserPhotosService,
     YandexDiskHubService,
-    DataService,
-    {
-      provide: oAuthConfiguration,
-      useValue: environment.oAuth as OAuthConfiguration
-    }
+    DataService
   ],
   bootstrap: [AppComponent]
 })
