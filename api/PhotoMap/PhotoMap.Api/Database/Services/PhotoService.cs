@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -27,11 +26,17 @@ namespace PhotoMap.Api.Database.Services
             return await _context.Photos.FindAsync(id);
         }
 
-        public async Task<IEnumerable<PhotoDto>> GetByUserIdAsync(int userId)
+        public async Task<PagedResponse<PhotoDto>> GetByUserIdAsync(int userId, int top, int skip)
         {
-            var photos = await _context.Photos.Where(a => a.UserId == userId).ToListAsync();
+            var photos = await _context.Photos
+                .Where(a => a.UserId == userId)
+                .Skip(skip)
+                .Take(top)
+                .ToListAsync();
 
-            return photos.Select(a => new PhotoDto
+            var totalRecords = await _context.Photos.CountAsync(a => a.UserId == userId);
+
+            var values = photos.Select(a => new PhotoDto
             {
                 DateTimeTaken = a.DateTimeTaken,
                 FileName = a.FileName,
@@ -42,7 +47,9 @@ namespace PhotoMap.Api.Database.Services
                 ThumbnailLargeFileId = a.ThumbnailLargeFileId,
                 ThumbnailSmallFileId = a.ThumbnailSmallFileId,
                 ThumbnailUrl = "photos/" + a.ThumbnailSmallFileId
-            });
+            }).ToArray();
+
+            return new PagedResponse<PhotoDto> { Values = values, Limit = top, Offset = skip, Total = totalRecords };
         }
 
         public async Task DeleteByUserId(int userId)

@@ -50,10 +50,11 @@ namespace PhotoMap.Api.Controllers
         }
 
         [HttpGet("{id}/photos")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetUserPhotos(int id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResponse<PhotoDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetUserPhotos([FromRoute] int id, [FromQuery] int top, [FromQuery] int skip)
         {
-            var userPhotos = await _photoService.GetByUserIdAsync(id);
+            var userPhotos = await _photoService.GetByUserIdAsync(id, top, skip);
             return Ok(userPhotos);
         }
     }

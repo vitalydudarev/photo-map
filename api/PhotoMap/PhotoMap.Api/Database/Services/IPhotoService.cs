@@ -11,7 +11,7 @@ namespace PhotoMap.Api.Database.Services
 
         Task<Photo> GetAsync(int id);
 
-        Task<IEnumerable<PhotoDto>> GetByUserIdAsync(int userId);
+        Task<PagedResponse<PhotoDto>> GetByUserIdAsync(int userId, int top, int skip);
 
         Task DeleteByUserId(int userId);
 
