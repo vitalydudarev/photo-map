@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from "../../environments/environment";
 import { User } from '../models/user.model';
 import { Photo } from '../models/photo';
+import { PagedResponse } from '../models/paged-response.model';
 
 @Injectable()
 export class UserPhotosService {
@@ -21,7 +22,7 @@ export class UserPhotosService {
     return this._httpClient.get<User>(`${this.url}/${id}`);
   }
 
-  public getUserPhotos(userId: number): Observable<Photo[]> {
-    return  this._httpClient.get<Photo[]>(`${this.url}/${userId}/photos`);
+  public getUserPhotos(userId: number, top: number, skip: number): Observable<PagedResponse<Photo>> {
+    return  this._httpClient.get<PagedResponse<Photo>>(`${this.url}/${userId}/photos?top=${top}&skip=${skip}`);
   }
 }

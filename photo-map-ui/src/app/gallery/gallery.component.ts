@@ -5,6 +5,7 @@ import { GridLayout, Image, PlainGalleryConfig, PlainGalleryStrategy, DotsConfig
 import { UserPhotosService } from '../services/user-photos.service';
 import { environment } from 'src/environments/environment';
 import { ButtonsStrategy, ButtonsConfig } from '@ks89/angular-modal-gallery';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-modal-gallery-page',
@@ -31,17 +32,39 @@ export class GalleryComponent implements OnInit, OnDestroy {
     layout: new GridLayout({ width: '128px', height: 'auto' }, { length: 20, wrap: true }),
   };
 
+  totalCount: number = 0;
+  pageIndex: number = 0
+  pageSize: number = 100;
+  pageSizes: number[] = [5, 10, 25, 100];
+
   constructor(
     private userPhotosService: UserPhotosService) {
   }
 
   ngOnInit(): void {
+    this.setImages();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  pageUpdated(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+
+    this.setImages();
+  }
+
+  private setImages() {
     let i = 0;
 
     const images: Image[] = [];
 
-    this.subscription = this.userPhotosService.getUserPhotos(1).subscribe(photos => {
-      for (let photo of photos) {
+    this.subscription = this.userPhotosService.getUserPhotos(1, this.pageSize, this.pageSize * this.pageIndex).subscribe(photos => {
+      this.totalCount = photos.total;
+
+      for (let photo of photos.values) {
         const image = new Image(i, {
             img: `${this.apiUrl}/${photo.photoUrl}`,
             description: photo.fileName
@@ -57,9 +80,5 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
       this.images = images;
     });
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 }

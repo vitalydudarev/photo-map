@@ -1,4 +1,10 @@
 <div #scrollTo></div>
+<mat-paginator
+    [length]="totalCount"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizes"
+    (page)="pageUpdated($event)">
+</mat-paginator>
 
 <section>
     <ks-modal-gallery
