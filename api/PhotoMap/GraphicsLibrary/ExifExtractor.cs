@@ -14,7 +14,7 @@ namespace GraphicsLibrary
     {
         public ExifData GetDataAsync(byte[] bytes)
         {
-            var stream = new MemoryStream(bytes);
+            using var stream = new MemoryStream(bytes);
 
             var data = ImageMetadataReader.ReadMetadata(stream);
 
