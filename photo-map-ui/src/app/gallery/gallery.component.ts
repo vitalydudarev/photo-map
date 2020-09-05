@@ -35,7 +35,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
   totalCount: number = 0;
   pageIndex: number = 0
   pageSize: number = 100;
-  pageSizes: number[] = [5, 10, 25, 100];
+  pageSizes: number[] = [100, 250, 500];
 
   constructor(
     private userPhotosService: UserPhotosService) {
