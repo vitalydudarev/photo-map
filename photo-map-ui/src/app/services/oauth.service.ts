@@ -1,14 +1,11 @@
 import { Injectable, Inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { OAuthConfiguration } from '../models/oauth-configuration.model';
 import { OAuthToken } from '../models/oauth-token.model';
 
 @Injectable()
 export class OAuthService {
 
-  constructor(
-    @Inject('oAuthConfiguration') private oAuthConfiguration: OAuthConfiguration,
-    private router: Router) {
+  constructor(@Inject('oAuthConfiguration') private oAuthConfiguration: OAuthConfiguration) {
   }
 
   authorize(): void {
@@ -19,7 +16,7 @@ export class OAuthService {
 
     const url = `${uri}?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}`;
 
-    this.router.navigateByUrl(url);
+    window.location.href = url;
   }
 
   parseAuthResponse(queryParams: string): OAuthToken {
