@@ -34,6 +34,7 @@ import { OAuthConfiguration } from './models/oauth-configuration.model';
 import { environment } from 'src/environments/environment';
 import { OAuthService } from './services/oauth.service';
 import { OAuthModule } from './oauth.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
 
@@ -63,7 +64,9 @@ const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
 
     SharedModule,
 
-    OAuthModule.forRoot(environment.oAuth as OAuthConfiguration)
+    OAuthModule.forRoot(environment.oAuth as OAuthConfiguration),
+
+    NgbModule
   ],
   providers: [
     UserService,
