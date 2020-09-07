@@ -46,7 +46,7 @@ namespace PhotoMap.Api
                 {
                     var date = GetDate(resultsCommand.Exif);
 
-                    photoEntity.DateTimeTaken = date ?? DateTime.UtcNow;
+                    photoEntity.DateTimeTaken = date ?? (resultsCommand.FileCreatedOn ?? DateTime.UtcNow);
 
                     var gps = resultsCommand.Exif.Gps;
                     if (gps != null)

@@ -76,13 +76,14 @@ namespace Image.Service
                 var resultsCommand = new ResultsCommand
                 {
                     UserId = processingCommand.UserId,
-                    FileId = processingCommand.FileId,
+                    FileId = processingCommand.DeleteAfterProcessing ? (long?) null : processingCommand.FileId,
                     FileName = processingCommand.FileName,
                     FileSource = processingCommand.FileSource,
                     Exif = exif,
                     ThumbsSizes = sizeFileIdMap,
                     PhotoUrl = processingCommand.FileUrl,
-                    Path = processingCommand.Path
+                    Path = processingCommand.Path,
+                    FileCreatedOn = processingCommand.FileCreatedOn
                 };
 
                 _messageSender.Send(resultsCommand);

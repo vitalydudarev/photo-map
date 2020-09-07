@@ -104,7 +104,8 @@ namespace Yandex.Disk.Worker
                 FileSource = "Yandex.Disk",
                 DeleteAfterProcessing = _imageProcessingSettings.DeleteAfterProcessing,
                 Sizes = _imageProcessingSettings.Sizes,
-                RelativeFilePath = file.RelativeFilePath
+                RelativeFilePath = file.RelativeFilePath,
+                FileCreatedOn = file.CreatedOn
             };
         }
     }

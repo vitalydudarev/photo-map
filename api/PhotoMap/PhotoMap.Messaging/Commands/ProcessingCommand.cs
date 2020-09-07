@@ -1,3 +1,5 @@
+using System;
+
 namespace PhotoMap.Messaging.Commands
 {
     public class ProcessingCommand : CommandBase
@@ -17,7 +19,9 @@ namespace PhotoMap.Messaging.Commands
         public int[] Sizes { get; set; }
 
         public string RelativeFilePath { get; set; }
-        
+
         public string Path { get; set; }
+
+        public DateTime? FileCreatedOn { get; set; }
     }
 }

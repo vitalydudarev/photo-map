@@ -10,7 +10,7 @@ namespace Yandex.Disk.Api.Client.Models
         public ShareInfo Share { get; set; }
         public string File { get; set; }
         public long Size { get; set; }
-        public string PhotosliceTime { get; set; }
+        public DateTime? PhotosliceTime { get; set; }
         [JsonPropertyName("_embedded")]
         public ResourceList Embedded { get; set; }
         public Exif Exif { get; set; }

@@ -1,3 +1,5 @@
+using System;
+
 namespace Yandex.Disk.Worker.Models
 {
     public class YandexDiskFileKey
@@ -9,9 +11,10 @@ namespace Yandex.Disk.Worker.Models
         public long StorageFileId { get; set; }
         public string FileUrl { get; set; }
         public string Path { get; set; }
+        public DateTime? CreatedOn { get; set; }
 
         public YandexDiskFileKey(string login, string uid, string name, string relativeFilePath, long storageFileId,
-            string fileUrl, string path)
+            string fileUrl, string path, DateTime? createdOn)
         {
             Login = login;
             Uid = uid;
@@ -20,6 +23,7 @@ namespace Yandex.Disk.Worker.Models
             StorageFileId = storageFileId;
             FileUrl = fileUrl;
             Path = path;
+            CreatedOn = createdOn;
         }
 
         public override string ToString()
