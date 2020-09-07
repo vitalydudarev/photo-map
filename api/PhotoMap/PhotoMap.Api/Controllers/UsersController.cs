@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PhotoMap.Api.Database.Services;
 using PhotoMap.Api.DTOs;
-using IUserService = PhotoMap.Api.Services.IUserService;
 
 namespace PhotoMap.Api.Controllers
 {
@@ -11,13 +10,11 @@ namespace PhotoMap.Api.Controllers
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _userService;
         private readonly IPhotoService _photoService;
-        private readonly Database.Services.IUserService _dbUserService;
+        private readonly IUserService _dbUserService;
 
-        public UsersController(IUserService userService, IPhotoService photoService, Database.Services.IUserService dbUserService)
+        public UsersController(IPhotoService photoService, IUserService dbUserService)
         {
-            _userService = userService;
             _photoService = photoService;
             _dbUserService = dbUserService;
         }
@@ -40,13 +37,6 @@ namespace PhotoMap.Api.Controllers
                 return Ok(user);
 
             return NotFound();
-        }
-
-        [HttpGet("images")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult GetUserImages()
-        {
-            return Ok(_userService.GetUserFiles());
         }
 
         [HttpGet("{id}/photos")]

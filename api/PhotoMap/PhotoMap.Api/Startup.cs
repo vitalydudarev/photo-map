@@ -16,8 +16,6 @@ using PhotoMap.Messaging.CommandHandlerManager;
 using PhotoMap.Messaging.MessageListener;
 using PhotoMap.Messaging.MessageSender;
 using Serilog;
-using IUserService = PhotoMap.Api.Services.IUserService;
-using UserService = PhotoMap.Api.Services.UserService;
 
 namespace PhotoMap.Api
 {
@@ -56,8 +54,6 @@ namespace PhotoMap.Api
 
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IImageService, ImageService>();
-            services.AddScoped<IThumbnailService, ThumbnailService>();
 
             services.AddHostedService<HostedService>();
 
