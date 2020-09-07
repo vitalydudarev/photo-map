@@ -10,3 +10,9 @@ $image-width: 128px;
   height: auto !important;
   width: auto !important;
 }
+
+.spinner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

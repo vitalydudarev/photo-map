@@ -14,6 +14,7 @@ import { PageEvent } from '@angular/material/paginator';
 })
 export class GalleryComponent implements OnInit, OnDestroy {
 
+  showSpinner: boolean = false;
   images: Image[] = [];
   private subscription: Subscription;
   private apiUrl: string = `${environment.photoMapApiUrl}`;
@@ -57,6 +58,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
   }
 
   private setImages() {
+
+    this.showSpinner = true;
+
     let i = 0;
 
     const images: Image[] = [];
@@ -79,6 +83,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
       }
 
       this.images = images;
+      this.showSpinner = false;
     });
   }
 }

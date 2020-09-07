@@ -13,6 +13,7 @@ import { MatCardModule } from '@angular/material/card';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from  '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { HttpClientModule } from '@angular/common/http';
 import { GalleryModule } from '@ks89/angular-modal-gallery';
@@ -56,6 +57,7 @@ const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
     MatButtonModule,
     MatCardModule,
     MatPaginatorModule,
+    MatProgressSpinnerModule,
 
     GalleryModule.forRoot(),
 
