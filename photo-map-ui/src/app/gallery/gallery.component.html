@@ -1,33 +1,26 @@
 <div #scrollTo></div>
 
-<div style="height: 100%;">
-    <div>
-        <mat-paginator
-            [length]="totalCount"
-            [pageSize]="pageSize"
-            [pageSizeOptions]="pageSizes"
-            [showFirstLastButtons]="true"
-            (page)="pageUpdated($event)">
-        </mat-paginator>
-    </div>
-    
-    <div style="height: calc(100% - 56px);" class="spinner-wrapper" *ngIf="showSpinner">
-        <mat-spinner></mat-spinner>
-    </div>
-    
-    <div>
-        <section>
-            <ks-modal-gallery
-                [id]="1"
-                [modalImages]="images"
-                [previewConfig]="{visible: false}"
-                [dotsConfig]="dotsConfig"
-                [buttonsConfig]="buttonsConfig"
-                [plainGalleryConfig]="plainGalleryGridConfig">
-            </ks-modal-gallery>
-        </section>
-    </div>
-    
-    <app-scroll-top [scrollToElement]="scrollTo"></app-scroll-top>
+<mat-paginator
+    [length]="totalCount"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizes"
+    [showFirstLastButtons]="true"
+    (page)="pageUpdated($event)">
+</mat-paginator>
+
+<div class="spinner-wrapper" *ngIf="showSpinner">
+    <mat-spinner></mat-spinner>
 </div>
 
+<section>
+    <ks-modal-gallery
+        [id]="1"
+        [modalImages]="images"
+        [previewConfig]="{visible: false}"
+        [dotsConfig]="dotsConfig"
+        [buttonsConfig]="buttonsConfig"
+        [plainGalleryConfig]="plainGalleryGridConfig">
+    </ks-modal-gallery>
+</section>
+
+<app-scroll-top [scrollToElement]="scrollTo"></app-scroll-top>
