@@ -36,13 +36,17 @@ import { OAuthService } from './services/oauth.service';
 import { OAuthModule } from './oauth.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { GoogleMapsModule } from '@angular/google-maps'
+import { MapComponent } from './map/map.component';
+
 const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
 
 @NgModule({
   declarations: [
     AppComponent,
     GalleryComponent,
-    YandexDiskComponent
+    YandexDiskComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,
@@ -66,7 +70,9 @@ const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
 
     OAuthModule.forRoot(environment.oAuth as OAuthConfiguration),
 
-    NgbModule
+    NgbModule,
+
+    GoogleMapsModule
   ],
   providers: [
     UserService,

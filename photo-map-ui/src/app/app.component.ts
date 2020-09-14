@@ -11,5 +11,6 @@ export class AppComponent {
   menuItems = [
     { title: "Gallery", route: "/gallery" },
     { title: "Yandex.Disk", route: "/yandex-disk" },
+    { title: "Map", route: "/map"}
   ];
 }

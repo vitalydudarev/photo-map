@@ -28,7 +28,7 @@
       <a mat-list-item *ngFor="let item of menuItems" [routerLink]="item.route"> {{item.title}} </a>
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content>
+  <mat-sidenav-content style="height: calc(100vh - 64px);">
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
