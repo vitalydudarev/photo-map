@@ -2,8 +2,16 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from "rxjs";
 
 import { UserPhotosService } from '../services/user-photos.service';
-import { MapMarker, MapInfoWindow, GoogleMap } from '@angular/google-maps';
 import { environment } from 'src/environments/environment';
+import { AgmInfoWindow } from '@agm/core';
+
+export class MarkerWrapper {
+  latitude: number;
+  longitude: number;
+  title: string;
+  icon: any;
+  previewImageUrl: string;
+}
 
 @Component({
   selector: 'app-map',
@@ -11,28 +19,16 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit, OnDestroy {
-  @ViewChild(MapInfoWindow, { static: false }) infoWindow: MapInfoWindow
-  @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
 
-  zoom = 8
-  center: google.maps.LatLngLiteral
-  options: google.maps.MapOptions = {
-    mapTypeId: 'hybrid',
-    zoomControl: true,
-    scrollwheel: true,
-    disableDoubleClickZoom: false,
-    maxZoom: 20,
-    minZoom: 8,
-    gestureHandling: 'greedy'
-  }
-
-  currentImageUrl: string;
   markers: any[] = [];
+  center: { lat: number, lng: number } = { lat: 0, lng: 0 };
 
   private apiUrl: string = `${environment.photoMapApiUrl}`;
-  private photos: { [id: string] : string; } = {};
 
   private subscription: Subscription;
+
+  private infoWindowOpened: AgmInfoWindow;
+  private previousInfoWindow: AgmInfoWindow;
 
   constructor(private userPhotosService: UserPhotosService) {
   }
@@ -52,9 +48,21 @@ export class MapComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  openInfo(marker: MapMarker) {
-    this.currentImageUrl = this.photos[marker.getTitle()];
-    this.infoWindow.open(marker);
+  onMarkerClicked(infoWindow: AgmInfoWindow) {
+    if (!this.previousInfoWindow) {
+      this.previousInfoWindow = infoWindow;
+    } else {
+      this.infoWindowOpened = infoWindow;
+      this.previousInfoWindow.close();
+    }
+
+    this.previousInfoWindow = infoWindow;
+  }
+
+  onMapClicked($event: MouseEvent) {
+    if (this.previousInfoWindow) {
+      this.previousInfoWindow.close();
+    }
   }
 
   private getPhotos() {
@@ -65,7 +73,6 @@ export class MapComponent implements OnInit, OnDestroy {
         const title = photo.fileName;
         const marker = this.createMarker(title, photo.latitude, photo.longitude, `${this.apiUrl}/${photo.thumbnailUrl}`);
 
-        this.photos[title] = `${this.apiUrl}/photos/${photo.thumbnailSmallFileId}`;
         this.markers.push(marker);
 
         i++;
@@ -73,23 +80,20 @@ export class MapComponent implements OnInit, OnDestroy {
     });
   }
 
-  private createMarker(title: string, latitude: number, longitude: number, thumbnailUrl: string): MapMarker {
-    const image = {
+  private createMarker(title: string, latitude: number, longitude: number, thumbnailUrl: string): MarkerWrapper {
+    const icon = {
       url: thumbnailUrl,
-      scaledSize: new google.maps.Size(64, 64),
-      origin: new google.maps.Point(0, 0),
-      anchor: new google.maps.Point(0, 0)
-    } as google.maps.Icon;
+      scaledSize: { width: 64, height: 64 },
+      origin: { x: 0, y: 0 },
+      anchor: { x: 0, y: 0 }
+    };
 
     return {
-      position: {
-        lat: latitude,
-        lng: longitude,
-      },
+      latitude: latitude,
+      longitude: longitude,
       title: title,
-      options: {
-        icon: image
-      }
-    } as MapMarker;
+      icon: icon,
+      previewImageUrl: thumbnailUrl
+    } as MarkerWrapper;
   }
 }

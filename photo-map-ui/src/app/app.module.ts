@@ -36,8 +36,8 @@ import { OAuthService } from './services/oauth.service';
 import { OAuthModule } from './oauth.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { GoogleMapsModule } from '@angular/google-maps'
 import { MapComponent } from './map/map.component';
+import { AgmCoreModule } from '@agm/core';
 
 const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
 
@@ -72,7 +72,9 @@ const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
 
     NgbModule,
 
-    GoogleMapsModule
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyDzEycFoLft4yGNSC-F54OUhBMwGr1He_4'
+    })
   ],
   providers: [
     UserService,

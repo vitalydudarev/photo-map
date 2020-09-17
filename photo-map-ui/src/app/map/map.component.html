@@ -1,26 +1,19 @@
-<google-map
-    width="100%"
-    height="100%"
-    [zoom]="zoom"
-    [center]="center"
-    [options]="options">
-    <map-info-window>
-        <div style='float:left'>
-            <img src='{{currentImageUrl}}'>
-        </div>
-        <div style='float:right; padding: 10px;'>
-            <b>Title</b>
-            <br/>123 Address
-            <br/> City,Country
-        </div>
-    </map-info-window>
-    <map-marker
-        #markerElem="mapMarker"
-        *ngFor="let marker of markers"
-        [position]="marker.position"
-        [label]="marker.label"
+<agm-map (mapClick)="onMapClicked($event)" style="height: 100%;" [latitude]="center.lat" [longitude]="center.lng">
+    <agm-marker *ngFor="let marker of markers"
+        [latitude]="marker.latitude"
+        [longitude]="marker.longitude"
         [title]="marker.title"
-        [options]="marker.options"
-        (mapClick)="openInfo(markerElem)">
-    </map-marker>
-</google-map>
+        [iconUrl]=marker.icon
+        (markerClick)="onMarkerClicked(infoWindow)">
+        <agm-info-window #infoWindow>
+            <div style='float:left'>
+                <img src='{{marker.previewImageUrl}}'>
+            </div>
+            <div style='float:right; padding: 10px;'>
+                <b>Title</b>
+                <br/>123 Address
+                <br/> City,Country
+            </div>
+        </agm-info-window>
+    </agm-marker>
+</agm-map>
