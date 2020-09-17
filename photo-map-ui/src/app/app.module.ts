@@ -38,6 +38,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { MapComponent } from './map/map.component';
 import { AgmCoreModule } from '@agm/core';
+import {AgmOverlays} from "agm-overlays";
+import {AgmMarkerClustererModule} from "@agm/markerclusterer";
 
 const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
 
@@ -73,8 +75,10 @@ const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
     NgbModule,
 
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyDzEycFoLft4yGNSC-F54OUhBMwGr1He_4'
-    })
+        apiKey: 'AIzaSyDzEycFoLft4yGNSC-F54OUhBMwGr1He_4'
+    }),
+    AgmOverlays,
+    AgmMarkerClustererModule
   ],
   providers: [
     UserService,

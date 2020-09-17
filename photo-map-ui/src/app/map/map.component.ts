@@ -70,12 +70,14 @@ export class MapComponent implements OnInit, OnDestroy {
       let i = 1;
 
       for (let photo of pageResponse.values) {
-        const title = photo.fileName;
-        const marker = this.createMarker(title, photo.latitude, photo.longitude, `${this.apiUrl}/${photo.thumbnailUrl}`);
+        if (photo.latitude && photo.longitude) {
+          const title = photo.fileName;
+          const marker = this.createMarker(title, photo.latitude, photo.longitude, `${this.apiUrl}/${photo.thumbnailUrl}`);
 
-        this.markers.push(marker);
+          this.markers.push(marker);
 
-        i++;
+          i++;
+        }
       }
     });
   }
