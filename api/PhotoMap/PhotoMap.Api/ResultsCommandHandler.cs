@@ -32,14 +32,13 @@ namespace PhotoMap.Api
                 var photoEntity = new Photo
                 {
                     UserId = resultsCommand.UserId,
-                    PhotoUrl = resultsCommand.PhotoUrl,
-                    HasExternalPhotoUrl = false,
                     PhotoFileId = resultsCommand.FileId,
                     FileName = resultsCommand.FileName,
                     Source = resultsCommand.FileSource,
                     ThumbnailSmallFileId = thumbSmall,
                     ThumbnailLargeFileId = thumbLarge,
-                    Path = resultsCommand.Path
+                    Path = resultsCommand.Path,
+                    AddedOn = DateTimeOffset.UtcNow
                 };
 
                 if (resultsCommand.Exif != null)
@@ -58,7 +57,7 @@ namespace PhotoMap.Api
                                 : (double?) null;
                         photoEntity.Longitude =
                             (gps.Longitude != null && gps.LongitudeRef != null)
-                                ? ConvertLatitude(gps.Longitude, gps.LongitudeRef)
+                                ? ConvertLongitude(gps.Longitude, gps.LongitudeRef)
                                 : (double?) null;
                     }
 

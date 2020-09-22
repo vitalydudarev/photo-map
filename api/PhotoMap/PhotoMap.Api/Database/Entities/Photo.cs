@@ -13,13 +13,11 @@ namespace PhotoMap.Api.Database.Entities
 
         public long? PhotoFileId { get; set; }
 
-        public string PhotoUrl { get; set; }
-
         public long ThumbnailSmallFileId { get; set; }
 
         public long ThumbnailLargeFileId { get; set; }
 
-        public bool HasExternalPhotoUrl { get; set; }
+        public string FileName { get; set; }
 
         public DateTimeOffset DateTimeTaken { get; set; }
 
@@ -33,8 +31,8 @@ namespace PhotoMap.Api.Database.Entities
 
         public string Source { get; set; }
 
-        public string FileName { get; set; }
-
         public string Path { get; set; }
+
+        public DateTimeOffset AddedOn { get; set; }
     }
 }
