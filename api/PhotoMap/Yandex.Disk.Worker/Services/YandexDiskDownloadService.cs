@@ -100,6 +100,9 @@ namespace Yandex.Disk.Worker.Services
                             yield break;
                         }
 
+                        if (item.MediaType == "video")
+                            continue;
+
                         var entity = await DownloadAsync(item, disk);
                         if (entity == null)
                             yield break;
