@@ -82,59 +82,38 @@ namespace GraphicsLibrary
         {
             var orientation = _codec.EncodedOrigin;
 
-            int width, height;
-            float dx, dy;
-            float degrees;
+            var bitmapOptions = GetBitmapOptions(orientation);
+            if (bitmapOptions == null)
+                return _bitmap;
 
-            switch (orientation)
-            {
-                case SKEncodedOrigin.BottomRight:
-                {
-                    width = _bitmap.Width;
-                    height = _bitmap.Height;
-                    dx = _bitmap.Width;
-                    dy = _bitmap.Height;
-                    degrees = 180;
-
-                    break;
-                }
-
-                case SKEncodedOrigin.RightTop:
-                {
-                    width = _bitmap.Height;
-                    height = _bitmap.Width;
-                    dx = _bitmap.Height;
-                    dy = 0;
-                    degrees = 90;
-
-                    break;
-                }
-
-                case SKEncodedOrigin.LeftBottom:
-                {
-                    width = _bitmap.Height;
-                    height = _bitmap.Width;
-                    dx = 0;
-                    dy = _bitmap.Height;
-                    degrees = 270;
-
-                    break;
-                }
-
-                default:
-                    return _bitmap;
-            }
-
-            var rotated = new SKBitmap(width, height);
+            var rotated = new SKBitmap(bitmapOptions.Width, bitmapOptions.Height);
 
             using (var canvas = new SKCanvas(rotated))
             {
-                canvas.Translate(dx, dy);
-                canvas.RotateDegrees(degrees);
+                canvas.Translate(bitmapOptions.Dx, bitmapOptions.Dy);
+                canvas.RotateDegrees(bitmapOptions.Degrees);
                 canvas.DrawBitmap(_bitmap, 0, 0);
             }
 
             return rotated;
+        }
+
+        private BitmapOptions GetBitmapOptions(SKEncodedOrigin orientation)
+        {
+            switch (orientation)
+            {
+                case SKEncodedOrigin.BottomRight:
+                    return new BitmapOptions(_bitmap.Width, _bitmap.Height, _bitmap.Width, _bitmap.Height, 180);
+
+                case SKEncodedOrigin.RightTop:
+                    return new BitmapOptions(_bitmap.Height, _bitmap.Width, _bitmap.Height, 0, 90);
+
+                case SKEncodedOrigin.LeftBottom:
+                    return new BitmapOptions(_bitmap.Height, _bitmap.Width, 0, _bitmap.Height, 270);
+
+                default:
+                    return null;
+            }
         }
     }
 }
