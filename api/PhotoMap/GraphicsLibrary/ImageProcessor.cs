@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Linq;
+using ImageMagick;
 using SkiaSharp;
 
 namespace GraphicsLibrary
@@ -18,15 +20,25 @@ namespace GraphicsLibrary
         {
         }
 
-        public ImageProcessor(byte[] bytes) : this(new MemoryStream(bytes))
+        public ImageProcessor(byte[] bytes)
         {
             _disposeStream = true;
-        }
 
-        public ImageProcessor(Stream stream)
-        {
-            _stream = stream;
-            _codec = SKCodec.Create(stream);
+            var heicSignature = new byte[] { 0x66, 0x74, 0x79, 0x70 };    // ftyp
+
+            var firstBytes = bytes.Skip(4).Take(4);
+            if (firstBytes.SequenceEqual(heicSignature))
+            {
+                using (var image = new MagickImage(bytes))
+                {
+                    var byteArray = image.ToByteArray(MagickFormat.Jpeg);
+                    _stream = new MemoryStream(byteArray);
+                }
+            }
+            else
+                _stream = new MemoryStream(bytes);
+
+            _codec = SKCodec.Create(_stream);
             _bitmap = SKBitmap.Decode(_codec);
         }
 
