@@ -87,13 +87,13 @@ namespace PhotoMap.Api
         private double ConvertLatitude(LatLng latLng, string latitudeRef)
         {
             int multiplier = latitudeRef == "S" ? -1 : 1;
-            return multiplier * latLng.Degrees + latLng.Minutes / 60 + latLng.Seconds / 3600;
+            return multiplier * (latLng.Degrees + latLng.Minutes / 60 + latLng.Seconds / 3600);
         }
 
         private double ConvertLongitude(LatLng latLng, string longitudeRef)
         {
             int multiplier = longitudeRef == "W" ? -1 : 1;
-            return multiplier * latLng.Degrees + latLng.Minutes / 60 + latLng.Seconds / 3600;
+            return multiplier * (latLng.Degrees + latLng.Minutes / 60 + latLng.Seconds / 3600);
         }
     }
 }
