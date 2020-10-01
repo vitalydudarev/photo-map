@@ -18,10 +18,15 @@ namespace GraphicsLibrary
 
             var data = ImageMetadataReader.ReadMetadata(stream);
 
-            return new ExifData { Ifd = ParseIfd(data), Gps = ParseGps(data) };
+            return new ExifData
+            {
+                ExifSubIfd = ParseExifSubIfd(data.ToList()),
+                ExifIfd0 = ParseExifIfd0(data.ToList()),
+                Gps = ParseGps(data)
+            };
         }
 
-        private Gps ParseGps(IEnumerable<Directory> data)
+        private static Gps ParseGps(IEnumerable<Directory> data)
         {
             var gpsDirectory = data.OfType<GpsDirectory>().FirstOrDefault();
             if (gpsDirectory != null)
@@ -49,18 +54,36 @@ namespace GraphicsLibrary
             return null;
         }
 
-        private static Ifd ParseIfd(IEnumerable<Directory> data)
+        private static ExifSubIfd ParseExifSubIfd(IList<Directory> data)
         {
             var subIfd = data.OfType<ExifSubIfdDirectory>().FirstOrDefault();
             if (subIfd != null)
             {
-                return new Ifd
+                return new ExifSubIfd
                 {
                     DateTimeDigitized = ParseDateTime(ParseString(subIfd, ExifDirectoryBase.TagDateTimeDigitized), DateTimeStyles.AssumeLocal),
                     DateTimeOriginal = ParseDateTime(ParseString(subIfd, ExifDirectoryBase.TagDateTimeOriginal), DateTimeStyles.AssumeLocal),
                     TimeZone = ParseString(subIfd, ExifDirectoryBase.TagTimeZone),
                     TimeZoneOriginal = ParseString(subIfd, ExifDirectoryBase.TagTimeZoneOriginal),
-                    TimeZoneDigitized = ParseString(subIfd, ExifDirectoryBase.TagTimeZoneDigitized)
+                    TimeZoneDigitized = ParseString(subIfd, ExifDirectoryBase.TagTimeZoneDigitized),
+                    Width = ParseInt(subIfd, ExifDirectoryBase.TagExifImageWidth),
+                    Height = ParseInt(subIfd, ExifDirectoryBase.TagExifImageHeight)
+                };
+            }
+
+            return null;
+        }
+
+        private static ExifIfd0 ParseExifIfd0(IList<Directory> data)
+        {
+            var ifd = data.OfType<ExifIfd0Directory>().FirstOrDefault();
+            if (ifd != null)
+            {
+                return new ExifIfd0
+                {
+                    Make = ParseString(ifd, ExifDirectoryBase.TagMake),
+                    Model = ParseString(ifd, ExifDirectoryBase.TagModel),
+                    Software = ParseString(ifd, ExifDirectoryBase.TagSoftware)
                 };
             }
 
@@ -80,6 +103,14 @@ namespace GraphicsLibrary
         {
             if (subIfd.TryGetByte(tag, out var byteValue))
                 return byteValue;
+
+            return null;
+        }
+
+        private static int? ParseInt(Directory directory, int tag)
+        {
+            if (directory.TryGetInt32(tag, out var intValue))
+                return intValue;
 
             return null;
         }

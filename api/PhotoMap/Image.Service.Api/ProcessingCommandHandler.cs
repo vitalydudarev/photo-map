@@ -135,7 +135,7 @@ namespace Image.Service
 
         private static DateTime? GetDate(ExifData exif)
         {
-            return exif.Gps?.DateTimeStamp?.ToUniversalTime() ?? exif.Ifd?.DateTimeOriginal?.ToUniversalTime();
+            return exif.Gps?.DateTimeStamp?.ToUniversalTime() ?? exif.ExifSubIfd?.DateTimeOriginal?.ToUniversalTime();
         }
     }
 }
