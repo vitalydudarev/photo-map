@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Linq;
+using ImageMagick;
 using SkiaSharp;
 
 namespace GraphicsLibrary
@@ -18,15 +20,25 @@ namespace GraphicsLibrary
         {
         }
 
-        public ImageProcessor(byte[] bytes) : this(new MemoryStream(bytes))
+        public ImageProcessor(byte[] bytes)
         {
             _disposeStream = true;
-        }
 
-        public ImageProcessor(Stream stream)
-        {
-            _stream = stream;
-            _codec = SKCodec.Create(stream);
+            var heicSignature = new byte[] { 0x66, 0x74, 0x79, 0x70 };    // ftyp
+
+            var firstBytes = bytes.Skip(4).Take(4);
+            if (firstBytes.SequenceEqual(heicSignature))
+            {
+                using (var image = new MagickImage(bytes))
+                {
+                    var byteArray = image.ToByteArray(MagickFormat.Jpeg);
+                    _stream = new MemoryStream(byteArray);
+                }
+            }
+            else
+                _stream = new MemoryStream(bytes);
+
+            _codec = SKCodec.Create(_stream);
             _bitmap = SKBitmap.Decode(_codec);
         }
 
@@ -82,59 +94,38 @@ namespace GraphicsLibrary
         {
             var orientation = _codec.EncodedOrigin;
 
-            int width, height;
-            float dx, dy;
-            float degrees;
+            var bitmapOptions = GetBitmapOptions(orientation);
+            if (bitmapOptions == null)
+                return _bitmap;
 
-            switch (orientation)
-            {
-                case SKEncodedOrigin.BottomRight:
-                {
-                    width = _bitmap.Width;
-                    height = _bitmap.Height;
-                    dx = _bitmap.Width;
-                    dy = _bitmap.Height;
-                    degrees = 180;
-
-                    break;
-                }
-
-                case SKEncodedOrigin.RightTop:
-                {
-                    width = _bitmap.Height;
-                    height = _bitmap.Width;
-                    dx = _bitmap.Height;
-                    dy = 0;
-                    degrees = 90;
-
-                    break;
-                }
-
-                case SKEncodedOrigin.LeftBottom:
-                {
-                    width = _bitmap.Height;
-                    height = _bitmap.Width;
-                    dx = 0;
-                    dy = _bitmap.Height;
-                    degrees = 270;
-
-                    break;
-                }
-
-                default:
-                    return _bitmap;
-            }
-
-            var rotated = new SKBitmap(width, height);
+            var rotated = new SKBitmap(bitmapOptions.Width, bitmapOptions.Height);
 
             using (var canvas = new SKCanvas(rotated))
             {
-                canvas.Translate(dx, dy);
-                canvas.RotateDegrees(degrees);
+                canvas.Translate(bitmapOptions.Dx, bitmapOptions.Dy);
+                canvas.RotateDegrees(bitmapOptions.Degrees);
                 canvas.DrawBitmap(_bitmap, 0, 0);
             }
 
             return rotated;
+        }
+
+        private BitmapOptions GetBitmapOptions(SKEncodedOrigin orientation)
+        {
+            switch (orientation)
+            {
+                case SKEncodedOrigin.BottomRight:
+                    return new BitmapOptions(_bitmap.Width, _bitmap.Height, _bitmap.Width, _bitmap.Height, 180);
+
+                case SKEncodedOrigin.RightTop:
+                    return new BitmapOptions(_bitmap.Height, _bitmap.Width, _bitmap.Height, 0, 90);
+
+                case SKEncodedOrigin.LeftBottom:
+                    return new BitmapOptions(_bitmap.Height, _bitmap.Width, 0, _bitmap.Height, 270);
+
+                default:
+                    return null;
+            }
         }
     }
 }

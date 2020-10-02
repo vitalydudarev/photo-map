@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, from, Observable, of } from 'rxjs';
 import { tap, switchMap } from 'rxjs/operators';
 import { User } from '../models/user.model';
@@ -31,6 +31,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   private userName: string = 'user';
 
   constructor(
+    private router: Router,
     private oAuthService: OAuthService,
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
@@ -52,10 +53,6 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     const sub2 = this.activatedRoute.fragment.pipe(
       switchMap(fragment => {
         if (fragment) {
-          /*const params = new URLSearchParams(fragment);
-          const accessToken = params.get('access_token')
-          const expiresIn = params.get('expires_in');*/
-
           const oAuthToken = this.oAuthService.parseAuthResponse(fragment);
 
           return this.userService.addUser(this.userId, this.userName, oAuthToken.accessToken, oAuthToken.expiresIn);
@@ -64,7 +61,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
         return of({});
       })
     )
-    .subscribe(() => console.log('done'));
+    .subscribe(() => this.router.navigate(['/yandex-disk']));
 
     this.subscription.add(sub1);
     this.subscription.add(sub2);

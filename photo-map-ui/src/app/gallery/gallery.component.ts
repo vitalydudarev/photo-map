@@ -30,7 +30,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
   plainGalleryGridConfig: PlainGalleryConfig = {
     strategy: PlainGalleryStrategy.GRID,
-    layout: new GridLayout({ width: '128px', height: 'auto' }, { length: 20, wrap: true }),
+    layout: new GridLayout({ width: '256px', height: 'auto' }, { length: 20, wrap: true }),
   };
 
   totalCount: number = 0;
@@ -74,7 +74,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
             description: photo.fileName
           },
           {
-            img: `${this.apiUrl}/${photo.thumbnailUrl}`,
+            img: `${this.apiUrl}/photos/${photo.thumbnailLargeFileId}`,
             description: photo.fileName
           });
 

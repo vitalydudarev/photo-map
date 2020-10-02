@@ -35,7 +35,7 @@ namespace Storage.Service
 
             services.Configure<FormOptions>(options =>
             {
-                options.MultipartBodyLengthLimit = 1 * 1024 * 104 * 1024;
+                options.MultipartBodyLengthLimit = 1 * 1024 * 1024 * 1024;
             });
 
             services.AddSwaggerGen(c =>
