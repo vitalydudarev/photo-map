@@ -30,6 +30,7 @@ namespace PhotoMap.Api.Database.Services
         {
             var photos = await _context.Photos
                 .Where(a => a.UserId == userId)
+                .OrderBy(a => a.DateTimeTaken)
                 .Skip(skip)
                 .Take(top)
                 .ToListAsync();
