@@ -1,6 +1,7 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using GraphicsLibrary;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -68,6 +69,12 @@ namespace PhotoMap.Api.Controllers
             var downloadUrl = await yandexDiskApiClient.GetDownloadUrlAsync(photo.Path, new CancellationToken());
 
             var bytes = await httpClient.GetByteArrayAsync(downloadUrl.Href);
+
+            if (photo.FileName.ToUpper().EndsWith("HEIC"))
+            {
+                var imageProcessor = new ImageProcessor(bytes);
+                return new FileContentResult(imageProcessor.GetImageBytes(), "image/jpg");
+            }
 
             return new FileContentResult(bytes, "image/jpg");
         }
