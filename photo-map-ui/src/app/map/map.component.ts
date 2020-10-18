@@ -66,7 +66,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private getPhotos() {
-    this.subscription = this.userPhotosService.getUserPhotos(1, 100, 0).subscribe(pageResponse => {
+    this.subscription = this.userPhotosService.getUserPhotos(1, 25000, 0).subscribe(pageResponse => {
       let i = 1;
 
       for (let photo of pageResponse.values) {
@@ -87,7 +87,7 @@ export class MapComponent implements OnInit, OnDestroy {
       url: thumbnailUrl,
       scaledSize: { width: 64, height: 64 },
       origin: { x: 0, y: 0 },
-      anchor: { x: 0, y: 0 }
+      anchor: { x: 32, y: 32 }
     };
 
     return {
