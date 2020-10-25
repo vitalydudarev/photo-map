@@ -6,12 +6,12 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using PhotoMap.Worker.Models;
+using PhotoMap.Worker.Services.External;
 using Yandex.Disk.Api.Client;
 using Yandex.Disk.Api.Client.Models;
-using Yandex.Disk.Worker.Models;
-using Yandex.Disk.Worker.Services.External;
 
-namespace Yandex.Disk.Worker.Services
+namespace PhotoMap.Worker.Services
 {
     public class YandexDiskDownloadService : IYandexDiskDownloadService, IDisposable
     {
@@ -89,9 +89,6 @@ namespace Yandex.Disk.Worker.Services
                 {
                     totalCount = resource.Embedded.Total;
 
-                    // var progressStat = new ProgressStat { Total = totalCount };
-                    // _progress.SetProgress(progressStat);
-
                     foreach (var item in items)
                     {
                         if (cancellationToken.IsCancellationRequested || stoppingAction.IsStopRequested)
@@ -129,7 +126,7 @@ namespace Yandex.Disk.Worker.Services
 
         public void Dispose()
         {
-            _logger.LogInformation("Download service disposed.");
+            _logger.LogInformation("Yandex.Disk Download Service disposed.");
             _logger.LogInformation("Current offset: " + _currentOffset);
 
             SaveData();
@@ -153,7 +150,7 @@ namespace Yandex.Disk.Worker.Services
             }
         }
 
-        private async Task<YandexDiskFileKey> DownloadAsync(Resource resource, Disk.Api.Client.Models.Disk disk)
+        private async Task<YandexDiskFileKey> DownloadAsync(Resource resource, Disk disk)
         {
             _logger.LogInformation($"Started downloading {resource.Name}.");
 

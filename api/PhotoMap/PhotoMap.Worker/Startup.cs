@@ -16,10 +16,10 @@ using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.CommandHandlerManager;
 using PhotoMap.Messaging.MessageListener;
 using PhotoMap.Messaging.MessageSender;
-using Yandex.Disk.Worker.Services;
-using Yandex.Disk.Worker.Services.External;
+using PhotoMap.Worker.Services;
+using PhotoMap.Worker.Services.External;
 
-namespace Yandex.Disk.Worker
+namespace PhotoMap.Worker
 {
     public class Startup
     {

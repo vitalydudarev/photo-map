@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading;
-using Yandex.Disk.Worker.Models;
+using PhotoMap.Worker.Models;
 
-namespace Yandex.Disk.Worker.Services
+namespace PhotoMap.Worker.Services
 {
     public interface IYandexDiskDownloadService
     {

@@ -6,9 +6,9 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Yandex.Disk.Worker.Services.DTOs;
+using PhotoMap.Worker.Services.DTOs;
 
-namespace Yandex.Disk.Worker.Services.External
+namespace PhotoMap.Worker.Services.External
 {
     public class StorageServiceClient : IStorageService
     {

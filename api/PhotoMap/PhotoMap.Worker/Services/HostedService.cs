@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PhotoMap.Messaging.MessageListener;
 
-namespace Yandex.Disk.Worker.Services
+namespace PhotoMap.Worker.Services
 {
     public class HostedService : BackgroundService
     {
