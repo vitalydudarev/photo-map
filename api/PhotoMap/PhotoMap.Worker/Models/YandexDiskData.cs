@@ -1,6 +1,6 @@
 using System;
 
-namespace PhotoMap.Worker
+namespace PhotoMap.Worker.Models
 {
     public class YandexDiskData
     {

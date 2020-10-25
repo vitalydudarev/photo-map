@@ -7,17 +7,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using PhotoMap.Worker.Models;
-using PhotoMap.Worker.Services.External;
+using PhotoMap.Worker.Services.Definitions;
 using Yandex.Disk.Api.Client;
 using Yandex.Disk.Api.Client.Models;
 
-namespace PhotoMap.Worker.Services
+namespace PhotoMap.Worker.Services.Implementations
 {
     public class YandexDiskDownloadService : IYandexDiskDownloadService, IDisposable
     {
         private static readonly HttpClient Client = new HttpClient();
         private readonly IProgressReporter _progressReporter;
-        private readonly IYandexDiskService _yandexDiskService;
+        private readonly IYandexDiskDownloadStateService _yandexDiskDownloadStateService;
         // private readonly IStorage _storage;
         // private readonly IProgress<> _progress;
         private readonly IStorageService _storageService;
@@ -28,12 +28,12 @@ namespace PhotoMap.Worker.Services
 
         public YandexDiskDownloadService(
             IProgressReporter progressReporter,
-            IYandexDiskService yandexDiskService,
+            IYandexDiskDownloadStateService yandexDiskDownloadStateService,
             IStorageService storageService,
             ILogger<YandexDiskDownloadService> logger)
         {
             _progressReporter = progressReporter;
-            _yandexDiskService = yandexDiskService;
+            _yandexDiskDownloadStateService = yandexDiskDownloadStateService;
             _storageService = storageService;
             _logger = logger;
         }
@@ -46,7 +46,7 @@ namespace PhotoMap.Worker.Services
         {
             bool firstStart = false;
 
-            _data = _yandexDiskService.GetData(userId);
+            _data = _yandexDiskDownloadStateService.GetData(userId);
             if (_data == null)
             {
                 _data = new YandexDiskData { UserId = userId, YandexDiskAccessToken = accessToken };
@@ -183,7 +183,7 @@ namespace PhotoMap.Worker.Services
             _data.CurrentIndex = _currentOffset;
             _data.TotalPhotos = _totalFiles;
 
-            _yandexDiskService.SaveData(_data);
+            _yandexDiskDownloadStateService.SaveData(_data);
         }
     }
 

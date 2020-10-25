@@ -1,4 +1,4 @@
-namespace PhotoMap.Worker
+namespace PhotoMap.Worker.Services.Definitions
 {
     public interface IProgressReporter
     {

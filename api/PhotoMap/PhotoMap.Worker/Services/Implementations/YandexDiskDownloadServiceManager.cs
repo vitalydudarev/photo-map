@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using PhotoMap.Worker.Services.Definitions;
 
-namespace PhotoMap.Worker
+namespace PhotoMap.Worker.Services.Implementations
 {
-    public class DownloadServiceManager
+    public class YandexDiskDownloadServiceManager : IYandexDiskDownloadServiceManager
     {
         private readonly Dictionary<int, StoppingAction> _map = new Dictionary<int, StoppingAction>();
 

@@ -1,4 +1,4 @@
-namespace PhotoMap.Worker
+namespace PhotoMap.Worker.Models
 {
     public enum YandexDiskStatus
     {

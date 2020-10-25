@@ -4,16 +4,18 @@ using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using PhotoMap.Worker.Models;
+using PhotoMap.Worker.Services.Definitions;
 
-namespace PhotoMap.Worker
+namespace PhotoMap.Worker.Services.Implementations
 {
-    public class YandexDiskService : IYandexDiskService
+    public class YandexDiskDownloadStateService : IYandexDiskDownloadStateService
     {
         private const string FileName = "yandex-disk-data.json";
         private readonly Dictionary<int, YandexDiskData> _map = new Dictionary<int, YandexDiskData>();
-        private readonly ILogger<IYandexDiskService> _logger;
+        private readonly ILogger<IYandexDiskDownloadStateService> _logger;
 
-        public YandexDiskService(ILogger<IYandexDiskService> logger)
+        public YandexDiskDownloadStateService(ILogger<IYandexDiskDownloadStateService> logger)
         {
             _logger = logger;
 
