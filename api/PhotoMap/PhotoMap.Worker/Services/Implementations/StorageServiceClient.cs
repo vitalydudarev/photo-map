@@ -6,9 +6,11 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using PhotoMap.Worker.Services.Definitions;
 using PhotoMap.Worker.Services.DTOs;
+using PhotoMap.Worker.Settings;
 
-namespace PhotoMap.Worker.Services.External
+namespace PhotoMap.Worker.Services.Implementations
 {
     public class StorageServiceClient : IStorageService
     {

@@ -1,7 +1,8 @@
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
+using PhotoMap.Worker.Services.Definitions;
 
-namespace PhotoMap.Worker
+namespace PhotoMap.Worker.Services.Implementations
 {
     public class RabbitMqProgressReporter : IProgressReporter
     {

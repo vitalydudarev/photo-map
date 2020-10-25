@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using PhotoMap.Worker.Models;
 
-namespace PhotoMap.Worker.Services
+namespace PhotoMap.Worker.Services.Definitions
 {
     public interface IYandexDiskDownloadService
     {

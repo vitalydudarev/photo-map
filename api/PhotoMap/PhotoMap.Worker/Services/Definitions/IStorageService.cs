@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using PhotoMap.Worker.Services.DTOs;
 
-namespace PhotoMap.Worker.Services.External
+namespace PhotoMap.Worker.Services.Definitions
 {
     public interface IStorageService
     {

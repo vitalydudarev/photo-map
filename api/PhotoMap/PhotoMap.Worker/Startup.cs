@@ -16,8 +16,11 @@ using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.CommandHandlerManager;
 using PhotoMap.Messaging.MessageListener;
 using PhotoMap.Messaging.MessageSender;
+using PhotoMap.Worker.Handlers;
 using PhotoMap.Worker.Services;
-using PhotoMap.Worker.Services.External;
+using PhotoMap.Worker.Services.Definitions;
+using PhotoMap.Worker.Services.Implementations;
+using PhotoMap.Worker.Settings;
 
 namespace PhotoMap.Worker
 {
@@ -76,10 +79,10 @@ namespace PhotoMap.Worker
             services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
             services.AddSingleton<IMessageSender2, RabbitMqMessageSender2>();
             services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
-            services.AddSingleton<DownloadServiceManager>();
+            services.AddSingleton<IYandexDiskDownloadServiceManager, YandexDiskDownloadServiceManager>();
             services.AddSingleton<IProgressReporter, RabbitMqProgressReporter>();
 
-            services.AddSingleton<IYandexDiskService, YandexDiskService>();
+            services.AddSingleton<IYandexDiskDownloadStateService, YandexDiskDownloadStateService>();
             services.AddScoped<IYandexDiskDownloadService, YandexDiskDownloadService>();
             services.AddScoped<IStorageService, StorageServiceClient>();
             services.AddHostedService<HostedService>();

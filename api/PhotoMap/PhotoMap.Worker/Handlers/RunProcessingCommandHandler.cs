@@ -8,8 +8,11 @@ using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
 using PhotoMap.Worker.Models;
 using PhotoMap.Worker.Services;
+using PhotoMap.Worker.Services.Definitions;
+using PhotoMap.Worker.Services.Implementations;
+using PhotoMap.Worker.Settings;
 
-namespace PhotoMap.Worker
+namespace PhotoMap.Worker.Handlers
 {
     public class RunProcessingCommandHandler : CommandHandler<RunProcessingCommand>
     {
@@ -17,19 +20,19 @@ namespace PhotoMap.Worker
         private readonly ILogger<RunProcessingCommandHandler> _logger;
         private readonly IMessageSender2 _messageSender;
         private readonly ImageProcessingSettings _imageProcessingSettings;
-        private readonly DownloadServiceManager _downloadServiceManager;
+        private readonly YandexDiskDownloadServiceManager _yandexDiskDownloadServiceManager;
 
         public RunProcessingCommandHandler(
             IServiceScopeFactory serviceScopeFactory,
             IMessageSender2 messageSender,
             IOptions<ImageProcessingSettings> imageProcessingOptions,
-            DownloadServiceManager downloadServiceManager,
+            YandexDiskDownloadServiceManager yandexDiskDownloadServiceManager,
             ILogger<RunProcessingCommandHandler> logger)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _messageSender = messageSender;
             _imageProcessingSettings = imageProcessingOptions.Value;
-            _downloadServiceManager = downloadServiceManager;
+            _yandexDiskDownloadServiceManager = yandexDiskDownloadServiceManager;
             _logger = logger;
         }
 
@@ -41,7 +44,7 @@ namespace PhotoMap.Worker
                 var yandexDiskDownloadService = scope.ServiceProvider.GetService<IYandexDiskDownloadService>();
 
                 var stoppingAction = new StoppingAction();
-                _downloadServiceManager.Add(runProcessingCommand.UserId, stoppingAction);
+                _yandexDiskDownloadServiceManager.Add(runProcessingCommand.UserId, stoppingAction);
 
                 var startedNotification = new YandexDiskNotification
                 {
@@ -76,7 +79,7 @@ namespace PhotoMap.Worker
                     _messageSender.Send(notification, Constants.PhotoMapApi);
                 }
 
-                _downloadServiceManager.Remove(runProcessingCommand.UserId);
+                _yandexDiskDownloadServiceManager.Remove(runProcessingCommand.UserId);
 
                 var notification1 = new YandexDiskNotification
                 {

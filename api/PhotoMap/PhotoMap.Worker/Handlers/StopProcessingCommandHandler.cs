@@ -3,27 +3,28 @@ using System.Threading.Tasks;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
+using PhotoMap.Worker.Services.Implementations;
 
-namespace PhotoMap.Worker
+namespace PhotoMap.Worker.Handlers
 {
     public class StopProcessingCommandHandler : CommandHandler<StopProcessingCommand>
     {
         private readonly IMessageSender2 _messageSender;
-        private readonly DownloadServiceManager _downloadServiceManager;
+        private readonly YandexDiskDownloadServiceManager _yandexDiskDownloadServiceManager;
 
         public StopProcessingCommandHandler(
             IMessageSender2 messageSender,
-            DownloadServiceManager downloadServiceManager)
+            YandexDiskDownloadServiceManager yandexDiskDownloadServiceManager)
         {
             _messageSender = messageSender;
-            _downloadServiceManager = downloadServiceManager;
+            _yandexDiskDownloadServiceManager = yandexDiskDownloadServiceManager;
         }
 
         public override async Task HandleAsync(CommandBase command, CancellationToken cancellationToken)
         {
             if (command is StopProcessingCommand stopProcessingCommand)
             {
-                _downloadServiceManager.Remove(stopProcessingCommand.UserId);
+                _yandexDiskDownloadServiceManager.Remove(stopProcessingCommand.UserId);
 
                 var startedNotification = new YandexDiskNotification
                 {
