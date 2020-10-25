@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Yandex.Disk.Worker
+namespace PhotoMap.Worker
 {
     public class DownloadServiceManager
     {

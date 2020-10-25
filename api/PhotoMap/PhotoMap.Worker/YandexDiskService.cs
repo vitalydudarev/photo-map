@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Yandex.Disk.Worker
+namespace PhotoMap.Worker
 {
     public class YandexDiskService : IYandexDiskService
     {

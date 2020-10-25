@@ -4,7 +4,7 @@ using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
 
-namespace Yandex.Disk.Worker
+namespace PhotoMap.Worker
 {
     public class StopProcessingCommandHandler : CommandHandler<StopProcessingCommand>
     {

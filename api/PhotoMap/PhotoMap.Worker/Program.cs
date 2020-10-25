@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
-namespace Yandex.Disk.Worker
+namespace PhotoMap.Worker
 {
     public class Program
     {

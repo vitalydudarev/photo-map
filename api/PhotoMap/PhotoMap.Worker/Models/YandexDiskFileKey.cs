@@ -1,6 +1,6 @@
 using System;
 
-namespace Yandex.Disk.Worker.Models
+namespace PhotoMap.Worker.Models
 {
     public class YandexDiskFileKey
     {

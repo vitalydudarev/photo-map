@@ -6,10 +6,10 @@ using Microsoft.Extensions.Options;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
-using Yandex.Disk.Worker.Models;
-using Yandex.Disk.Worker.Services;
+using PhotoMap.Worker.Models;
+using PhotoMap.Worker.Services;
 
-namespace Yandex.Disk.Worker
+namespace PhotoMap.Worker
 {
     public class RunProcessingCommandHandler : CommandHandler<RunProcessingCommand>
     {

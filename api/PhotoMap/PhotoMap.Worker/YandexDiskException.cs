@@ -1,6 +1,6 @@
 using System;
 
-namespace Yandex.Disk.Worker
+namespace PhotoMap.Worker
 {
     public class YandexDiskException : Exception
     {

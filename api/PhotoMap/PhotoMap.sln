@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Image.Service.Api", "Image.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphicsLibrary", "GraphicsLibrary\GraphicsLibrary.csproj", "{8FC0C7E9-8394-4975-B7CC-0E5911664A3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yandex.Disk.Worker", "Yandex.Disk.Worker\Yandex.Disk.Worker.csproj", "{148A25C2-43D8-4334-A7E5-95367064DD15}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoMap.Worker", "PhotoMap.Worker\PhotoMap.Worker.csproj", "{148A25C2-43D8-4334-A7E5-95367064DD15}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{064AFD86-2F8F-4FA2-BEF3-F3C3592FA9AD}"
 EndProject

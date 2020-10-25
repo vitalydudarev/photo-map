@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using Yandex.Disk.Worker.Services.DTOs;
+using PhotoMap.Worker.Services.DTOs;
 
-namespace Yandex.Disk.Worker.Services.External
+namespace PhotoMap.Worker.Services.External
 {
     public interface IStorageService
     {

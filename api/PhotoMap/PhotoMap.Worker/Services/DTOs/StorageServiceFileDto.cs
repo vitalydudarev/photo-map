@@ -1,6 +1,6 @@
 using System;
 
-namespace Yandex.Disk.Worker.Services.DTOs
+namespace PhotoMap.Worker.Services.DTOs
 {
     public class StorageServiceFileDto
     {
