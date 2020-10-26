@@ -80,7 +80,7 @@ namespace PhotoMap.Worker
             services.AddSingleton<IMessageSender2, RabbitMqMessageSender2>();
             services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
             services.AddSingleton<IYandexDiskDownloadServiceManager, YandexDiskDownloadServiceManager>();
-            services.AddSingleton<IProgressReporter, RabbitMqProgressReporter>();
+            services.AddSingleton<IYandexDiskProgressReporter, YandexDiskProgressReporter>();
 
             services.AddSingleton<IYandexDiskDownloadStateService, YandexDiskDownloadStateService>();
             services.AddScoped<IYandexDiskDownloadService, YandexDiskDownloadService>();

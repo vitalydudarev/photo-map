@@ -4,11 +4,11 @@ using PhotoMap.Worker.Services.Definitions;
 
 namespace PhotoMap.Worker.Services.Implementations
 {
-    public class RabbitMqProgressReporter : IProgressReporter
+    public class YandexDiskProgressReporter : IYandexDiskProgressReporter
     {
         private readonly IMessageSender2 _messageSender;
 
-        public RabbitMqProgressReporter(IMessageSender2 messageSender)
+        public YandexDiskProgressReporter(IMessageSender2 messageSender)
         {
             _messageSender = messageSender;
         }

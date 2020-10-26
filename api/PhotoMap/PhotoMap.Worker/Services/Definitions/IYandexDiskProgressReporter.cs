@@ -1,6 +1,6 @@
 namespace PhotoMap.Worker.Services.Definitions
 {
-    public interface IProgressReporter
+    public interface IYandexDiskProgressReporter
     {
         void Report(int userId, int processed, int total);
     }
