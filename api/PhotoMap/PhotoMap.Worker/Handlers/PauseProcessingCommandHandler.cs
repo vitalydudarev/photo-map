@@ -7,12 +7,12 @@ using PhotoMap.Worker.Services.Implementations;
 
 namespace PhotoMap.Worker.Handlers
 {
-    public class StopProcessingCommandHandler : CommandHandler<StopProcessingCommand>
+    public class PauseProcessingCommandHandler : CommandHandler<PauseProcessingCommand>
     {
         private readonly IMessageSender2 _messageSender;
         private readonly YandexDiskDownloadServiceManager _yandexDiskDownloadServiceManager;
 
-        public StopProcessingCommandHandler(
+        public PauseProcessingCommandHandler(
             IMessageSender2 messageSender,
             YandexDiskDownloadServiceManager yandexDiskDownloadServiceManager)
         {
@@ -22,14 +22,14 @@ namespace PhotoMap.Worker.Handlers
 
         public override async Task HandleAsync(CommandBase command, CancellationToken cancellationToken)
         {
-            if (command is StopProcessingCommand stopProcessingCommand)
+            if (command is PauseProcessingCommand pauseProcessingCommand)
             {
-                _yandexDiskDownloadServiceManager.Remove(stopProcessingCommand.UserId);
+                _yandexDiskDownloadServiceManager.Remove(pauseProcessingCommand.UserId);
 
                 var startedNotification = new YandexDiskNotification
                 {
-                    UserId = stopProcessingCommand.UserId,
-                    Status = PhotoMap.Messaging.Commands.YandexDiskStatus.Stopped
+                    UserId = pauseProcessingCommand.UserId,
+                    Status = YandexDiskStatus.Stopped
                 };
 
                 _messageSender.Send(startedNotification, Constants.PhotoMapApi);

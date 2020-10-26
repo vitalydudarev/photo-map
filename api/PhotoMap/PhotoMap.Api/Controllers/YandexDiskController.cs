@@ -38,7 +38,7 @@ namespace PhotoMap.Api.Controllers
         public async Task<IActionResult> RunProcessing([FromBody] int userId)
         {
             var user = await _userService.GetAsync(userId);
-            var runProcessingCommand = new RunProcessingCommand { UserId = userId, Token = user.YandexDiskAccessToken };
+            var runProcessingCommand = new StartProcessingCommand { UserId = userId, Token = user.YandexDiskAccessToken };
 
             _messageSender.Send(runProcessingCommand);
 
@@ -50,7 +50,7 @@ namespace PhotoMap.Api.Controllers
         public async Task<IActionResult> StopProcessing(int userId)
         {
             var user = await _userService.GetAsync(userId);
-            var stopProcessingCommand = new StopProcessingCommand { UserId = userId };
+            var stopProcessingCommand = new PauseProcessingCommand { UserId = userId };
 
             _messageSender.Send(stopProcessingCommand);
 
