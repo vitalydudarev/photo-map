@@ -2,7 +2,7 @@ using System;
 
 namespace PhotoMap.Messaging.Commands
 {
-    public class RunProcessingCommand : CommandBase
+    public class StartProcessingCommand : CommandBase
     {
         public int UserId { get; set; }
 
