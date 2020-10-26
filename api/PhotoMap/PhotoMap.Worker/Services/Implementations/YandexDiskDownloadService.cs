@@ -16,7 +16,7 @@ namespace PhotoMap.Worker.Services.Implementations
     public class YandexDiskDownloadService : IYandexDiskDownloadService, IDisposable
     {
         private static readonly HttpClient Client = new HttpClient();
-        private readonly IProgressReporter _progressReporter;
+        private readonly IYandexDiskProgressReporter _yandexDiskProgressReporter;
         private readonly IYandexDiskDownloadStateService _yandexDiskDownloadStateService;
         // private readonly IStorage _storage;
         // private readonly IProgress<> _progress;
@@ -27,12 +27,12 @@ namespace PhotoMap.Worker.Services.Implementations
         private YandexDiskData _data;
 
         public YandexDiskDownloadService(
-            IProgressReporter progressReporter,
+            IYandexDiskProgressReporter yandexDiskProgressReporter,
             IYandexDiskDownloadStateService yandexDiskDownloadStateService,
             IStorageService storageService,
             ILogger<YandexDiskDownloadService> logger)
         {
-            _progressReporter = progressReporter;
+            _yandexDiskProgressReporter = yandexDiskProgressReporter;
             _yandexDiskDownloadStateService = yandexDiskDownloadStateService;
             _storageService = storageService;
             _logger = logger;
@@ -111,7 +111,7 @@ namespace PhotoMap.Worker.Services.Implementations
 
                         _currentOffset++;
 
-                        _progressReporter.Report(userId, _currentOffset, totalCount);
+                        _yandexDiskProgressReporter.Report(userId, _currentOffset, totalCount);
 
                         // progressStat.Downloaded = downloadedCount;
 
