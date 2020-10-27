@@ -3,18 +3,18 @@ using System.Threading.Tasks;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
-using PhotoMap.Worker.Services.Implementations;
+using PhotoMap.Worker.Services.Definitions;
 
 namespace PhotoMap.Worker.Handlers
 {
     public class PauseProcessingCommandHandler : CommandHandler<PauseProcessingCommand>
     {
         private readonly IMessageSender2 _messageSender;
-        private readonly YandexDiskDownloadServiceManager _yandexDiskDownloadServiceManager;
+        private readonly IYandexDiskDownloadServiceManager _yandexDiskDownloadServiceManager;
 
         public PauseProcessingCommandHandler(
             IMessageSender2 messageSender,
-            YandexDiskDownloadServiceManager yandexDiskDownloadServiceManager)
+            IYandexDiskDownloadServiceManager yandexDiskDownloadServiceManager)
         {
             _messageSender = messageSender;
             _yandexDiskDownloadServiceManager = yandexDiskDownloadServiceManager;
