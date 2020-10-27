@@ -7,9 +7,7 @@ using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
 using PhotoMap.Worker.Models;
-using PhotoMap.Worker.Services;
 using PhotoMap.Worker.Services.Definitions;
-using PhotoMap.Worker.Services.Implementations;
 using PhotoMap.Worker.Settings;
 
 namespace PhotoMap.Worker.Handlers
@@ -20,13 +18,13 @@ namespace PhotoMap.Worker.Handlers
         private readonly ILogger<StartProcessingCommandHandler> _logger;
         private readonly IMessageSender2 _messageSender;
         private readonly ImageProcessingSettings _imageProcessingSettings;
-        private readonly YandexDiskDownloadServiceManager _yandexDiskDownloadServiceManager;
+        private readonly IYandexDiskDownloadServiceManager _yandexDiskDownloadServiceManager;
 
         public StartProcessingCommandHandler(
             IServiceScopeFactory serviceScopeFactory,
             IMessageSender2 messageSender,
             IOptions<ImageProcessingSettings> imageProcessingOptions,
-            YandexDiskDownloadServiceManager yandexDiskDownloadServiceManager,
+            IYandexDiskDownloadServiceManager yandexDiskDownloadServiceManager,
             ILogger<StartProcessingCommandHandler> logger)
         {
             _serviceScopeFactory = serviceScopeFactory;

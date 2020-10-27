@@ -76,6 +76,7 @@ namespace PhotoMap.Worker
             // register command handlers
             services.AddSingleton<ICommandHandler, StartProcessingCommandHandler>();
             services.AddSingleton<ICommandHandler, PauseProcessingCommandHandler>();
+            
             services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
             services.AddSingleton<IMessageSender2, RabbitMqMessageSender2>();
             services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
