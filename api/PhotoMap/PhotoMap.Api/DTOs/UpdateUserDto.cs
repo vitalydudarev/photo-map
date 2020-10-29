@@ -4,6 +4,6 @@ namespace PhotoMap.Api.DTOs
 {
     public class UpdateUserDto
     {
-        public YandexDiskStatus Status { get; set; }
+        public ProcessingStatus Status { get; set; }
     }
 }

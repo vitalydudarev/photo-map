@@ -2,12 +2,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using PhotoMap.Api.Database.Entities;
 using PhotoMap.Api.Database.Services;
 using PhotoMap.Api.DTOs;
 using PhotoMap.Api.Hubs;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
-using YandexDiskStatus = PhotoMap.Api.Database.Entities.YandexDiskStatus;
 
 namespace PhotoMap.Api
 {
@@ -28,7 +28,7 @@ namespace PhotoMap.Api
             {
                 var updateUserDto = new UpdateUserDto
                 {
-                    Status = (YandexDiskStatus) Enum.Parse(typeof(YandexDiskStatus),
+                    Status = (ProcessingStatus) Enum.Parse(typeof(ProcessingStatus),
                         yandexDiskNotification.Status.ToString())
                 };
 
