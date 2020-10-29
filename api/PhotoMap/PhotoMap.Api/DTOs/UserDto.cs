@@ -13,6 +13,6 @@ namespace PhotoMap.Api.DTOs
 
         public DateTimeOffset YandexDiskTokenExpiresOn { get; set; }
 
-        public YandexDiskStatus YandexDiskStatus { get; set; }
+        public ProcessingStatus YandexDiskStatus { get; set; }
     }
 }

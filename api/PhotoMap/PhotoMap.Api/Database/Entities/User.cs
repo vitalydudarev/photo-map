@@ -12,6 +12,12 @@ namespace PhotoMap.Api.Database.Entities
 
         public DateTimeOffset YandexDiskTokenExpiresOn { get; set; }
 
-        public YandexDiskStatus YandexDiskStatus { get; set; }
+        public ProcessingStatus YandexDiskStatus { get; set; }
+
+        public string DropboxToken { get; set; }
+
+        public DateTimeOffset DropboxTokenExpiresOn { get; set; }
+
+        public ProcessingStatus DropboxStatus { get; set; }
     }
 }

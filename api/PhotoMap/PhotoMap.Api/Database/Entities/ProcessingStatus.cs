@@ -1,6 +1,6 @@
 namespace PhotoMap.Api.Database.Entities
 {
-    public enum YandexDiskStatus
+    public enum ProcessingStatus
     {
         NotStarted = 0,
         Running = 1,
