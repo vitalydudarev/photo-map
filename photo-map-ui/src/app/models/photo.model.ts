@@ -1,4 +1,4 @@
-export class Photo {
+export interface Photo {
     id: string;
     photoUrl: string;
     thumbnailSmallFileId: number;
