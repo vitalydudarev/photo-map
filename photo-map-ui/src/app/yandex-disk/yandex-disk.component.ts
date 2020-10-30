@@ -8,8 +8,10 @@ import { YandexDiskHubService } from '../services/yandex-disk-hub.service';
 import { YandexDiskService } from '../services/yandex-disk.service';
 import { ProcessingStatus } from '../models/processing-status.enum';
 import { DataService } from '../services/data.service';
-import { OAuthService } from '../services/oauth.service';
 import { OAuthConfiguration } from '../models/oauth-configuration.model';
+import { OAuthServiceFactory } from "../services/oauth-service.factory";
+import { OAuthService } from "../services/oauth.service";
+import { environment } from "../../environments/environment";
 
 @Component({
   selector: 'app-yandex-disk',
@@ -29,15 +31,17 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   private user: User;
   private userId: number = 1;
   private userName: string = 'user';
+  private oAuthService: OAuthService;
 
   constructor(
     private router: Router,
-    private oAuthService: OAuthService,
+    private oAuthServiceFactory: OAuthServiceFactory,
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
     private yandexDiskService: YandexDiskService,
     private yandexDiskHubService: YandexDiskHubService,
     private dataService: DataService) {
+    this.oAuthService = oAuthServiceFactory.create(environment.oAuth.yandexDisk as OAuthConfiguration);
   }
 
   async ngOnInit(): Promise<void> {

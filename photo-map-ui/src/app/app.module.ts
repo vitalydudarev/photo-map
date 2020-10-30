@@ -70,7 +70,7 @@ const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
 
     SharedModule,
 
-    OAuthModule.forRoot(environment.oAuth as OAuthConfiguration),
+    OAuthModule,
 
     NgbModule,
 

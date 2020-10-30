@@ -1,11 +1,9 @@
-import { Injectable, Inject } from '@angular/core';
 import { OAuthConfiguration } from '../models/oauth-configuration.model';
 import { OAuthToken } from '../models/oauth-token.model';
 
-@Injectable()
 export class OAuthService {
 
-  constructor(@Inject('oAuthConfiguration') private oAuthConfiguration: OAuthConfiguration) {
+  constructor(private oAuthConfiguration: OAuthConfiguration) {
   }
 
   authorize(): void {
