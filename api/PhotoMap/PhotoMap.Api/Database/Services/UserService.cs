@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using PhotoMap.Api.Database.Entities;
 using PhotoMap.Api.DTOs;
@@ -54,15 +55,16 @@ namespace PhotoMap.Api.Database.Services
             {
                 if (!string.IsNullOrEmpty(updateUserDto.YandexDiskToken))
                     user.YandexDiskToken = updateUserDto.YandexDiskToken;
-                if (updateUserDto.YandexDiskTokenExpiresOn.HasValue)
-                    user.YandexDiskTokenExpiresOn = updateUserDto.YandexDiskTokenExpiresOn.Value;
+                if (updateUserDto.YandexDiskTokenExpiresIn.HasValue)
+                    user.YandexDiskTokenExpiresOn =
+                        DateTimeOffset.UtcNow.AddSeconds(updateUserDto.YandexDiskTokenExpiresIn.Value);
                 if (updateUserDto.YandexDiskStatus.HasValue)
                     user.YandexDiskStatus = updateUserDto.YandexDiskStatus.Value;
 
                 if (!string.IsNullOrEmpty(updateUserDto.DropboxToken))
                     user.DropboxToken = updateUserDto.DropboxToken;
-                if (updateUserDto.DropboxTokenExpiresOn.HasValue)
-                    user.DropboxTokenExpiresOn = updateUserDto.DropboxTokenExpiresOn.Value;
+                if (updateUserDto.DropboxTokenExpiresIn.HasValue)
+                    user.DropboxTokenExpiresOn = DateTimeOffset.UtcNow.AddSeconds(updateUserDto.DropboxTokenExpiresIn.Value);
                 if (updateUserDto.DropboxStatus.HasValue)
                     user.DropboxStatus = updateUserDto.DropboxStatus.Value;
 
