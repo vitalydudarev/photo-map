@@ -29,7 +29,6 @@ import { UserPhotosService } from './services/user-photos.service';
 import { SignalRService } from './services/signalr.service';
 import { YandexDiskHubService } from './services/yandex-disk-hub.service';
 import { DataService } from './services/data.service';
-import { SharedModule } from './modules/shared/shared.module';
 import { OAuthConfiguration } from './models/oauth-configuration.model';
 import { environment } from 'src/environments/environment';
 import { OAuthService } from './services/oauth.service';
@@ -40,6 +39,7 @@ import { MapComponent } from './map/map.component';
 import { AgmCoreModule } from '@agm/core';
 import {AgmOverlays} from "agm-overlays";
 import {AgmMarkerClustererModule} from "@agm/markerclusterer";
+import { SharedModule } from './shared/shared.module';
 
 const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
 
