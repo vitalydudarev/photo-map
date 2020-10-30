@@ -1,9 +1,12 @@
-import { YandexDiskStatus } from './yandex-disk-status.enum';
+import { ProcessingStatus } from './processing-status.enum';
 
-export class User {
+export interface User {
     id: number;
     name: string;
-    yandexDiskAccessToken: string;
-    yandexDiskTokenExpiresOn: Date;
-    yandexDiskStatus: YandexDiskStatus;
+    yandexDiskAccessToken?: string;
+    yandexDiskTokenExpiresOn?: Date;
+    yandexDiskStatus?: ProcessingStatus;
+    dropboxAccessToken?: string;
+    dropboxTokenExpiresOn?: Date;
+    dropboxStatus?: ProcessingStatus;
 }

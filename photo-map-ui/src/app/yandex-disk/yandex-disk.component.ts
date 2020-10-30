@@ -6,7 +6,7 @@ import { User } from '../models/user.model';
 import { UserService } from '../services/user.service';
 import { YandexDiskHubService } from '../services/yandex-disk-hub.service';
 import { YandexDiskService } from '../services/yandex-disk.service';
-import { YandexDiskStatus } from '../models/yandex-disk-status.enum';
+import { ProcessingStatus } from '../models/processing-status.enum';
 import { DataService } from '../services/data.service';
 import { OAuthService } from '../services/oauth.service';
 import { OAuthConfiguration } from '../models/oauth-configuration.model';
@@ -55,7 +55,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
         if (fragment) {
           const oAuthToken = this.oAuthService.parseAuthResponse(fragment);
 
-          return this.userService.addUser(this.userId, this.userName, oAuthToken.accessToken, oAuthToken.expiresIn);
+          return this.userService.updateUser(this.userId, this.userName, oAuthToken.accessToken, oAuthToken.expiresIn, null, null);
         }
 
         return of({});
@@ -143,8 +143,8 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   private getUser(): Observable<User> {
     return this.userService.getUser(this.userId).pipe(tap((user: User) => {
       this.user = user;
-      this.status = YandexDiskStatus[user.yandexDiskStatus];
-      if (user.yandexDiskStatus == YandexDiskStatus.Running) {
+      this.status = ProcessingStatus[user.yandexDiskStatus];
+      if (user.yandexDiskStatus == ProcessingStatus.Running) {
         this.isRunning = true;
       }
     }));

@@ -12,15 +12,19 @@ export class UserService {
   constructor(private _httpClient: HttpClient) {
   }
 
-  public addUser(id: number, name: string, accessToken: string, expiresIn: number): Observable<any> {
-    return this._httpClient.post<any>(`${this.url}`, { id: id, name: name, yandexDiskAccessToken: accessToken, yandexDiskTokenExpiresIn: expiresIn });
+  addUser(id: number, name: string): Observable<any> {
+    return this._httpClient.post<any>(`${this.url}`, { id: id, name: name });
   }
 
-  public getUser(id: number): Observable<User> {
+  updateUser(id: number, name: string, yandexDiskToken: string, yandexDiskTokenExpiresIn: number, dropboxToken: string, dropboxTokenExpiresIn: number): Observable<any> {
+    return this._httpClient.patch<any>(`${this.url}/${id}`, { name: name, yandexDiskToken: yandexDiskToken, yandexDiskTokenExpiresIn: yandexDiskTokenExpiresIn, dropboxToken: dropboxToken, dropboxTokenExpiresIn: dropboxTokenExpiresIn });
+  }
+
+  getUser(id: number): Observable<User> {
     return this._httpClient.get<User>(`${this.url}/${id}`);
   }
 
-  public getUserImages(): Observable<string[]> {
+  getUserImages(): Observable<string[]> {
     return  this._httpClient.get<string[]>(`${this.url}/images`);
   }
 }
