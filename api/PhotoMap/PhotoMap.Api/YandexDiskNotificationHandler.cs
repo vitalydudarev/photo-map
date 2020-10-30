@@ -28,7 +28,7 @@ namespace PhotoMap.Api
             {
                 var updateUserDto = new UpdateUserDto
                 {
-                    Status = (ProcessingStatus) Enum.Parse(typeof(ProcessingStatus),
+                    YandexDiskStatus = (ProcessingStatus) Enum.Parse(typeof(ProcessingStatus),
                         yandexDiskNotification.Status.ToString())
                 };
 
