@@ -11,7 +11,14 @@ export const environment = {
       clientId: '66de926ff5be4d2da65e5eb64435687b',
       redirectUri: 'http://localhost:4200/yandex-disk',
       responseType: 'token',
-      uri: 'https://oauth.yandex.ru/authorize'
+      authorizeUrl: 'https://oauth.yandex.ru/authorize'
+    },
+    dropbox: {
+      clientId: '8pakfnac86x0iad',
+      redirectUri: 'http://localhost:4200/dropbox',
+      responseType: 'code',
+      authorizeUrl: 'https://www.dropbox.com/oauth2/authorize',
+      tokenUrl: 'https://www.dropbox.com/oauth2/token'
     }
   }
 };

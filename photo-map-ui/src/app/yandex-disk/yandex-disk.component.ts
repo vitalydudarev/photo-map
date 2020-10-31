@@ -9,7 +9,6 @@ import { YandexDiskService } from '../services/yandex-disk.service';
 import { ProcessingStatus } from '../models/processing-status.enum';
 import { DataService } from '../services/data.service';
 import { OAuthConfiguration } from '../models/oauth-configuration.model';
-import { OAuthServiceFactory } from "../services/oauth-service.factory";
 import { OAuthService } from "../services/oauth.service";
 import { environment } from "../../environments/environment";
 
@@ -31,17 +30,16 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   private user: User;
   private userId: number = 1;
   private userName: string = 'user';
-  private oAuthService: OAuthService;
 
   constructor(
     private router: Router,
-    private oAuthServiceFactory: OAuthServiceFactory,
+    private oAuthService: OAuthService,
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
     private yandexDiskService: YandexDiskService,
     private yandexDiskHubService: YandexDiskHubService,
     private dataService: DataService) {
-    this.oAuthService = oAuthServiceFactory.create(environment.oAuth.yandexDisk as OAuthConfiguration);
+    this.oAuthService.setConfiguration(environment.oAuth.dropbox as OAuthConfiguration);
   }
 
   async ngOnInit(): Promise<void> {

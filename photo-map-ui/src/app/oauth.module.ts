@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
-import { OAuthServiceFactory } from "./services/oauth-service.factory";
+import { OAuthService } from "./services/oauth.service";
 
 
 @NgModule({
     imports: [
     ],
     providers: [
-        OAuthServiceFactory
+        OAuthService
     ]
 })
 export class OAuthModule {

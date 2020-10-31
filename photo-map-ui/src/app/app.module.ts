@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, InjectionToken } from '@angular/core';
+import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -26,28 +26,25 @@ import { UserService } from './services/user.service';
 import { YandexDiskComponent } from './yandex-disk/yandex-disk.component';
 import { YandexDiskService } from './services/yandex-disk.service';
 import { UserPhotosService } from './services/user-photos.service';
-import { SignalRService } from './services/signalr.service';
 import { YandexDiskHubService } from './services/yandex-disk-hub.service';
 import { DataService } from './services/data.service';
-import { OAuthConfiguration } from './models/oauth-configuration.model';
-import { environment } from 'src/environments/environment';
-import { OAuthService } from './services/oauth.service';
 import { OAuthModule } from './oauth.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { MapComponent } from './map/map.component';
 import { AgmCoreModule } from '@agm/core';
-import {AgmOverlays} from "agm-overlays";
-import {AgmMarkerClustererModule} from "@agm/markerclusterer";
+import { AgmOverlays } from "agm-overlays";
+import { AgmMarkerClustererModule } from "@agm/markerclusterer";
 import { SharedModule } from './shared/shared.module';
-
-const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
+import { LocalStorageModule } from "angular-2-local-storage";
+import { DropboxComponent } from "./dropbox/dropbox.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     GalleryComponent,
     YandexDiskComponent,
+    DropboxComponent,
     MapComponent
   ],
   imports: [
@@ -78,7 +75,11 @@ const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
         apiKey: 'AIzaSyDzEycFoLft4yGNSC-F54OUhBMwGr1He_4'
     }),
     AgmOverlays,
-    AgmMarkerClustererModule
+    AgmMarkerClustererModule,
+    LocalStorageModule.forRoot({
+      prefix: 'dropbox',
+      storageType: 'localStorage'
+    })
   ],
   providers: [
     UserService,
