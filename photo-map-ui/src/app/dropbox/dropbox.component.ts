@@ -7,6 +7,7 @@ import { UserService } from '../services/user.service';
 import { OAuthConfiguration } from '../models/oauth-configuration.model';
 import { OAuthService } from "../services/oauth.service";
 import { environment } from "../../environments/environment";
+import { ProcessingStatus } from '../models/processing-status.enum';
 
 @Component({
   selector: 'app-dropbox',
@@ -35,7 +36,22 @@ export class DropboxComponent implements OnInit, OnDestroy {
     this.oAuthService.setConfiguration(environment.oAuth.dropbox as OAuthConfiguration);
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
+
+    const sub2 = this.userService.getUser(this.userId).subscribe({
+      next: user => {
+        if (Date.now() < new Date(user.dropboxTokenExpiresOn).getTime()) {
+          this.needsAuthorization = false;
+          this.tokenExpires = new Date(user.dropboxTokenExpiresOn).toLocaleString();
+          this.status = ProcessingStatus[user.dropboxStatus];
+          if (user.dropboxStatus == ProcessingStatus.Running) {
+            this.isRunning = true;
+          }
+        }
+      }
+    });
+
+    this.subscription.add(sub2);
 
     const obs1 = this.activatedRoute.queryParams.pipe(switchMap(params => {
       if (params.code) {
