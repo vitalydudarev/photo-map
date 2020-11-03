@@ -1,6 +1,6 @@
 namespace PhotoMap.Messaging.Commands
 {
-    public enum YandexDiskStatus
+    public enum ProcessingStatus
     {
         NotStarted = 0,
         Running = 1,

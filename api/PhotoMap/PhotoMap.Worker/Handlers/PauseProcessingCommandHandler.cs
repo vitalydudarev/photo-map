@@ -29,7 +29,7 @@ namespace PhotoMap.Worker.Handlers
                 var startedNotification = new YandexDiskNotification
                 {
                     UserId = pauseProcessingCommand.UserId,
-                    Status = YandexDiskStatus.Stopped
+                    Status = ProcessingStatus.Stopped
                 };
 
                 _messageSender.Send(startedNotification, Constants.PhotoMapApi);

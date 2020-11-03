@@ -5,6 +5,6 @@ namespace PhotoMap.Messaging.Commands
         public int UserId { get; set; }
         public string Message { get; set; }
         public bool HasError { get; set; }
-        public YandexDiskStatus Status { get; set; }
+        public ProcessingStatus Status { get; set; }
     }
 }
