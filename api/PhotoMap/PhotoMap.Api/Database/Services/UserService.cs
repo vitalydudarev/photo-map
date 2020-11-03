@@ -62,9 +62,14 @@ namespace PhotoMap.Api.Database.Services
                     user.YandexDiskStatus = updateUserDto.YandexDiskStatus.Value;
 
                 if (!string.IsNullOrEmpty(updateUserDto.DropboxToken))
+                {
                     user.DropboxToken = updateUserDto.DropboxToken;
-                if (updateUserDto.DropboxTokenExpiresIn.HasValue)
-                    user.DropboxTokenExpiresOn = DateTimeOffset.UtcNow.AddSeconds(updateUserDto.DropboxTokenExpiresIn.Value);
+
+                    user.DropboxTokenExpiresOn = updateUserDto.DropboxTokenExpiresIn.HasValue
+                        ? DateTimeOffset.UtcNow.AddSeconds(updateUserDto.DropboxTokenExpiresIn.Value)
+                        : DateTimeOffset.MaxValue;
+                }
+
                 if (updateUserDto.DropboxStatus.HasValue)
                     user.DropboxStatus = updateUserDto.DropboxStatus.Value;
 
