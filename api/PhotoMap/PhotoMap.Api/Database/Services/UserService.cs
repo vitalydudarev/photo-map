@@ -40,10 +40,10 @@ namespace PhotoMap.Api.Database.Services
                 Id = user.Id,
                 Name = user.Name,
                 YandexDiskAccessToken = user.YandexDiskToken,
-                YandexDiskTokenExpiresOn = user.YandexDiskTokenExpiresOn,
+                YandexDiskTokenExpiresOn = user.YandexDiskTokenExpiresOn?.UtcDateTime,
                 YandexDiskStatus = user.YandexDiskStatus,
                 DropboxAccessToken = user.DropboxToken,
-                DropboxTokenExpiresOn = user.DropboxTokenExpiresOn,
+                DropboxTokenExpiresOn = user.DropboxTokenExpiresOn?.UtcDateTime,
                 DropboxStatus = user.DropboxStatus
             };
         }

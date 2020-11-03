@@ -39,7 +39,7 @@ namespace PhotoMap.Api.Database.Services
 
             var values = photos.Select(a => new PhotoDto
             {
-                DateTimeTaken = a.DateTimeTaken,
+                DateTimeTaken = a.DateTimeTaken.UtcDateTime,
                 FileName = a.FileName,
                 Id = a.Id,
                 Latitude = a.Latitude,

@@ -12,7 +12,7 @@ namespace PhotoMap.Api.DTOs
 
         public long ThumbnailLargeFileId { get; set; }
 
-        public DateTimeOffset DateTimeTaken { get; set; }
+        public DateTime DateTimeTaken { get; set; }
 
         public double? Latitude { get; set; }
 
