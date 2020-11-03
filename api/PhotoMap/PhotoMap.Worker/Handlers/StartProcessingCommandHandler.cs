@@ -47,7 +47,7 @@ namespace PhotoMap.Worker.Handlers
                 var startedNotification = new YandexDiskNotification
                 {
                     UserId = startProcessingCommand.UserId,
-                    Status = PhotoMap.Messaging.Commands.ProcessingStatus.Running
+                    Status = ProcessingStatus.Running
                 };
 
                 _messageSender.Send(startedNotification, Constants.PhotoMapApi);
@@ -71,7 +71,7 @@ namespace PhotoMap.Worker.Handlers
                         Message = e.Message,
                         UserId = startProcessingCommand.UserId,
                         HasError = true,
-                        Status = PhotoMap.Messaging.Commands.ProcessingStatus.Stopped
+                        Status = ProcessingStatus.Stopped
                     };
 
                     _messageSender.Send(notification, Constants.PhotoMapApi);
@@ -82,7 +82,7 @@ namespace PhotoMap.Worker.Handlers
                 var notification1 = new YandexDiskNotification
                 {
                     UserId = startProcessingCommand.UserId,
-                    Status = PhotoMap.Messaging.Commands.ProcessingStatus.Finished
+                    Status = ProcessingStatus.Finished
                 };
 
                 _messageSender.Send(notification1, Constants.PhotoMapApi);
@@ -98,7 +98,7 @@ namespace PhotoMap.Worker.Handlers
             return new ProcessingCommand
             {
                 UserId = startProcessingCommand.UserId,
-                FileName = file.Name,
+                FileName = file.ResourceName,
                 FileId = file.StorageFileId,
                 FileUrl = file.FileUrl,
                 Path = file.Path,

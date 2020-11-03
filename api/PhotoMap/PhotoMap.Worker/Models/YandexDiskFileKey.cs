@@ -6,19 +6,19 @@ namespace PhotoMap.Worker.Models
     {
         public string Login { get; set; }
         public string Uid { get; set; }
-        public string Name { get; set; }
+        public string ResourceName { get; set; }
         public string RelativeFilePath { get; set; }
         public long StorageFileId { get; set; }
         public string FileUrl { get; set; }
         public string Path { get; set; }
         public DateTime? CreatedOn { get; set; }
 
-        public YandexDiskFileKey(string login, string uid, string name, string relativeFilePath, long storageFileId,
+        public YandexDiskFileKey(string login, string uid, string resourceName, string relativeFilePath, long storageFileId,
             string fileUrl, string path, DateTime? createdOn)
         {
             Login = login;
             Uid = uid;
-            Name = name;
+            ResourceName = resourceName;
             RelativeFilePath = relativeFilePath;
             StorageFileId = storageFileId;
             FileUrl = fileUrl;
@@ -28,7 +28,7 @@ namespace PhotoMap.Worker.Models
 
         public override string ToString()
         {
-            return $"{Login}-{Uid}-{Name}";
+            return $"{Login}-{Uid}-{ResourceName}";
         }
     }
 }
