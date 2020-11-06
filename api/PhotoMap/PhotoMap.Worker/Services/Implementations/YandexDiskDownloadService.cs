@@ -186,11 +186,4 @@ namespace PhotoMap.Worker.Services.Implementations
             _yandexDiskDownloadStateService.SaveData(_data);
         }
     }
-
-    public class ApiCallResult<T>
-    {
-        public T Result { get; set; }
-        public bool HasError { get; set; }
-        public string Error { get; set; }
-    }
 }
