@@ -5,13 +5,14 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using PhotoMap.Worker.Models;
+using PhotoMap.Worker.Services.Definitions;
 
 namespace PhotoMap.Worker.Services.Implementations
 {
-    public class DropboxDownloadStateService
+    public class DropboxDownloadStateService : IDropboxDownloadStateService
     {
         private const string FileName = "dropbox-data.json";
-        private readonly Dictionary<string, DropboxData> _map = new Dictionary<string, DropboxData>();
+        private readonly Dictionary<string, DropboxDownloadState> _map = new Dictionary<string, DropboxDownloadState>();
         private readonly ILogger<DropboxDownloadStateService> _logger;
 
         public DropboxDownloadStateService(ILogger<DropboxDownloadStateService> logger)
@@ -23,22 +24,22 @@ namespace PhotoMap.Worker.Services.Implementations
             if (File.Exists(FileName))
             {
                 var fileContents = File.ReadAllText(FileName);
-                var list = JsonConvert.DeserializeObject<List<DropboxData>>(fileContents);
+                var list = JsonConvert.DeserializeObject<List<DropboxDownloadState>>(fileContents);
                 _map = list.ToDictionary(a => a.AccountId, b => b);
             }
         }
 
-        public DropboxData GetData(string accountId)
+        public DropboxDownloadState GetState(string accountId)
         {
             return _map.TryGetValue(accountId, out var data) ? data : null;
         }
 
-        public void SaveData(DropboxData data)
+        public void SaveState(DropboxDownloadState downloadState)
         {
-            if (!_map.TryGetValue(data.AccountId, out _))
+            if (!_map.TryGetValue(downloadState.AccountId, out _))
             {
-                data.Started = DateTimeOffset.UtcNow;
-                _map.Add(data.AccountId, data);
+                downloadState.Started = DateTimeOffset.UtcNow;
+                _map.Add(downloadState.AccountId, downloadState);
             }
 
             var values = _map.Values.ToList();

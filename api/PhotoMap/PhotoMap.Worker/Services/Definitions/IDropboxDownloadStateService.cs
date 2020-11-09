@@ -4,7 +4,7 @@ namespace PhotoMap.Worker.Services.Definitions
 {
     public interface IDropboxDownloadStateService
     {
-        DropboxData GetData(string accountId);
-        void SaveData(DropboxData data);
+        DropboxDownloadState GetState(string accountId);
+        void SaveState(DropboxDownloadState downloadState);
     }
 }
