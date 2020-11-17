@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Dropbox.Api;
+using Dropbox.Api.Auth;
 using Dropbox.Api.Files;
 using Dropbox.Api.Users;
 using Microsoft.Extensions.Logging;
@@ -14,17 +16,27 @@ using PhotoMap.Worker.Services.Definitions;
 
 namespace PhotoMap.Worker.Services.Implementations
 {
-    public class DropboxDownloadService
+    public class DropboxDownloadService : IDisposable
     {
         private static readonly HttpClient HttpClient = new HttpClient();
         private DropboxClient _dropboxClient;
         private readonly IStorageService _storageService;
+        private readonly IDropboxDownloadStateService _stateService;
         private readonly ILogger<DropboxDownloadService> _logger;
-        private const string CameraUploads = "/Camera Uploads";
+        private DropboxDownloadState _state;
+        private int _lastProcessedFileIndex = -1;
 
-        public DropboxDownloadService(IStorageService storageService, ILogger<DropboxDownloadService> logger)
+        private const string CameraUploads = "/Camera Uploads";
+        private const int Limit = 2000;
+        private const int ListFolderMaxLimit = 2000;
+
+        public DropboxDownloadService(
+            IStorageService storageService,
+            IDropboxDownloadStateService stateService,
+            ILogger<DropboxDownloadService> logger)
         {
             _storageService = storageService;
+            _stateService = stateService;
             _logger = logger;
         }
 
@@ -34,41 +46,55 @@ namespace PhotoMap.Worker.Services.Implementations
         {
             CreateClient(apiToken);
 
-            var dropboxClientAccount = await _dropboxClient.Users.GetCurrentAccountAsync();
-            var listFolderResult = await _dropboxClient.Files.ListFolderAsync(CameraUploads);
+            var account = await WrapApiCallAsync(_dropboxClient.Users.GetCurrentAccountAsync);
 
-            await foreach (var dropboxFile in DownloadFiles(listFolderResult, dropboxClientAccount))
+            _state = _stateService.GetState(account.AccountId);
+            if (_state != null)
+                _lastProcessedFileIndex = _state.LastProcessedFileIndex;
+            else
+                _state = new DropboxDownloadState { Started = DateTimeOffset.Now, AccountId = account.AccountId };
+
+            bool firstIteration = true;
+            var filesMetadata = new List<Metadata>();
+
+            var listFolderResult = await WrapApiCallAsync(() => _dropboxClient.Files.ListFolderAsync(CameraUploads, limit: Limit));
+
+            while (listFolderResult.HasMore || firstIteration)
             {
-                yield return dropboxFile;
+                if (!firstIteration)
+                    listFolderResult = await WrapApiCallAsync(() =>
+                        _dropboxClient.Files.ListFolderContinueAsync(listFolderResult.Cursor));
+
+                filesMetadata.AddRange(listFolderResult.Entries.Where(a => a is FileMetadata));
+
+                firstIteration = false;
             }
 
-            while (listFolderResult.HasMore)
+            _state.TotalFiles = filesMetadata.Count;
+
+            var index = _lastProcessedFileIndex > -1 ? _lastProcessedFileIndex : 0;
+
+            for (int i = index; i < filesMetadata.Count; i++)
             {
-                listFolderResult = await _dropboxClient.Files.ListFolderContinueAsync(listFolderResult.Cursor);
+                var fileMetadata = filesMetadata[i];
 
-                await foreach (var dropboxFile in DownloadFiles(listFolderResult, dropboxClientAccount))
-                {
-                    yield return dropboxFile;
-                }
-            }
-
-            yield return null;
-        }
-
-        private async IAsyncEnumerable<DropboxFile> DownloadFiles(ListFolderResult listFolderResult,
-            FullAccount dropboxClientAccount)
-        {
-            foreach (var entry in listFolderResult.Entries)
-            {
-                var dropboxFile = await DownloadFileAsync(entry, dropboxClientAccount);
+                var dropboxFile = await DownloadFileAsync(fileMetadata, account);
                 if (dropboxFile == null)
                     yield break;
 
+                _state.LastProcessedFileIndex++;
+                _state.LastProcessedFileId = dropboxFile.FileId;
+
                 yield return dropboxFile;
             }
         }
 
-        private async Task<DropboxFile> DownloadFileAsync(Metadata metadata, FullAccount dropboxClientAccount)
+        public void Dispose()
+        {
+            SaveState();
+        }
+
+        private async Task<DropboxFile> DownloadFileAsync(Metadata metadata, Account account)
         {
             var metadataName = metadata.Name;
 
@@ -77,19 +103,19 @@ namespace PhotoMap.Worker.Services.Implementations
                 _logger.LogInformation($"Dropbox: started downloading {metadataName}.");
 
                 var path = CameraUploads + "/" + metadataName;
-                var fileMetadata = await _dropboxClient.Files.DownloadAsync(path);
+                var fileMetadata = await WrapApiCallAsync(() => _dropboxClient.Files.DownloadAsync(path));
                 var fileContents = await fileMetadata.GetContentAsByteArrayAsync();
 
                 _logger.LogInformation($"Dropbox: finished downloading {metadataName}.");
                 _logger.LogInformation($"Dropbox: started saving {metadataName}.");
 
-                var filePath = Path.Combine("Dropbox", dropboxClientAccount.Email, metadataName);
+                var filePath = Path.Combine("Dropbox", account.Email, metadataName);
                 var createdOn = fileMetadata.Response.ClientModified;
 
-                var savedFileDto = _storageService.SaveFileAsync(filePath, fileContents);
+                var savedFileDto = await _storageService.SaveFileAsync(filePath, fileContents);
 
-                var dropboxFile = new DropboxFile(dropboxClientAccount.Email, dropboxClientAccount.AccountId,
-                    metadataName, filePath, savedFileDto.Id, path, createdOn);
+                var dropboxFile = new DropboxFile(account.Email, account.AccountId,
+                    metadataName, filePath, savedFileDto.Id, path, createdOn, fileMetadata.Response.Id);
 
                 _logger.LogInformation($"Dropbox: finished saving {metadataName}.");
 
@@ -108,6 +134,41 @@ namespace PhotoMap.Worker.Services.Implementations
             var config = new DropboxClientConfig("PhotoMap") { HttpClient = HttpClient };
 
             _dropboxClient = new DropboxClient(apiToken, config);
+        }
+
+        private void SaveState()
+        {
+            _logger.LogInformation("Dropbox: saving state.");
+            _logger.LogInformation(
+                $"Dropbox: files processed/total - {_state.LastProcessedFileId}/{_state.TotalFiles}");
+
+            _state.LastProcessedFileIndex = _lastProcessedFileIndex;
+            _stateService.SaveState(_state);
+        }
+
+        private async Task<T> WrapApiCallAsync<T>(Func<Task<T>> apiCall)
+        {
+            try
+            {
+                return await apiCall();
+            }
+            catch (AuthException e)
+            {
+                if (e.ErrorResponse == AuthError.ExpiredAccessToken.Instance)
+                {
+                    _logger.LogError("Dropbox: Access token has expired.");
+                    throw new DropboxException("Access token has expired.");
+                }
+
+                _logger.LogError("Dropbox: " + e.Message);
+                throw new DropboxException(e.Message);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Dropbox: " + e.Message);
+
+                throw new DropboxException(e.Message);
+            }
         }
     }
 }
