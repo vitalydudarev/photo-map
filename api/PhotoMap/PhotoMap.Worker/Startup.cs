@@ -1,15 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PhotoMap.Messaging;
 using PhotoMap.Messaging.CommandHandler;
@@ -76,15 +71,23 @@ namespace PhotoMap.Worker
             // register command handlers
             services.AddSingleton<ICommandHandler, StartProcessingCommandHandler>();
             services.AddSingleton<ICommandHandler, PauseProcessingCommandHandler>();
-            
+
             services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
             services.AddSingleton<IMessageSender2, RabbitMqMessageSender2>();
             services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
+
+            // Yandex.Disk services
             services.AddSingleton<IYandexDiskDownloadServiceManager, YandexDiskDownloadServiceManager>();
             services.AddSingleton<IYandexDiskProgressReporter, YandexDiskProgressReporter>();
-
             services.AddSingleton<IYandexDiskDownloadStateService, YandexDiskDownloadStateService>();
             services.AddScoped<IYandexDiskDownloadService, YandexDiskDownloadService>();
+
+            // Dropbox services
+            services.AddSingleton<IDropboxDownloadManager, DropboxDownloadManager>();
+            services.AddSingleton<IDropboxProgressReporter, DropboxProgressReporter>();
+            services.AddSingleton<IDropboxDownloadStateService, DropboxDownloadStateService>();
+            services.AddScoped<IDropboxDownloadService, DropboxDownloadService>();
+
             services.AddScoped<IStorageService, StorageServiceClient>();
             services.AddHostedService<HostedService>();
         }

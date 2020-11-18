@@ -60,6 +60,7 @@ namespace PhotoMap.Api
             services.AddHostedService<HostedService>();
 
             services.AddSingleton<YandexDiskHub>();
+            services.AddSingleton<DropboxHub>();
 
             services.AddSingleton<ICommandHandler, ProgressMessageHandler>();
             services.AddSingleton<ICommandHandler, ResultsCommandHandler>();
@@ -67,7 +68,7 @@ namespace PhotoMap.Api
             services.AddSingleton<IMessageSender, RabbitMqMessageSender>();
             services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
             services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
-            services.AddScoped<Database.Services.IUserService, Database.Services.UserService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IStorageService, StorageServiceClient>();
 
             services.AddDbContext<PhotoMapContext>();
@@ -105,6 +106,7 @@ namespace PhotoMap.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<YandexDiskHub>("/yandex-disk-hub");
+                endpoints.MapHub<DropboxHub>("/dropbox-hub");
                 endpoints.MapControllers();
             });
 
