@@ -16,7 +16,7 @@ using PhotoMap.Worker.Services.Definitions;
 
 namespace PhotoMap.Worker.Services.Implementations
 {
-    public class DropboxDownloadService : IDisposable
+    public class DropboxDownloadService : IDropboxDownloadService, IDisposable
     {
         private static readonly HttpClient HttpClient = new HttpClient();
         private DropboxClient _dropboxClient;
