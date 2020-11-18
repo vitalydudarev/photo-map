@@ -22,6 +22,7 @@ namespace PhotoMap.Worker.Services.Implementations
         private DropboxClient _dropboxClient;
         private readonly IStorageService _storageService;
         private readonly IDropboxDownloadStateService _stateService;
+        private readonly IDropboxProgressReporter _progressReporter;
         private readonly ILogger<DropboxDownloadService> _logger;
         private DropboxDownloadState _state;
         private int _lastProcessedFileIndex = -1;
@@ -33,15 +34,18 @@ namespace PhotoMap.Worker.Services.Implementations
         public DropboxDownloadService(
             IStorageService storageService,
             IDropboxDownloadStateService stateService,
+            IDropboxProgressReporter progressReporter,
             ILogger<DropboxDownloadService> logger)
         {
             _storageService = storageService;
             _stateService = stateService;
+            _progressReporter = progressReporter;
             _logger = logger;
         }
 
         public async IAsyncEnumerable<DropboxFile> DownloadAsync(
             string apiToken,
+            StoppingAction stoppingAction,
             [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             CreateClient(apiToken);
@@ -76,6 +80,12 @@ namespace PhotoMap.Worker.Services.Implementations
 
             for (int i = index; i < filesMetadata.Count; i++)
             {
+                if (cancellationToken.IsCancellationRequested || stoppingAction.IsStopRequested)
+                {
+                    _logger.LogInformation("Cancellation requested.");
+                    yield break;
+                }
+
                 var fileMetadata = filesMetadata[i];
 
                 var dropboxFile = await DownloadFileAsync(fileMetadata, account);
@@ -84,6 +94,8 @@ namespace PhotoMap.Worker.Services.Implementations
 
                 _state.LastProcessedFileIndex++;
                 _state.LastProcessedFileId = dropboxFile.FileId;
+
+                _progressReporter.Report(_state.AccountId, _state.LastProcessedFileIndex, _state.TotalFiles);
 
                 yield return dropboxFile;
             }

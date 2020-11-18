@@ -25,6 +25,11 @@ namespace PhotoMap.Api
                     Total = progressMessage.Total
                 });
             }
+
+            if (command is DropboxProgressCommand progressCommand)
+            {
+                // implement
+            }
         }
     }
 
