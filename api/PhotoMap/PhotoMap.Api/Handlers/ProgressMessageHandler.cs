@@ -9,10 +9,12 @@ namespace PhotoMap.Api.Handlers
     public class ProgressMessageHandler : CommandHandler<ProgressMessage>
     {
         private readonly YandexDiskHub _yandexDiskHub;
+        private readonly DropboxHub _dropboxHub;
 
-        public ProgressMessageHandler(YandexDiskHub yandexDiskHub)
+        public ProgressMessageHandler(YandexDiskHub yandexDiskHub, DropboxHub dropboxHub)
         {
             _yandexDiskHub = yandexDiskHub;
+            _dropboxHub = dropboxHub;
         }
 
         public override async Task HandleAsync(CommandBase command, CancellationToken cancellationToken)
@@ -28,14 +30,12 @@ namespace PhotoMap.Api.Handlers
 
             if (command is DropboxProgressCommand progressCommand)
             {
-                // implement
+                await _dropboxHub.SendProgressAsync(progressCommand.AccountId, new Progress
+                {
+                    Processed = progressCommand.Processed,
+                    Total = progressCommand.Total
+                });
             }
         }
-    }
-
-    public class Progress
-    {
-        public int Processed { get; set; }
-        public int Total { get; set; }
     }
 }
