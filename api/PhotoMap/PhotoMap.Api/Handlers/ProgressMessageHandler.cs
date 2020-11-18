@@ -4,7 +4,7 @@ using PhotoMap.Api.Hubs;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 
-namespace PhotoMap.Api
+namespace PhotoMap.Api.Handlers
 {
     public class ProgressMessageHandler : CommandHandler<ProgressMessage>
     {

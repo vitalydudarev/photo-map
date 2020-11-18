@@ -9,7 +9,7 @@ using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 using ProcessingStatus = PhotoMap.Api.Database.Entities.ProcessingStatus;
 
-namespace PhotoMap.Api
+namespace PhotoMap.Api.Handlers
 {
     public class YandexDiskNotificationHandler : CommandHandler<YandexDiskNotification>
     {

@@ -1,4 +1,4 @@
-namespace PhotoMap.Api
+namespace PhotoMap.Api.Settings
 {
     public class StorageServiceSettings
     {

@@ -9,7 +9,7 @@ using PhotoMap.Api.Database.Services;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 
-namespace PhotoMap.Api
+namespace PhotoMap.Api.Handlers
 {
     public class ResultsCommandHandler : CommandHandler<ResultsCommand>
     {
