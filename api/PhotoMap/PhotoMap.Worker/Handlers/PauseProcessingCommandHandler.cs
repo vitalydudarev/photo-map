@@ -27,7 +27,7 @@ namespace PhotoMap.Worker.Handlers
             {
                 _downloadManager.Remove(pauseProcessingCommand.UserIdentifier);
 
-                var startedNotification = new YandexDiskNotification
+                var startedNotification = new Notification
                 {
                     UserIdentifier = pauseProcessingCommand.UserIdentifier,
                     Status = ProcessingStatus.Stopped

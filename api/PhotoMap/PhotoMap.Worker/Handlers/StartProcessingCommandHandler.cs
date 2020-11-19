@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PhotoMap.Common.Commands;
+using PhotoMap.Common.Models;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
@@ -40,57 +41,46 @@ namespace PhotoMap.Worker.Handlers
             if (command is StartProcessingCommand startProcessingCommand)
             {
                 var userIdentifier = startProcessingCommand.UserIdentifier;
-
-                using var scope = _serviceScopeFactory.CreateScope();
-                var yandexDiskDownloadService = scope.ServiceProvider.GetService<IYandexDiskDownloadService>();
-
-                var stoppingAction = new StoppingAction();
-                _downloadManager.Add(userIdentifier, stoppingAction);
-
-                var startedNotification = new YandexDiskNotification
+                if (userIdentifier is YandexDiskUserIdentifier)
                 {
-                    UserIdentifier = userIdentifier,
-                    Status = ProcessingStatus.Running
-                };
+                    using var scope = _serviceScopeFactory.CreateScope();
+                    var yandexDiskDownloadService = scope.ServiceProvider.GetService<IYandexDiskDownloadService>();
 
-                _messageSender.Send(startedNotification, Constants.PhotoMapApi);
+                    var stoppingAction = new StoppingAction();
+                    _downloadManager.Add(userIdentifier, stoppingAction);
 
-                try
-                {
-                    await foreach (var file in yandexDiskDownloadService.DownloadFilesAsync(userIdentifier,
-                        startProcessingCommand.Token, cancellationToken, stoppingAction))
+                    var startedNotification = CreateNotification(userIdentifier, ProcessingStatus.Running);
+
+                    _messageSender.Send(startedNotification, Constants.PhotoMapApi);
+
+                    try
                     {
-                        var processingCommand = CreateProcessingCommand(startProcessingCommand, file);
+                        await foreach (var file in yandexDiskDownloadService.DownloadFilesAsync(userIdentifier,
+                            startProcessingCommand.Token, cancellationToken, stoppingAction))
+                        {
+                            var processingCommand = CreateProcessingCommand(startProcessingCommand, file);
 
-                        _messageSender.Send(processingCommand, Constants.ImageServiceApi);
+                            _messageSender.Send(processingCommand, Constants.ImageServiceApi);
+                        }
                     }
-                }
-                catch (YandexDiskException e)
-                {
-                    _logger.LogError(e.Message);
-
-                    var notification = new YandexDiskNotification
+                    catch (YandexDiskException e)
                     {
-                        Message = e.Message,
-                        UserIdentifier = userIdentifier,
-                        HasError = true,
-                        Status = ProcessingStatus.Stopped
-                    };
+                        _logger.LogError(e.Message);
 
-                    _messageSender.Send(notification, Constants.PhotoMapApi);
+                        var stoppedNotification =
+                            CreateNotification(userIdentifier, ProcessingStatus.Stopped, true, e.Message);
+
+                        _messageSender.Send(stoppedNotification, Constants.PhotoMapApi);
+                    }
+
+                    _downloadManager.Remove(userIdentifier);
+
+                    var finishedNotification = CreateNotification(userIdentifier, ProcessingStatus.Finished);
+
+                    _messageSender.Send(finishedNotification, Constants.PhotoMapApi);
+
+                    _logger.LogInformation("Processing finished.");
                 }
-
-                _downloadManager.Remove(userIdentifier);
-
-                var notification1 = new YandexDiskNotification
-                {
-                    UserIdentifier = userIdentifier,
-                    Status = ProcessingStatus.Finished
-                };
-
-                _messageSender.Send(notification1, Constants.PhotoMapApi);
-
-                _logger.LogInformation("Processing finished.");
             }
         }
 
@@ -110,6 +100,18 @@ namespace PhotoMap.Worker.Handlers
                 Sizes = _imageProcessingSettings.Sizes,
                 RelativeFilePath = file.RelativeFilePath,
                 FileCreatedOn = file.CreatedOn
+            };
+        }
+
+        private Notification CreateNotification(IUserIdentifier userIdentifier, ProcessingStatus status,
+            bool hasError = false, string message = null)
+        {
+            return new Notification
+            {
+                UserIdentifier = userIdentifier,
+                Status = status,
+                HasError = hasError,
+                Message = message
             };
         }
     }

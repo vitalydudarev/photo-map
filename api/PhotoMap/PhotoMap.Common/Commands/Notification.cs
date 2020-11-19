@@ -3,7 +3,7 @@ using PhotoMap.Messaging.Commands;
 
 namespace PhotoMap.Common.Commands
 {
-    public class YandexDiskNotification : CommandBase
+    public class Notification : CommandBase
     {
         public IUserIdentifier UserIdentifier { get; set; }
         public string Message { get; set; }
