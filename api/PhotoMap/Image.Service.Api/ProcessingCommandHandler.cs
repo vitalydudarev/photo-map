@@ -119,7 +119,7 @@ namespace Image.Service
 
             return new ResultsCommand
             {
-                UserId = processingCommand.UserId,
+                UserIdentifier = processingCommand.UserIdentifier,
                 FileId = processingCommand.DeleteAfterProcessing ? (long?) null : processingCommand.FileId,
                 FileName = processingCommand.FileName,
                 FileSource = processingCommand.FileSource,

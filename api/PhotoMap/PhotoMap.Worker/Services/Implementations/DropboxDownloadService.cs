@@ -11,6 +11,7 @@ using Dropbox.Api.Auth;
 using Dropbox.Api.Files;
 using Dropbox.Api.Users;
 using Microsoft.Extensions.Logging;
+using PhotoMap.Common.Models;
 using PhotoMap.Worker.Models;
 using PhotoMap.Worker.Services.Definitions;
 
@@ -22,7 +23,7 @@ namespace PhotoMap.Worker.Services.Implementations
         private DropboxClient _dropboxClient;
         private readonly IStorageService _storageService;
         private readonly IDropboxDownloadStateService _stateService;
-        private readonly IDropboxProgressReporter _progressReporter;
+        private readonly IProgressReporter _progressReporter;
         private readonly ILogger<DropboxDownloadService> _logger;
         private DropboxDownloadState _state;
         private int _lastProcessedFileIndex = -1;
@@ -34,7 +35,7 @@ namespace PhotoMap.Worker.Services.Implementations
         public DropboxDownloadService(
             IStorageService storageService,
             IDropboxDownloadStateService stateService,
-            IDropboxProgressReporter progressReporter,
+            IProgressReporter progressReporter,
             ILogger<DropboxDownloadService> logger)
         {
             _storageService = storageService;
@@ -44,6 +45,7 @@ namespace PhotoMap.Worker.Services.Implementations
         }
 
         public async IAsyncEnumerable<DropboxFile> DownloadAsync(
+            IUserIdentifier userIdentifier,
             string apiToken,
             StoppingAction stoppingAction,
             [EnumeratorCancellation] CancellationToken cancellationToken)
@@ -95,7 +97,7 @@ namespace PhotoMap.Worker.Services.Implementations
                 _state.LastProcessedFileIndex++;
                 _state.LastProcessedFileId = dropboxFile.FileId;
 
-                _progressReporter.Report(_state.AccountId, _state.LastProcessedFileIndex, _state.TotalFiles);
+                _progressReporter.Report(userIdentifier, _state.LastProcessedFileIndex, _state.TotalFiles);
 
                 yield return dropboxFile;
             }

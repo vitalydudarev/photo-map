@@ -76,15 +76,15 @@ namespace PhotoMap.Worker
             services.AddSingleton<IMessageSender2, RabbitMqMessageSender2>();
             services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
 
+            // Common services
+            services.AddSingleton<IDownloadManager, DownloadManager>();
+            services.AddSingleton<IProgressReporter, ProgressReporter>();
+
             // Yandex.Disk services
-            services.AddSingleton<IYandexDiskDownloadServiceManager, YandexDiskDownloadServiceManager>();
-            services.AddSingleton<IYandexDiskProgressReporter, YandexDiskProgressReporter>();
             services.AddSingleton<IYandexDiskDownloadStateService, YandexDiskDownloadStateService>();
             services.AddScoped<IYandexDiskDownloadService, YandexDiskDownloadService>();
 
             // Dropbox services
-            services.AddSingleton<IDropboxDownloadManager, DropboxDownloadManager>();
-            services.AddSingleton<IDropboxProgressReporter, DropboxProgressReporter>();
             services.AddSingleton<IDropboxDownloadStateService, DropboxDownloadStateService>();
             services.AddScoped<IDropboxDownloadService, DropboxDownloadService>();
 

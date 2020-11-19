@@ -36,10 +36,12 @@ namespace PhotoMap.Api.Handlers
                 using var scope = _serviceScopeFactory.CreateScope();
                 var userService = scope.ServiceProvider.GetService<IUserService>();
 
-                await userService.UpdateAsync(yandexDiskNotification.UserId, updateUserDto);
+                var userId = yandexDiskNotification.UserIdentifier.UserId;
+
+                await userService.UpdateAsync(userId, updateUserDto);
 
                 if (yandexDiskNotification.HasError)
-                    await _yandexDiskHub.SendErrorAsync(yandexDiskNotification.UserId, yandexDiskNotification.Message);
+                    await _yandexDiskHub.SendErrorAsync(userId, yandexDiskNotification.Message);
             }
         }
     }

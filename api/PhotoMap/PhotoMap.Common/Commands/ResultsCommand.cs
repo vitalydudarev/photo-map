@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using PhotoMap.Common.Models;
 using PhotoMap.Messaging.Commands;
 
 namespace PhotoMap.Common.Commands
 {
     public class ResultsCommand : CommandBase
     {
-        public int UserId { get; set; }
+        public IUserIdentifier UserIdentifier { get; set; }
 
         public long? FileId { get; set; }
 

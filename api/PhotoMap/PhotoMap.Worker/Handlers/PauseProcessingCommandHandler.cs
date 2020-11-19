@@ -11,25 +11,25 @@ namespace PhotoMap.Worker.Handlers
     public class PauseProcessingCommandHandler : CommandHandler<PauseProcessingCommand>
     {
         private readonly IMessageSender2 _messageSender;
-        private readonly IYandexDiskDownloadServiceManager _yandexDiskDownloadServiceManager;
+        private readonly IDownloadManager _downloadManager;
 
         public PauseProcessingCommandHandler(
             IMessageSender2 messageSender,
-            IYandexDiskDownloadServiceManager yandexDiskDownloadServiceManager)
+            IDownloadManager downloadManager)
         {
             _messageSender = messageSender;
-            _yandexDiskDownloadServiceManager = yandexDiskDownloadServiceManager;
+            _downloadManager = downloadManager;
         }
 
         public override async Task HandleAsync(CommandBase command, CancellationToken cancellationToken)
         {
             if (command is PauseProcessingCommand pauseProcessingCommand)
             {
-                _yandexDiskDownloadServiceManager.Remove(pauseProcessingCommand.UserId);
+                _downloadManager.Remove(pauseProcessingCommand.UserIdentifier);
 
                 var startedNotification = new YandexDiskNotification
                 {
-                    UserId = pauseProcessingCommand.UserId,
+                    UserIdentifier = pauseProcessingCommand.UserIdentifier,
                     Status = ProcessingStatus.Stopped
                 };
 

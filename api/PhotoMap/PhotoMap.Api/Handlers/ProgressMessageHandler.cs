@@ -22,7 +22,7 @@ namespace PhotoMap.Api.Handlers
         {
             if (command is ProgressMessage progressMessage)
             {
-                await _yandexDiskHub.SendProgressAsync(progressMessage.UserId, new Progress
+                await _yandexDiskHub.SendProgressAsync(progressMessage.UserIdentifier.UserId, new Progress
                 {
                     Processed = progressMessage.Processed,
                     Total = progressMessage.Total

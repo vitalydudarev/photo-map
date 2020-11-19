@@ -31,7 +31,7 @@ namespace PhotoMap.Api.Handlers
 
                 var photoEntity = new Photo
                 {
-                    UserId = resultsCommand.UserId,
+                    UserId = resultsCommand.UserIdentifier.UserId,
                     PhotoFileId = resultsCommand.FileId,
                     FileName = resultsCommand.FileName,
                     Source = resultsCommand.FileSource,

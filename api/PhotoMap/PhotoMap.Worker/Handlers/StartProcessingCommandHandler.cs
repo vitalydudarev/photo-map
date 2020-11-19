@@ -19,19 +19,19 @@ namespace PhotoMap.Worker.Handlers
         private readonly ILogger<StartProcessingCommandHandler> _logger;
         private readonly IMessageSender2 _messageSender;
         private readonly ImageProcessingSettings _imageProcessingSettings;
-        private readonly IYandexDiskDownloadServiceManager _yandexDiskDownloadServiceManager;
+        private readonly IDownloadManager _downloadManager;
 
         public StartProcessingCommandHandler(
             IServiceScopeFactory serviceScopeFactory,
             IMessageSender2 messageSender,
             IOptions<ImageProcessingSettings> imageProcessingOptions,
-            IYandexDiskDownloadServiceManager yandexDiskDownloadServiceManager,
+            IDownloadManager downloadManager,
             ILogger<StartProcessingCommandHandler> logger)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _messageSender = messageSender;
             _imageProcessingSettings = imageProcessingOptions.Value;
-            _yandexDiskDownloadServiceManager = yandexDiskDownloadServiceManager;
+            _downloadManager = downloadManager;
             _logger = logger;
         }
 
@@ -39,15 +39,17 @@ namespace PhotoMap.Worker.Handlers
         {
             if (command is StartProcessingCommand startProcessingCommand)
             {
+                var userIdentifier = startProcessingCommand.UserIdentifier;
+
                 using var scope = _serviceScopeFactory.CreateScope();
                 var yandexDiskDownloadService = scope.ServiceProvider.GetService<IYandexDiskDownloadService>();
 
                 var stoppingAction = new StoppingAction();
-                _yandexDiskDownloadServiceManager.Add(startProcessingCommand.UserId, stoppingAction);
+                _downloadManager.Add(userIdentifier, stoppingAction);
 
                 var startedNotification = new YandexDiskNotification
                 {
-                    UserId = startProcessingCommand.UserId,
+                    UserIdentifier = userIdentifier,
                     Status = ProcessingStatus.Running
                 };
 
@@ -55,7 +57,7 @@ namespace PhotoMap.Worker.Handlers
 
                 try
                 {
-                    await foreach (var file in yandexDiskDownloadService.DownloadFilesAsync(startProcessingCommand.UserId,
+                    await foreach (var file in yandexDiskDownloadService.DownloadFilesAsync(userIdentifier,
                         startProcessingCommand.Token, cancellationToken, stoppingAction))
                     {
                         var processingCommand = CreateProcessingCommand(startProcessingCommand, file);
@@ -70,7 +72,7 @@ namespace PhotoMap.Worker.Handlers
                     var notification = new YandexDiskNotification
                     {
                         Message = e.Message,
-                        UserId = startProcessingCommand.UserId,
+                        UserIdentifier = userIdentifier,
                         HasError = true,
                         Status = ProcessingStatus.Stopped
                     };
@@ -78,11 +80,11 @@ namespace PhotoMap.Worker.Handlers
                     _messageSender.Send(notification, Constants.PhotoMapApi);
                 }
 
-                _yandexDiskDownloadServiceManager.Remove(startProcessingCommand.UserId);
+                _downloadManager.Remove(userIdentifier);
 
                 var notification1 = new YandexDiskNotification
                 {
-                    UserId = startProcessingCommand.UserId,
+                    UserIdentifier = userIdentifier,
                     Status = ProcessingStatus.Finished
                 };
 
@@ -98,7 +100,7 @@ namespace PhotoMap.Worker.Handlers
         {
             return new ProcessingCommand
             {
-                UserId = startProcessingCommand.UserId,
+                UserIdentifier = startProcessingCommand.UserIdentifier,
                 FileName = file.ResourceName,
                 FileId = file.StorageFileId,
                 FileUrl = file.FileUrl,

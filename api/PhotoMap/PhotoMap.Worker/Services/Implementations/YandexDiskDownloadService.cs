@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using PhotoMap.Common.Models;
 using PhotoMap.Worker.Models;
 using PhotoMap.Worker.Services.Definitions;
 using Yandex.Disk.Api.Client;
@@ -16,10 +17,8 @@ namespace PhotoMap.Worker.Services.Implementations
     public class YandexDiskDownloadService : IYandexDiskDownloadService, IDisposable
     {
         private static readonly HttpClient Client = new HttpClient();
-        private readonly IYandexDiskProgressReporter _yandexDiskProgressReporter;
+        private readonly IProgressReporter _progressReporter;
         private readonly IYandexDiskDownloadStateService _yandexDiskDownloadStateService;
-        // private readonly IStorage _storage;
-        // private readonly IProgress<> _progress;
         private readonly IStorageService _storageService;
         private readonly ILogger<YandexDiskDownloadService> _logger;
         private int _currentOffset;
@@ -27,29 +26,29 @@ namespace PhotoMap.Worker.Services.Implementations
         private YandexDiskData _data;
 
         public YandexDiskDownloadService(
-            IYandexDiskProgressReporter yandexDiskProgressReporter,
+            IProgressReporter progressReporter,
             IYandexDiskDownloadStateService yandexDiskDownloadStateService,
             IStorageService storageService,
             ILogger<YandexDiskDownloadService> logger)
         {
-            _yandexDiskProgressReporter = yandexDiskProgressReporter;
+            _progressReporter = progressReporter;
             _yandexDiskDownloadStateService = yandexDiskDownloadStateService;
             _storageService = storageService;
             _logger = logger;
         }
 
         public async IAsyncEnumerable<YandexDiskFileKey> DownloadFilesAsync(
-            int userId,
+            IUserIdentifier userIdentifier,
             string accessToken,
             [EnumeratorCancellation] CancellationToken cancellationToken,
             StoppingAction stoppingAction)
         {
             bool firstStart = false;
 
-            _data = _yandexDiskDownloadStateService.GetData(userId);
+            _data = _yandexDiskDownloadStateService.GetData(userIdentifier.UserId);
             if (_data == null)
             {
-                _data = new YandexDiskData { UserId = userId, YandexDiskAccessToken = accessToken };
+                _data = new YandexDiskData { UserId = userIdentifier.UserId, YandexDiskAccessToken = accessToken };
                 firstStart = true;
             }
 
@@ -111,7 +110,7 @@ namespace PhotoMap.Worker.Services.Implementations
 
                         _currentOffset++;
 
-                        _yandexDiskProgressReporter.Report(userId, _currentOffset, totalCount);
+                        _progressReporter.Report(userIdentifier, _currentOffset, totalCount);
 
                         // progressStat.Downloaded = downloadedCount;
 

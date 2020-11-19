@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PhotoMap.Api.Database.Services;
 using PhotoMap.Common.Commands;
+using PhotoMap.Common.Models;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
 using Yandex.Disk.Api.Client;
@@ -39,7 +40,11 @@ namespace PhotoMap.Api.Controllers
         public async Task<IActionResult> RunProcessing([FromBody] int userId)
         {
             var user = await _userService.GetAsync(userId);
-            var runProcessingCommand = new StartProcessingCommand { UserId = userId, Token = user.YandexDiskAccessToken };
+            var runProcessingCommand = new StartProcessingCommand
+            {
+                UserIdentifier = new YandexDiskUserIdentifier { UserId = user.Id },
+                Token = user.YandexDiskAccessToken
+            };
 
             _messageSender.Send(runProcessingCommand);
 
@@ -51,7 +56,8 @@ namespace PhotoMap.Api.Controllers
         public async Task<IActionResult> StopProcessing(int userId)
         {
             var user = await _userService.GetAsync(userId);
-            var stopProcessingCommand = new PauseProcessingCommand { UserId = userId };
+            var stopProcessingCommand = new PauseProcessingCommand
+                { UserIdentifier = new YandexDiskUserIdentifier { UserId = user.Id } };
 
             _messageSender.Send(stopProcessingCommand);
 

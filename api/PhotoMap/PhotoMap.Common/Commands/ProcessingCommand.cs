@@ -1,11 +1,12 @@
 using System;
+using PhotoMap.Common.Models;
 using PhotoMap.Messaging.Commands;
 
 namespace PhotoMap.Common.Commands
 {
     public class ProcessingCommand : CommandBase
     {
-        public int UserId { get; set; }
+        public IUserIdentifier UserIdentifier { get; set; }
 
         public string FileName { get; set; }
 
