@@ -8,6 +8,7 @@ using GraphicsLibrary.Exif;
 using Image.Service.Services.StorageService;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using PhotoMap.Common.Commands;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;

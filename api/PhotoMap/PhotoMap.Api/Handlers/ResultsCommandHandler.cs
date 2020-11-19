@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using PhotoMap.Api.Database.Entities;
 using PhotoMap.Api.Database.Services;
+using PhotoMap.Common.Commands;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 

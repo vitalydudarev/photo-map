@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PhotoMap.Api.Database.Services;
+using PhotoMap.Common.Commands;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
 using Yandex.Disk.Api.Client;

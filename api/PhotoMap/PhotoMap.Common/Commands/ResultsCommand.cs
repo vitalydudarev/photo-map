@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using GraphicsLibrary.Exif;
+using PhotoMap.Messaging.Commands;
 
-namespace PhotoMap.Messaging.Commands
+namespace PhotoMap.Common.Commands
 {
     public class ResultsCommand : CommandBase
     {

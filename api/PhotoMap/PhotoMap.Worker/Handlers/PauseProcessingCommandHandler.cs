@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using PhotoMap.Common.Commands;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;

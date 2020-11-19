@@ -1,3 +1,4 @@
+using PhotoMap.Common.Commands;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
 using PhotoMap.Worker.Services.Definitions;

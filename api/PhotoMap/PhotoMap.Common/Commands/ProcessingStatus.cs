@@ -1,4 +1,4 @@
-namespace PhotoMap.Messaging.Commands
+namespace PhotoMap.Common.Commands
 {
     public enum ProcessingStatus
     {

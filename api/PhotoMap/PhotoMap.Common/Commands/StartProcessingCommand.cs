@@ -1,6 +1,6 @@
-using System;
+using PhotoMap.Messaging.Commands;
 
-namespace PhotoMap.Messaging.Commands
+namespace PhotoMap.Common.Commands
 {
     public class StartProcessingCommand : CommandBase
     {

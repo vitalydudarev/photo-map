@@ -26,6 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\PhotoMap.Common\PhotoMap.Common.csproj" />
       <ProjectReference Include="..\PhotoMap.Messaging\PhotoMap.Messaging.csproj" />
       <ProjectReference Include="..\Yandex.Disk.Api.Client\Yandex.Disk.Api.Client.csproj" />
     </ItemGroup>

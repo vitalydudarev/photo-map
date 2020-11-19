@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PhotoMap.Api.Database.Services;
 using PhotoMap.Api.DTOs;
 using PhotoMap.Api.Hubs;
+using PhotoMap.Common.Commands;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 using ProcessingStatus = PhotoMap.Api.Database.Entities.ProcessingStatus;

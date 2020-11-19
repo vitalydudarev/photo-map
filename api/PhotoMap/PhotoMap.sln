@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoMap.Messaging", "PhotoMap.Messaging\PhotoMap.Messaging.csproj", "{CFFCF9E8-1B3D-4BDF-A682-79E33A577DDC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoMap.Common", "PhotoMap.Common\PhotoMap.Common.csproj", "{E97CEA02-8507-4CA7-AD7E-130CF5C0DBDE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +56,9 @@ Global
 		{CFFCF9E8-1B3D-4BDF-A682-79E33A577DDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFFCF9E8-1B3D-4BDF-A682-79E33A577DDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFFCF9E8-1B3D-4BDF-A682-79E33A577DDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E97CEA02-8507-4CA7-AD7E-130CF5C0DBDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E97CEA02-8507-4CA7-AD7E-130CF5C0DBDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E97CEA02-8507-4CA7-AD7E-130CF5C0DBDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E97CEA02-8507-4CA7-AD7E-130CF5C0DBDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
