@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using PhotoMap.Api.Hubs;
 using PhotoMap.Common.Commands;
+using PhotoMap.Common.Models;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 
@@ -22,20 +23,13 @@ namespace PhotoMap.Api.Handlers
         {
             if (command is ProgressMessage progressMessage)
             {
-                await _yandexDiskHub.SendProgressAsync(progressMessage.UserIdentifier.UserId, new Progress
-                {
-                    Processed = progressMessage.Processed,
-                    Total = progressMessage.Total
-                });
-            }
+                var userId = progressMessage.UserIdentifier.UserId;
+                var progress = new Progress { Processed = progressMessage.Processed, Total = progressMessage.Total };
 
-            if (command is DropboxProgressCommand progressCommand)
-            {
-                await _dropboxHub.SendProgressAsync(progressCommand.AccountId, new Progress
-                {
-                    Processed = progressCommand.Processed,
-                    Total = progressCommand.Total
-                });
+                if (progressMessage.UserIdentifier is YandexDiskUserIdentifier)
+                    await _yandexDiskHub.SendProgressAsync(userId, progress);
+                else if (progressMessage.UserIdentifier is DropboxUserIdentifier)
+                    await _dropboxHub.SendProgressAsync(userId, progress);
             }
         }
     }

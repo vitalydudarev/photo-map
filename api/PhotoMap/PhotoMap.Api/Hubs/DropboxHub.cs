@@ -8,29 +8,29 @@ namespace PhotoMap.Api.Hubs
 {
     public class DropboxHub : Hub
     {
-        private readonly Dictionary<string, HashSet<string>> _map = new Dictionary<string, HashSet<string>>();
+        private readonly Dictionary<int, HashSet<string>> _map = new Dictionary<int, HashSet<string>>();
 
-        public void RegisterClient(string accountId)
+        public void RegisterClient(int userId)
         {
             var connectionId = Context.ConnectionId;
 
-            if (_map.TryGetValue(accountId, out var connectionsIds))
+            if (_map.TryGetValue(userId, out var connectionsIds))
                 connectionsIds.Add(connectionId);
             else
-                _map.Add(accountId, new HashSet<string> { connectionId });
+                _map.Add(userId, new HashSet<string> { connectionId });
         }
 
-        public async Task SendErrorAsync(string accountId, string errorText)
+        public async Task SendErrorAsync(int userId, string errorText)
         {
-            if (_map.TryGetValue(accountId, out var connectionIds))
+            if (_map.TryGetValue(userId, out var connectionIds))
             {
                 await Clients.Clients(connectionIds.ToList()).SendAsync("DropboxError", errorText);
             }
         }
 
-        public async Task SendProgressAsync(string accountId, Progress processed)
+        public async Task SendProgressAsync(int userId, Progress processed)
         {
-            if (_map.TryGetValue(accountId, out var connectionIds))
+            if (_map.TryGetValue(userId, out var connectionIds))
             {
                 await Clients.Clients(connectionIds.ToList()).SendAsync("DropboxProgress", processed);
             }
