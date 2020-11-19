@@ -1,5 +1,7 @@
+using Image.Service.Handlers;
 using Image.Service.Services;
 using Image.Service.Services.StorageService;
+using Image.Service.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

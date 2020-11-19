@@ -13,7 +13,7 @@ using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
 
-namespace Image.Service
+namespace Image.Service.Handlers
 {
     public class ProcessingCommandHandler : CommandHandler<ProcessingCommand>
     {

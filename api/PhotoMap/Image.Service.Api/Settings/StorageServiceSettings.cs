@@ -1,4 +1,4 @@
-namespace Image.Service
+namespace Image.Service.Settings
 {
     public class StorageServiceSettings
     {
