@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using PhotoMap.Api.Database.Services;
 using PhotoMap.Common.Commands;
 using PhotoMap.Common.Models;
-using PhotoMap.Messaging.Commands;
 using PhotoMap.Messaging.MessageSender;
 using Yandex.Disk.Api.Client;
 
@@ -37,29 +36,31 @@ namespace PhotoMap.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> RunProcessing([FromBody] int userId)
+        public async Task<IActionResult> StartProcessing([FromBody] int userId)
         {
             var user = await _userService.GetAsync(userId);
-            var runProcessingCommand = new StartProcessingCommand
+            var startProcessingCommand = new StartProcessingCommand
             {
                 UserIdentifier = new YandexDiskUserIdentifier { UserId = user.Id },
                 Token = user.YandexDiskAccessToken
             };
 
-            _messageSender.Send(runProcessingCommand);
+            _messageSender.Send(startProcessingCommand);
 
             return Ok();
         }
 
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> StopProcessing(int userId)
+        public async Task<IActionResult> PauseProcessing(int userId)
         {
             var user = await _userService.GetAsync(userId);
-            var stopProcessingCommand = new PauseProcessingCommand
-                { UserIdentifier = new YandexDiskUserIdentifier { UserId = user.Id } };
+            var pauseProcessingCommand = new PauseProcessingCommand
+            {
+                UserIdentifier = new YandexDiskUserIdentifier { UserId = user.Id }
+            };
 
-            _messageSender.Send(stopProcessingCommand);
+            _messageSender.Send(pauseProcessingCommand);
 
             return NoContent();
         }
