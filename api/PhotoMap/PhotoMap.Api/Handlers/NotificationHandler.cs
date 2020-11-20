@@ -16,11 +16,16 @@ namespace PhotoMap.Api.Handlers
     public class NotificationHandler : CommandHandler<Notification>
     {
         private readonly YandexDiskHub _yandexDiskHub;
+        private readonly DropboxHub _dropboxHub;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public NotificationHandler(YandexDiskHub yandexDiskHub, IServiceScopeFactory serviceScopeFactory)
+        public NotificationHandler(
+            YandexDiskHub yandexDiskHub,
+            DropboxHub dropboxHub,
+            IServiceScopeFactory serviceScopeFactory)
         {
             _yandexDiskHub = yandexDiskHub;
+            _dropboxHub = dropboxHub;
             _serviceScopeFactory = serviceScopeFactory;
         }
 
@@ -28,23 +33,30 @@ namespace PhotoMap.Api.Handlers
         {
             if (command is Notification notification)
             {
+                using var scope = _serviceScopeFactory.CreateScope();
+                var userService = scope.ServiceProvider.GetService<IUserService>();
+
+                var userId = notification.UserIdentifier.UserId;
+                var status = (ProcessingStatus) Enum.Parse(typeof(ProcessingStatus),
+                    notification.Status.ToString());
+
                 if (notification.UserIdentifier is YandexDiskUserIdentifier)
                 {
-                    var updateUserDto = new UpdateUserDto
-                    {
-                        YandexDiskStatus = (ProcessingStatus) Enum.Parse(typeof(ProcessingStatus),
-                            notification.Status.ToString())
-                    };
-
-                    using var scope = _serviceScopeFactory.CreateScope();
-                    var userService = scope.ServiceProvider.GetService<IUserService>();
-
-                    var userId = notification.UserIdentifier.UserId;
+                    var updateUserDto = new UpdateUserDto { YandexDiskStatus = status };
 
                     await userService.UpdateAsync(userId, updateUserDto);
 
                     if (notification.HasError)
                         await _yandexDiskHub.SendErrorAsync(userId, notification.Message);
+                }
+                else if (notification.UserIdentifier is DropboxUserIdentifier)
+                {
+                    var updateUserDto = new UpdateUserDto { DropboxStatus = status };
+
+                    await userService.UpdateAsync(userId, updateUserDto);
+
+                    if (notification.HasError)
+                        await _dropboxHub.SendErrorAsync(userId, notification.Message);
                 }
             }
         }
