@@ -39,7 +39,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     private yandexDiskService: YandexDiskService,
     private yandexDiskHubService: YandexDiskHubService,
     private dataService: DataService) {
-    this.oAuthService.setConfiguration(environment.oAuth.dropbox as OAuthConfiguration);
+    this.oAuthService.setConfiguration(environment.oAuth.yandexDisk as OAuthConfiguration);
   }
 
   async ngOnInit(): Promise<void> {
