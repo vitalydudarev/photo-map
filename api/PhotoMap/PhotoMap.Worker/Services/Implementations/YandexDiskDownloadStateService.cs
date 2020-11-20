@@ -23,9 +23,18 @@ namespace PhotoMap.Worker.Services.Implementations
 
             if (File.Exists(FileName))
             {
+                _logger.LogInformation($"File {FileName} found.");
+
                 var fileContents = File.ReadAllText(FileName);
                 var list = JsonConvert.DeserializeObject<List<YandexDiskData>>(fileContents);
                 _map = list.ToDictionary(a => a.UserId, b => b);
+
+                _logger.LogInformation(fileContents);
+            }
+            else
+            {
+
+                _logger.LogInformation($"File {FileName} not found.");
             }
         }
 

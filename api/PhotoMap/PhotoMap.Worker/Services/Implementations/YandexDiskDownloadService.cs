@@ -25,6 +25,8 @@ namespace PhotoMap.Worker.Services.Implementations
         private int _totalFiles;
         private YandexDiskData _data;
 
+        private const int Limit = 100;
+
         public YandexDiskDownloadService(
             IProgressReporter progressReporter,
             IYandexDiskDownloadStateService yandexDiskDownloadStateService,
@@ -43,51 +45,31 @@ namespace PhotoMap.Worker.Services.Implementations
             [EnumeratorCancellation] CancellationToken cancellationToken,
             StoppingAction stoppingAction)
         {
-            bool firstStart = false;
+            var apiClient = new ApiClient(accessToken, Client);
 
             _data = _yandexDiskDownloadStateService.GetData(userIdentifier.UserId);
             if (_data == null)
             {
                 _data = new YandexDiskData { UserId = userIdentifier.UserId, YandexDiskAccessToken = accessToken };
-                firstStart = true;
             }
+            else
+                _currentOffset = _data.CurrentIndex;
 
-            var apiClient = new ApiClient(accessToken, Client);
+            var disk = await WrapApiCallAsync(() => apiClient.GetDiskAsync(cancellationToken));
 
-            var diskResult = await WrapApiCallAsync(() => apiClient.GetDiskAsync(cancellationToken));
-            if (diskResult.HasError)
-                throw new YandexDiskException(diskResult.Error);
-
-            var disk = diskResult.Result;
-
-            const int limit = 100;
-
-            int offset = firstStart ? 0 : _data.CurrentIndex;
-            int totalCount = 0;
-            int downloadedCount = 0;
             bool firstIteration = true;
 
-            // int testLimit = 500;
-            // totalCount = testLimit;
-
-            _currentOffset = offset;
-
-            while (offset <= totalCount || firstIteration)
+            while (_currentOffset <= _totalFiles || firstIteration)
             {
-                var resourceResult =
+                var resource =
                     await WrapApiCallAsync(() =>
-                        apiClient.GetResourceAsync(disk.SystemFolders.Photostream, cancellationToken, offset, limit));
-                if (resourceResult.HasError)
-                    throw new YandexDiskException(resourceResult.Error);
+                        apiClient.GetResourceAsync(disk.SystemFolders.Photostream, cancellationToken, _currentOffset, Limit));
 
-                var resource = resourceResult.Result;
                 _totalFiles = resource.Embedded.Total;
 
                 var items = resource.Embedded.Items;
                 if (items != null && items.Length > 0)
                 {
-                    totalCount = resource.Embedded.Total;
-
                     foreach (var item in items)
                     {
                         if (cancellationToken.IsCancellationRequested || stoppingAction.IsStopRequested)
@@ -106,19 +88,14 @@ namespace PhotoMap.Worker.Services.Implementations
                         if (entity == null)
                             yield break;
 
-                        downloadedCount++;
-
                         _currentOffset++;
 
-                        _progressReporter.Report(userIdentifier, _currentOffset, totalCount);
-
-                        // progressStat.Downloaded = downloadedCount;
+                        _progressReporter.Report(userIdentifier, _currentOffset, _totalFiles);
 
                         yield return entity;
                     }
                 }
 
-                offset += limit;
                 firstIteration = false;
             }
         }
@@ -129,24 +106,6 @@ namespace PhotoMap.Worker.Services.Implementations
             _logger.LogInformation("Current offset: " + _currentOffset);
 
             SaveData();
-        }
-
-        private async Task<ApiCallResult<T>> WrapApiCallAsync<T>(Func<Task<T>> apiCall)
-        {
-            try
-            {
-                var result = await apiCall();
-
-                return new ApiCallResult<T> { Result = result };
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-
-                SaveData();
-
-                return new ApiCallResult<T> { HasError = true, Error = e.Message };
-            }
         }
 
         private async Task<YandexDiskFileKey> DownloadAsync(Resource resource, Disk disk)
@@ -183,6 +142,22 @@ namespace PhotoMap.Worker.Services.Implementations
             _data.TotalPhotos = _totalFiles;
 
             _yandexDiskDownloadStateService.SaveData(_data);
+        }
+
+        private async Task<T> WrapApiCallAsync<T>(Func<Task<T>> apiCall)
+        {
+            try
+            {
+                return await apiCall();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Yandex.Disk: " + e.Message);
+
+                SaveData();
+
+                throw new YandexDiskException(e.Message);
+            }
         }
     }
 }
