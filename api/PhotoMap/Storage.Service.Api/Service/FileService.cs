@@ -97,6 +97,25 @@ namespace Storage.Service.Service
             return null;
         }
 
+        public async Task<OutgoingFileInfo> GetFileInfoByFileNameAsync(string fileName)
+        {
+            try
+            {
+                var fileEntity = await _repository.GetByFileNameAsync(fileName);
+                if (fileEntity != null)
+                {
+                    return _mapper.Map<OutgoingFileInfo>(fileEntity);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Unable to load file info for fileName {fileName}: {e.Message}");
+                throw;
+            }
+
+            return null;
+        }
+
         public async Task DeleteFileAsync(long fileId)
         {
             try
