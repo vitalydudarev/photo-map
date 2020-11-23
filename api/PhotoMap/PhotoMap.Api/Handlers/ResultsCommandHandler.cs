@@ -42,6 +42,8 @@ namespace PhotoMap.Api.Handlers
 
                     if (resultsCommand.FileId.HasValue)
                         await storageService.DeleteFileAsync(resultsCommand.FileId.Value);
+
+                    return;
                 }
 
                 var photoEntity = new Photo
