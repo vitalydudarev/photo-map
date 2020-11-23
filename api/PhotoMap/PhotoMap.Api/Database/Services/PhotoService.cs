@@ -26,6 +26,11 @@ namespace PhotoMap.Api.Database.Services
             return await _context.Photos.FindAsync(id);
         }
 
+        public async Task<Photo> GetByFileNameAsync(string fileName)
+        {
+            return await _context.Photos.FirstOrDefaultAsync(a => a.FileName == fileName);
+        }
+
         public async Task<PagedResponse<PhotoDto>> GetByUserIdAsync(int userId, int top, int skip)
         {
             var photos = await _context.Photos

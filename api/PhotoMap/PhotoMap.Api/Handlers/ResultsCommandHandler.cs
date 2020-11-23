@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using PhotoMap.Api.Database.Entities;
 using PhotoMap.Api.Database.Services;
+using PhotoMap.Api.ServiceClients.StorageService;
 using PhotoMap.Common.Commands;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.Commands;
@@ -25,9 +26,23 @@ namespace PhotoMap.Api.Handlers
         {
             if (command is ResultsCommand resultsCommand)
             {
+                var scope = _serviceScopeFactory.CreateScope();
+                var photoService = scope.ServiceProvider.GetService<IPhotoService>();
+                var storageService = scope.ServiceProvider.GetService<IStorageService>();
+
                 var thumbs = resultsCommand.Thumbs.OrderBy(a => a.Key).ToDictionary(a => a.Key, b => b.Value);
                 var thumbSmall = thumbs.FirstOrDefault().Value;
                 var thumbLarge = thumbs.LastOrDefault().Value;
+
+                var entity = await photoService.GetByFileNameAsync(resultsCommand.FileName);
+                if (entity != null)
+                {
+                    await storageService.DeleteFileAsync(thumbSmall);
+                    await storageService.DeleteFileAsync(thumbLarge);
+
+                    if (resultsCommand.FileId.HasValue)
+                        await storageService.DeleteFileAsync(resultsCommand.FileId.Value);
+                }
 
                 var photoEntity = new Photo
                 {
@@ -47,8 +62,6 @@ namespace PhotoMap.Api.Handlers
                     HasGps = resultsCommand.Latitude.HasValue && resultsCommand.Longitude.HasValue
                 };
 
-                var scope = _serviceScopeFactory.CreateScope();
-                var photoService = scope.ServiceProvider.GetService<IPhotoService>();
                 await photoService.AddAsync(photoEntity);
             }
         }
