@@ -69,14 +69,14 @@ namespace PhotoMap.Worker.Handlers
                         _logger.LogError(e.Message);
 
                         var stoppedNotification =
-                            CreateNotification(userIdentifier, ProcessingStatus.Stopped, true, e.Message);
+                            CreateNotification(userIdentifier, ProcessingStatus.NotRunning, true, e.Message);
                         _messageSender.Send(stoppedNotification, Constants.PhotoMapApi);
                     }
                     finally
                     {
                         _downloadManager.Remove(userIdentifier);
 
-                        var finishedNotification = CreateNotification(userIdentifier, ProcessingStatus.Finished);
+                        var finishedNotification = CreateNotification(userIdentifier, ProcessingStatus.NotRunning);
                         _messageSender.Send(finishedNotification, Constants.PhotoMapApi);
 
                         _logger.LogInformation("Processing finished.");
@@ -100,14 +100,14 @@ namespace PhotoMap.Worker.Handlers
                         _logger.LogError(e.Message);
 
                         var stoppedNotification =
-                            CreateNotification(userIdentifier, ProcessingStatus.Stopped, true, e.Message);
+                            CreateNotification(userIdentifier, ProcessingStatus.NotRunning, true, e.Message);
                         _messageSender.Send(stoppedNotification, Constants.PhotoMapApi);
                     }
                     finally
                     {
                         _downloadManager.Remove(userIdentifier);
 
-                        var finishedNotification = CreateNotification(userIdentifier, ProcessingStatus.Finished);
+                        var finishedNotification = CreateNotification(userIdentifier, ProcessingStatus.NotRunning);
                         _messageSender.Send(finishedNotification, Constants.PhotoMapApi);
 
                         _logger.LogInformation("Processing finished.");

@@ -30,7 +30,7 @@ namespace PhotoMap.Worker.Handlers
                 var startedNotification = new Notification
                 {
                     UserIdentifier = pauseProcessingCommand.UserIdentifier,
-                    Status = ProcessingStatus.Stopped
+                    Status = ProcessingStatus.NotRunning
                 };
 
                 _messageSender.Send(startedNotification, Constants.PhotoMapApi);
