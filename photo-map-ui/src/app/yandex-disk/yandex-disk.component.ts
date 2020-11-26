@@ -16,6 +16,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-yandex-disk',
   templateUrl: './yandex-disk.component.html',
+  styleUrls: [ './yandex-disk.component.scss' ],
   providers: [OAuthConfiguration]
 })
 export class YandexDiskComponent implements OnInit, OnDestroy {
@@ -26,6 +27,8 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   error: string = '';
   isRunning: boolean = false;
   progressString: string = '';
+  progressBarValue: number = 0;
+  progressBarMode: string;
 
   private subscriptions: Subscription = new Subscription();
   private user: User;
@@ -66,6 +69,8 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   }
 
   startProcessing() {
+    this.progressBarMode = 'buffer';
+
     const startProcessingSub = this.yandexDiskService.startProcessing(this.userId).subscribe({
       next: () => {
         this.setState(true, false, '');
@@ -98,7 +103,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   }
 
   private getUserData(): void {
-    const getUserSub = this.getUser().subscribe({
+    const getUserSub = this.userService.getUser(this.userId).subscribe({
       next: user => {
         this.onGetUser(user);
 
@@ -158,7 +163,10 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
 
     const progressSub = this.yandexDiskHubService.yandexDiskProgress().subscribe({
       next: (progress) => {
+        this.progressBarMode = 'determinate';
         this.progressString = `Processed ${progress.processed} of ${progress.total}`;
+        this.progressBarValue = (progress.processed / progress.total) * 100;
+        console.log(this.progressBarValue);
       }
     });
 
@@ -177,16 +185,6 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     this.hasError = hasError;
     this.error = error ? error : '';
     this.isRunning = isRunning;
-  }
-
-  private getUser(): Observable<User> {
-    return this.userService.getUser(this.userId).pipe(tap((user: User) => {
-      this.user = user;
-      this.status = ProcessingStatus[user.yandexDiskStatus];
-      if (user.yandexDiskStatus == ProcessingStatus.Running) {
-        this.isRunning = true;
-      }
-    }));
   }
 
   private showSnackBar(message: string): void {

@@ -2,6 +2,10 @@
 <mat-card *ngIf="needsAuthorization">You are not authorized.</mat-card>
 <mat-card>Status: {{status}} | {{progressString}}</mat-card>
 <mat-card *ngIf="hasError">Error: {{error}}</mat-card>
+<mat-card *ngIf="isRunning">
+    <p>{{progressBarValue.toFixed(1)}}%</p>
+    <mat-progress-bar [mode]="progressBarMode" [value]="progressBarValue"></mat-progress-bar>
+</mat-card>
 
 <button mat-raised-button (click)="authorize()">Authorize using Yandex.Disk account</button>
 <button mat-raised-button (click)="startProcessing()" *ngIf="!isRunning">Start photo processing</button>
