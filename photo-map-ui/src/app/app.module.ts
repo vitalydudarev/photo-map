@@ -14,6 +14,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from  '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { HttpClientModule } from '@angular/common/http';
 import { GalleryModule } from '@ks89/angular-modal-gallery';
@@ -79,7 +80,8 @@ import { DropboxComponent } from "./dropbox/dropbox.component";
     LocalStorageModule.forRoot({
       prefix: 'dropbox',
       storageType: 'localStorage'
-    })
+    }),
+    MatSnackBarModule
   ],
   providers: [
     UserService,

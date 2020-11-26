@@ -11,6 +11,7 @@ import { DataService } from '../services/data.service';
 import { OAuthConfiguration } from '../models/oauth-configuration.model';
 import { OAuthService } from "../services/oauth.service";
 import { environment } from "../../environments/environment";
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-yandex-disk',
@@ -26,33 +27,94 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   isRunning: boolean = false;
   progressString: string = '';
 
-  private subscription: Subscription = new Subscription();
+  private subscriptions: Subscription = new Subscription();
   private user: User;
   private userId: number = 1;
   private userName: string = 'user';
 
   constructor(
     private router: Router,
+    private snackBar: MatSnackBar,
     private oAuthService: OAuthService,
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
     private yandexDiskService: YandexDiskService,
     private yandexDiskHubService: YandexDiskHubService,
     private dataService: DataService) {
-    this.oAuthService.setConfiguration(environment.oAuth.yandexDisk as OAuthConfiguration);
+      this.oAuthService.setConfiguration(environment.oAuth.yandexDisk as OAuthConfiguration);
   }
 
-  async ngOnInit(): Promise<void> {
-    const sub1 = this.getUser().subscribe({
+  ngOnInit(): void {
+    this.getUserData();
+
+    this.onRouteChanged();
+
+    this.subscribeToHubEvents();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.add(from(this.yandexDiskHubService.stopHubConnection()).subscribe({
+      next: () => this.showSnackBar('Disconnected from SignalR hub.'),
+      error: () => this.showSnackBar('An error has occurred while disconnecting to SignalR hub.')
+    }));
+
+    this.subscriptions.unsubscribe();
+  }
+
+  authorize() {
+    this.oAuthService.authorize();
+  }
+
+  startProcessing() {
+    const startProcessingSub = this.yandexDiskService.startProcessing(this.userId).subscribe({
       next: () => {
+        this.setState(true, false, '');
+        this.showSnackBar('Started processing.')
+      },
+      error: () => this.showSnackBar('Failed to start processing.')
+    });
+
+    this.subscriptions.add(startProcessingSub);
+  }
+
+  stopProcessing() {
+    const stopProcessingSub = this.yandexDiskService.stopProcessing(this.userId).subscribe({
+      next: () => {
+        this.setState(false, false);
+        this.showSnackBar('Stopped processing');
+      },
+      error: () => this.showSnackBar('Failed to stop processing.')
+    });
+
+    this.subscriptions.add(stopProcessingSub);
+  }
+
+  deleteAllData() {
+    const deleteSub = this.dataService.deleteAllData().subscribe({
+      next: () => this.showSnackBar('Data deleted.')
+    });
+
+    this.subscriptions.add(deleteSub);
+  }
+
+  private getUserData(): void {
+    const getUserSub = this.getUser().subscribe({
+      next: user => {
+        this.onGetUser(user);
+
         if (Date.now() < new Date(this.user.yandexDiskTokenExpiresOn).getTime()) {
           this.needsAuthorization = false;
           this.tokenExpires = new Date(this.user.yandexDiskTokenExpiresOn).toLocaleString();
         }
-      }
+      },
+      error: () => this.showSnackBar('An error has occurred while getting user data.')
     });
 
-    const sub2 = this.activatedRoute.fragment.pipe(
+    this.subscriptions.add(getUserSub);
+  }
+
+  private onRouteChanged(): void {
+    const routeSub = this.activatedRoute.fragment.pipe(
       switchMap(fragment => {
         if (fragment) {
           const oAuthToken = this.oAuthService.parseAuthResponse(fragment);
@@ -63,83 +125,58 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
         return of({});
       })
     )
-    .subscribe(() => this.router.navigate(['/yandex-disk']));
-
-    this.subscription.add(sub1);
-    this.subscription.add(sub2);
-
-    this.yandexDiskHubService.buildHubConnection();
-
-    this.subscription.add(from(this.yandexDiskHubService.startHubConnection()).subscribe({
-      next: async () => {
-        console.log('Connected to SignalR hub.');
-        await this.yandexDiskHubService.registerClient(this.userId);
-      },
-      error: (error) => console.log('An error has occurred while connecting to SignalR hub. ' + error)
-    }));
-
-
-    const sub3 = this.yandexDiskHubService.yandexDiskError().subscribe({
-      next: async (error) => {
-        this.hasError = true;
-        this.error = error;
-        this.isRunning = false;
-        console.log('processing error.')
-        await this.getUser().toPromise();
-      }
+    .subscribe({
+      next: () => this.router.navigate(['/yandex-disk']),
+      error: () => this.showSnackBar('An error has occurred while parsing URL.')
     });
 
-    const sub4 = this.yandexDiskHubService.yandexDiskProgress().subscribe({
+    this.subscriptions.add(routeSub);
+  }
+
+  private subscribeToHubEvents(): void {
+    this.yandexDiskHubService.buildHubConnection();
+
+    const startHubConnectionSub = from(this.yandexDiskHubService.startHubConnection()).pipe(
+      switchMap(() => {
+        return this.yandexDiskHubService.registerClient(this.userId);
+      }))
+      .subscribe({
+        next: () => this.showSnackBar('Connected to SignalR hub. Client registered.'),
+        error: () => this.showSnackBar('An error has occurred while connecting to SignalR hub.')
+      });
+
+    const errorSub = this.yandexDiskHubService.yandexDiskError().pipe(
+      switchMap(error => {
+        this.setState(false, true, error);
+
+        return this.userService.getUser(this.userId);
+      })
+    ).subscribe({
+      next: user => this.onGetUser(user),
+      error: () => this.showSnackBar('error occurred')
+    });
+
+    const progressSub = this.yandexDiskHubService.yandexDiskProgress().subscribe({
       next: (progress) => {
         this.progressString = `Processed ${progress.processed} of ${progress.total}`;
       }
     });
 
-    this.subscription.add(sub3);
-    this.subscription.add(sub4);
+    this.subscriptions.add(startHubConnectionSub);
+    this.subscriptions.add(errorSub);
+    this.subscriptions.add(progressSub);
   }
 
-  ngOnDestroy(): void {
-    this.subscription.add(from(this.yandexDiskHubService.stopHubConnection()).subscribe({
-      next: () => console.log('Disconnected from SignalR hub.'),
-      error: () => console.log('An error has occurred while disconnecting to SignalR hub.')
-    }));
-
-    this.subscription.unsubscribe();
+  private onGetUser(user: User) {
+    this.user = user;
+    this.status = ProcessingStatus[user.yandexDiskStatus];
+    this.isRunning = user.yandexDiskStatus == ProcessingStatus.Running;
   }
 
-  authorize() {
-    this.oAuthService.authorize();
-  }
-
-  startProcessing() {
-    this.yandexDiskService.startProcessing(this.userId).subscribe({
-      next: async () => {
-        console.log('started processing');
-        this.hasError = false;
-        this.error = '';
-        this.isRunning = true;
-        await this.getUser().toPromise();
-      }
-    });
-  }
-
-  stopProcessing() {
-    this.yandexDiskService.stopProcessing(this.userId).subscribe({
-      next: async () => {
-        console.log('stopped processing');
-        this.hasError = false;
-        this.error = '';
-        this.isRunning = false;
-        await this.getUser().toPromise();
-      }
-    });
-  }
-
-  deleteAllData() {
-    this.dataService.deleteAllData().subscribe({
-      next: () => console.log('data deleted')
-    })
+  private setState(isRunning: boolean, hasError: boolean, error?: string): void {
+    this.hasError = hasError;
+    this.error = error ? error : '';
+    this.isRunning = isRunning;
   }
 
   private getUser(): Observable<User> {
@@ -150,5 +187,9 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
         this.isRunning = true;
       }
     }));
+  }
+
+  private showSnackBar(message: string): void {
+    this.snackBar.open(message, 'Close', { duration: 1500 });
   }
 }

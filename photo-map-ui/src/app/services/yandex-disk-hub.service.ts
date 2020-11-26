@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { Progress } from '../models/progress.model';
 import { SignalRService } from './signalr.service';
 
 @Injectable()
@@ -24,7 +25,7 @@ export class YandexDiskHubService extends SignalRService {
         return this.subjects['YandexDiskError'].asObservable();
     }
 
-    yandexDiskProgress(): Observable<any> {
+    yandexDiskProgress(): Observable<Progress> {
         return this.subjects['YandexDiskProgress'].asObservable();
     }
 
