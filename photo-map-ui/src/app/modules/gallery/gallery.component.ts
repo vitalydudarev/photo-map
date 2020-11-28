@@ -6,6 +6,9 @@ import { UserPhotosService } from '../../core/services/user-photos.service';
 import { environment } from 'src/environments/environment';
 import { ButtonsStrategy, ButtonsConfig } from '@ks89/angular-modal-gallery';
 import { PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpParams } from '@angular/common/http';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-modal-gallery-page',
@@ -16,8 +19,6 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
   showSpinner: boolean = false;
   images: Image[] = [];
-  private subscription: Subscription;
-  private apiUrl: string = `${environment.photoMapApiUrl}`;
 
   dotsConfig: DotsConfig = {
     visible: false
@@ -34,16 +35,40 @@ export class GalleryComponent implements OnInit, OnDestroy {
   };
 
   totalCount: number = 0;
-  pageIndex: number = 0
+  pageIndex: number = 0;
   pageSize: number = 100;
   pageSizes: number[] = [100, 250, 500, 1000];
 
+  private subscription: Subscription;
+  private apiUrl: string = `${environment.photoMapApiUrl}`;
+  private pageConst = 'page';
+  private pageSizeConst = 'pageSize';
+
   constructor(
+    private router: Router,
+    private location: Location,
+    private activatedRoute: ActivatedRoute,
     private userPhotosService: UserPhotosService) {
   }
 
   ngOnInit(): void {
+    this.activatedRoute.queryParams.subscribe({
+      next: params => {
+        const pageIndex = params[this.pageConst];
+        const pageSize = params[this.pageSizeConst];
+
+        if (pageIndex) {
+          this.pageIndex = parseInt(pageIndex) - 1;
+        }
+        
+        if (pageSize) {
+          this.pageSize = parseInt(pageSize);
+        }
+      }
+    });
+
     this.setImages();
+    this.addQueryString();
   }
 
   ngOnDestroy(): void {
@@ -54,7 +79,17 @@ export class GalleryComponent implements OnInit, OnDestroy {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
 
+    this.addQueryString();
+
     this.setImages();
+  }
+
+  private addQueryString() {
+    const params = new HttpParams()
+      .append(this.pageConst, (this.pageIndex + 1).toString())
+      .append(this.pageSizeConst, this.pageSize.toString());
+
+    this.location.go(this.router.url.split("?")[0], params.toString());
   }
 
   private setImages() {
