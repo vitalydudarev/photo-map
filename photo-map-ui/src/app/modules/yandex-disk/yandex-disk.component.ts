@@ -2,15 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, from, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { User } from '../core/models/user.model';
-import { UserService } from '../core/services/user.service';
-import { YandexDiskHubService } from '../core/services/yandex-disk-hub.service';
-import { YandexDiskService } from '../core/services/yandex-disk.service';
-import { ProcessingStatus } from '../core/models/processing-status.enum';
-import { DataService } from '../core/services/data.service';
-import { OAuthConfiguration } from '../core/models/oauth-configuration.model';
-import { OAuthService } from "../core/services/oauth.service";
-import { environment } from "../../environments/environment";
+import { User } from '../../core/models/user.model';
+import { UserService } from '../../core/services/user.service';
+import { YandexDiskHubService } from '../../core/services/yandex-disk-hub.service';
+import { YandexDiskService } from '../../core/services/yandex-disk.service';
+import { ProcessingStatus } from '../../core/models/processing-status.enum';
+import { DataService } from '../../core/services/data.service';
+import { OAuthConfiguration } from '../../core/models/oauth-configuration.model';
+import { OAuthService } from '../../core/services/oauth.service';
+import { environment } from '../../../environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({

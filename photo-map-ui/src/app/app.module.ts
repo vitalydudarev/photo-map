@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { GalleryComponent } from './gallery/gallery.component';
+import { GalleryComponent } from './modules/gallery/gallery.component';
 
 import { MatSidenavModule } from  '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
@@ -25,7 +25,7 @@ import 'mousetrap'; // Mandatory for angular-modal-gallery 3.x.x or greater (`np
 import { FormsModule } from '@angular/forms';
 
 import { UserService } from './core/services/user.service';
-import { YandexDiskComponent } from './yandex-disk/yandex-disk.component';
+import { YandexDiskComponent } from './modules/yandex-disk/yandex-disk.component';
 import { YandexDiskService } from './core/services/yandex-disk.service';
 import { UserPhotosService } from './core/services/user-photos.service';
 import { YandexDiskHubService } from './core/services/yandex-disk-hub.service';
@@ -33,13 +33,13 @@ import { DataService } from './core/services/data.service';
 import { OAuthModule } from './oauth.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { MapComponent } from './map/map.component';
+import { MapComponent } from './modules/map/map.component';
 import { AgmCoreModule } from '@agm/core';
 import { AgmOverlays } from "agm-overlays";
 import { AgmMarkerClustererModule } from "@agm/markerclusterer";
-import { SharedModule } from './shared/shared.module';
+import { SharedModule } from './modules/shared/shared.module';
 import { LocalStorageModule } from "angular-2-local-storage";
-import { DropboxComponent } from "./dropbox/dropbox.component";
+import { DropboxComponent } from "./modules/dropbox/dropbox.component";
 
 @NgModule({
   declarations: [
