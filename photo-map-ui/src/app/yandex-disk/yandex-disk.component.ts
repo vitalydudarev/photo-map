@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, from, Observable, of } from 'rxjs';
-import { tap, switchMap } from 'rxjs/operators';
+import { Subscription, from, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { User } from '../models/user.model';
 import { UserService } from '../services/user.service';
 import { YandexDiskHubService } from '../services/yandex-disk-hub.service';
@@ -30,6 +30,10 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
   progressBarValue: number = 0;
   progressBarMode: string;
 
+  get action(): string {
+    return this.isRunning ? 'Stop' : 'Start';
+  }
+
   private subscriptions: Subscription = new Subscription();
   private user: User;
   private userId: number = 1;
@@ -52,7 +56,9 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
 
     this.onRouteChanged();
 
-    this.subscribeToHubEvents();
+    this.startHub();
+    this.subscribeToErrorEvent();
+    this.subscribeToProgressEvent();
   }
 
   ngOnDestroy(): void {
@@ -68,30 +74,30 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     this.oAuthService.authorize();
   }
 
-  startProcessing() {
-    this.progressBarMode = 'buffer';
+  startStopProcessing() {
+    if (!this.isRunning) {
+      this.progressBarMode = 'buffer';
 
-    const startProcessingSub = this.yandexDiskService.startProcessing(this.userId).subscribe({
-      next: () => {
-        this.setState(true, false, '');
-        this.showSnackBar('Started processing.')
-      },
-      error: () => this.showSnackBar('Failed to start processing.')
-    });
-
-    this.subscriptions.add(startProcessingSub);
-  }
-
-  stopProcessing() {
-    const stopProcessingSub = this.yandexDiskService.stopProcessing(this.userId).subscribe({
-      next: () => {
-        this.setState(false, false);
-        this.showSnackBar('Stopped processing');
-      },
-      error: () => this.showSnackBar('Failed to stop processing.')
-    });
-
-    this.subscriptions.add(stopProcessingSub);
+      const startProcessingSub = this.yandexDiskService.startProcessing(this.userId).subscribe({
+        next: () => {
+          this.setState(true, false, '');
+          this.showSnackBar('Started processing.')
+        },
+        error: () => this.showSnackBar('Failed to start processing.')
+      });
+  
+      this.subscriptions.add(startProcessingSub);
+    } else {
+      const stopProcessingSub = this.yandexDiskService.stopProcessing(this.userId).subscribe({
+        next: () => {
+          this.setState(false, false);
+          this.showSnackBar('Stopped processing');
+        },
+        error: () => this.showSnackBar('Failed to stop processing.')
+      });
+  
+      this.subscriptions.add(stopProcessingSub);
+    }
   }
 
   deleteAllData() {
@@ -138,7 +144,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     this.subscriptions.add(routeSub);
   }
 
-  private subscribeToHubEvents(): void {
+  private startHub() {
     this.yandexDiskHubService.buildHubConnection();
 
     const startHubConnectionSub = from(this.yandexDiskHubService.startHubConnection()).pipe(
@@ -150,6 +156,10 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
         error: () => this.showSnackBar('An error has occurred while connecting to SignalR hub.')
       });
 
+    this.subscriptions.add(startHubConnectionSub);
+  }
+
+  private subscribeToErrorEvent() {
     const errorSub = this.yandexDiskHubService.yandexDiskError().pipe(
       switchMap(error => {
         this.setState(false, true, error);
@@ -161,17 +171,22 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
       error: () => this.showSnackBar('error occurred')
     });
 
+    this.subscriptions.add(errorSub);
+  }
+
+  private subscribeToProgressEvent() {
     const progressSub = this.yandexDiskHubService.yandexDiskProgress().subscribe({
       next: (progress) => {
         this.progressBarMode = 'determinate';
         this.progressString = `Processed ${progress.processed} of ${progress.total}`;
         this.progressBarValue = (progress.processed / progress.total) * 100;
-        console.log(this.progressBarValue);
+        
+        if (progress.processed == progress.total) {
+          this.isRunning = false;
+        }
       }
     });
 
-    this.subscriptions.add(startHubConnectionSub);
-    this.subscriptions.add(errorSub);
     this.subscriptions.add(progressSub);
   }
 
