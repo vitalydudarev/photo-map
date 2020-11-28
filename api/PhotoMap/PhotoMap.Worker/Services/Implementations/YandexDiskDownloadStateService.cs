@@ -33,7 +33,6 @@ namespace PhotoMap.Worker.Services.Implementations
             }
             else
             {
-
                 _logger.LogInformation($"File {FileName} not found.");
             }
         }

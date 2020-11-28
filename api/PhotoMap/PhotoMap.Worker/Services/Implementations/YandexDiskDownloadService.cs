@@ -124,7 +124,7 @@ namespace PhotoMap.Worker.Services.Implementations
                 var key = new YandexDiskFileKey(disk.User.Login, disk.User.Uid, resource.Name, filePath, savedFile.Id,
                     resource.File, resource.Path, createdOn);
 
-                _logger.LogInformation($"Finished downloading {key}.");
+                _logger.LogInformation($"Finished downloading {resource.Name}.");
 
                 return key;
             }
