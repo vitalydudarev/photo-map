@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from "rxjs";
 
 import { GridLayout, Image, PlainGalleryConfig, PlainGalleryStrategy, DotsConfig } from '@ks89/angular-modal-gallery';
-import { UserPhotosService } from '../services/user-photos.service';
+import { UserPhotosService } from '../core/services/user-photos.service';
 import { environment } from 'src/environments/environment';
 import { ButtonsStrategy, ButtonsConfig } from '@ks89/angular-modal-gallery';
 import { PageEvent } from '@angular/material/paginator';

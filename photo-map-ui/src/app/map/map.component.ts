@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from "rxjs";
 
-import { UserPhotosService } from '../services/user-photos.service';
+import { UserPhotosService } from '../core/services/user-photos.service';
 import { environment } from 'src/environments/environment';
 import { AgmInfoWindow } from '@agm/core';
 

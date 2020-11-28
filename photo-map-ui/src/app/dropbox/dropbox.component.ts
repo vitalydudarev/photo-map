@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, from, Observable, of } from 'rxjs';
-import { tap, switchMap } from 'rxjs/operators';
-import { User } from '../models/user.model';
-import { UserService } from '../services/user.service';
-import { OAuthConfiguration } from '../models/oauth-configuration.model';
-import { OAuthService } from "../services/oauth.service";
+import { Subscription, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { User } from '../core/models/user.model';
+import { UserService } from '../core/services/user.service';
+import { OAuthConfiguration } from '../core/models/oauth-configuration.model';
+import { OAuthService } from "../core/services/oauth.service";
 import { environment } from "../../environments/environment";
-import { ProcessingStatus } from '../models/processing-status.enum';
+import { ProcessingStatus } from '../core/models/processing-status.enum';
 
 @Component({
   selector: 'app-dropbox',

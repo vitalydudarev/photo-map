@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from "../../environments/environment";
 import { Photo } from '../models/photo.model';
 import { PagedResponse } from '../models/paged-response.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class UserPhotosService {

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { OAuthService } from "./services/oauth.service";
+import { OAuthService } from "./core/services/oauth.service";
 
 
 @NgModule({
