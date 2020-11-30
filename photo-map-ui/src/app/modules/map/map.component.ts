@@ -4,14 +4,7 @@ import { Subscription } from "rxjs";
 import { UserPhotosService } from '../../core/services/user-photos.service';
 import { environment } from 'src/environments/environment';
 import { AgmInfoWindow } from '@agm/core';
-
-export class MarkerWrapper {
-  latitude: number;
-  longitude: number;
-  title: string;
-  icon: any;
-  previewImageUrl: string;
-}
+import { MarkerWrapper } from 'src/app/core/models/marker-wrapper.model';
 
 @Component({
   selector: 'app-map',
@@ -20,7 +13,7 @@ export class MarkerWrapper {
 })
 export class MapComponent implements OnInit, OnDestroy {
 
-  markers: any[] = [];
+  markers: MarkerWrapper[] = [];
   center: { lat: number, lng: number } = { lat: 0, lng: 0 };
 
   private apiUrl: string = `${environment.photoMapApiUrl}`;
@@ -30,18 +23,14 @@ export class MapComponent implements OnInit, OnDestroy {
   private infoWindowOpened: AgmInfoWindow;
   private previousInfoWindow: AgmInfoWindow;
 
+  private userId: number = 1;
+  private pageSize: number = 100;
+
   constructor(private userPhotosService: UserPhotosService) {
   }
 
   ngOnInit(): void {
-    navigator.geolocation.getCurrentPosition((position) => {
-      this.center = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      }
-    });
-
-    this.getPhotos();
+    this.setMarkers();
   }
 
   ngOnDestroy(): void {
@@ -65,9 +54,8 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getPhotos() {
-    this.subscription = this.userPhotosService.getUserPhotos(1, 100, 0).subscribe(pageResponse => {
-      let i = 1;
+  private setMarkers() {
+    this.subscription = this.userPhotosService.getUserPhotos(this.userId, this.pageSize, 0).subscribe(pageResponse => {
 
       for (let photo of pageResponse.values) {
         if (photo.latitude && photo.longitude) {
@@ -75,11 +63,51 @@ export class MapComponent implements OnInit, OnDestroy {
           const marker = this.createMarker(title, photo.latitude, photo.longitude, `${this.apiUrl}/${photo.thumbnailSmallUrl}`);
 
           this.markers.push(marker);
-
-          i++;
         }
       }
+
+      this.setMapCenter();
     });
+  }
+
+  private setMapCenter() {
+    const coords = this.calculateMapCenter();
+
+    this.center = {
+      lat: coords.lat,
+      lng: coords.lng,
+    }
+  }
+
+  private calculateMapCenter() {
+    let minLat: number = this.markers[0].latitude;
+    let minLng: number = this.markers[0].longitude;
+    let maxLat: number = this.markers[0].latitude;
+    let maxLng: number = this.markers[0].longitude;
+
+    for (let i = 1; i < this.markers.length; i++) {
+      const marker = this.markers[i];
+      if (marker.latitude < minLat) {
+        minLat = marker.latitude;
+      }
+
+      if (marker.latitude > maxLat) {
+        maxLat = marker.latitude;
+      }
+
+      if (marker.longitude < minLng) {
+        minLng = marker.longitude;
+      }
+
+      if (marker.longitude > maxLng) {
+        maxLng = marker.longitude;
+      }
+    }
+
+    const centerLat = (minLat + maxLat) / 2;
+    const centerLng = (minLng + maxLng) / 2;
+
+    return { lat: centerLat, lng: centerLng };
   }
 
   private createMarker(title: string, latitude: number, longitude: number, thumbnailUrl: string): MarkerWrapper {
