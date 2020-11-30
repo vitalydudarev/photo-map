@@ -50,9 +50,8 @@ namespace PhotoMap.Api.Database.Services
                 Latitude = a.Latitude,
                 Longitude = a.Longitude,
                 PhotoUrl = "yandex-disk/photos/" + a.Id,
-                ThumbnailLargeFileId = a.ThumbnailLargeFileId,
-                ThumbnailSmallFileId = a.ThumbnailSmallFileId,
-                ThumbnailUrl = "photos/" + a.ThumbnailSmallFileId
+                ThumbnailLargeUrl = "photos/" + a.ThumbnailLargeFileId,
+                ThumbnailSmallUrl = "photos/" + a.ThumbnailSmallFileId
             }).ToArray();
 
             return new PagedResponse<PhotoDto> { Values = values, Limit = top, Offset = skip, Total = totalRecords };

@@ -8,9 +8,9 @@ namespace PhotoMap.Api.DTOs
 
         public string PhotoUrl { get; set; }
 
-        public long ThumbnailSmallFileId { get; set; }
+        public string ThumbnailSmallUrl { get; set; }
 
-        public long ThumbnailLargeFileId { get; set; }
+        public string ThumbnailLargeUrl { get; set; }
 
         public DateTime DateTimeTaken { get; set; }
 
@@ -19,7 +19,5 @@ namespace PhotoMap.Api.DTOs
         public double? Longitude { get; set; }
 
         public string FileName { get; set; }
-
-        public string ThumbnailUrl { get; set; }
     }
 }

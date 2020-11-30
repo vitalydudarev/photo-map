@@ -109,7 +109,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
             description: photo.fileName
           },
           {
-            img: `${this.apiUrl}/photos/${photo.thumbnailLargeFileId}`,
+            img: `${this.apiUrl}/${photo.thumbnailLargeUrl}`,
             description: photo.fileName
           });
 
