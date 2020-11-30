@@ -72,7 +72,7 @@ export class MapComponent implements OnInit, OnDestroy {
       for (let photo of pageResponse.values) {
         if (photo.latitude && photo.longitude) {
           const title = photo.fileName;
-          const marker = this.createMarker(title, photo.latitude, photo.longitude, `${this.apiUrl}/${photo.thumbnailUrl}`);
+          const marker = this.createMarker(title, photo.latitude, photo.longitude, `${this.apiUrl}/${photo.thumbnailSmallUrl}`);
 
           this.markers.push(marker);
 
