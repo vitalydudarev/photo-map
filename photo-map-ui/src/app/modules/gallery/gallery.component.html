@@ -1,11 +1,27 @@
-<mat-paginator
-    [length]="totalCount"
-    [pageIndex]="pageIndex"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="pageSizes"
-    [showFirstLastButtons]="true"
-    (page)="pageUpdated($event)">
-</mat-paginator>
+<div class="m-2">
+    <mat-card>
+        <div class="d-flex align-items-start justify-content-between">
+            <mat-button-toggle-group #group="matButtonToggleGroup" [(value)]="selectedViewMode"
+                (change)="onViewModeChanged(group.value)">
+                <mat-button-toggle value="{{tileViewMode}}">
+                    <mat-icon>apps</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle value="{{mapViewMode}}">
+                    <mat-icon>menu</mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+
+            <mat-paginator
+                [length]="totalCount"
+                [pageIndex]="pageIndex"
+                [pageSize]="pageSize"
+                [pageSizeOptions]="pageSizes"
+                [showFirstLastButtons]="true"
+                (page)="pageUpdated($event)">
+            </mat-paginator>
+        </div>
+    </mat-card>
+</div>
 
 <div class="spinner-wrapper" *ngIf="showSpinner" style="height: calc(100% - 64px);">
     <mat-spinner></mat-spinner>

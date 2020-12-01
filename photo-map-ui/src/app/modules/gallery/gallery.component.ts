@@ -39,6 +39,10 @@ export class GalleryComponent implements OnInit, OnDestroy {
   pageSize: number = 100;
   pageSizes: number[] = [100, 250, 500, 1000];
 
+  tileViewMode: string = 'tileViewMode';
+  mapViewMode: string = 'mapViewMode';
+  selectedViewMode: string = this.tileViewMode;
+
   private subscription: Subscription;
   private apiUrl: string = `${environment.photoMapApiUrl}`;
   private pageConst = 'page';
@@ -73,6 +77,10 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  onViewModeChanged(value: string) {
+    this.selectedViewMode = value;
   }
 
   pageUpdated(event: PageEvent) {
