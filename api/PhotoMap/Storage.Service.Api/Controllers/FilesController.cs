@@ -44,6 +44,18 @@ namespace Storage.Service.Controllers
             return NotFound(fileId);
         }
 
+        [HttpGet("info")]
+        public async Task<IActionResult> GetFileInfoByFileNameAsync([FromQuery] string fileName)
+        {
+            _logger.LogInformation("GetFileInfoByFileNameAsync: request received: fileName - " + fileName);
+
+            var fileInfo = await _fileService.GetFileInfoByFileNameAsync(fileName);
+            if (fileInfo != null)
+                return Ok(fileInfo);
+
+            return NotFound(fileName);
+        }
+
         [HttpPost]
         public async Task<IActionResult> SaveFileAsync([FromForm] IFormFile file)
         {

@@ -28,6 +28,11 @@ namespace Storage.Service.Database.Repository
             return await _context.Files.FindAsync(fileId);
         }
 
+        public async Task<File> GetByFileNameAsync(string fileName)
+        {
+            return await _context.Files.FirstOrDefaultAsync(a => a.FileName == fileName);
+        }
+
         public async Task<IEnumerable<File>> GetAllAsync()
         {
             return await _context.Files.ToListAsync();

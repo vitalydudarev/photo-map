@@ -6,6 +6,8 @@ namespace PhotoMap.Api.ServiceClients.StorageService
     {
         Task<byte[]> GetFileAsync(long fileId);
 
+        Task DeleteFileAsync(long fileId);
+
         Task DeleteAllFilesAsync();
     }
 }

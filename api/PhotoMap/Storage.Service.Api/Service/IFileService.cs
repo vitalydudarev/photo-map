@@ -8,6 +8,7 @@ namespace Storage.Service.Service
         Task<OutgoingFile> SaveAsync(string fileName, byte[] fileContents);
         Task<byte[]> GetFileContentsAsync(long fileId);
         Task<OutgoingFileInfo> GetFileInfoAsync(long fileId);
+        Task<OutgoingFileInfo> GetFileInfoByFileNameAsync(string fileName);
         Task DeleteFileAsync(long fileId);
         Task DeleteAllFilesAsync();
     }

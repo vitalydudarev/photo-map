@@ -7,9 +7,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using PhotoMap.Api.Database;
 using PhotoMap.Api.Database.Services;
+using PhotoMap.Api.Handlers;
 using PhotoMap.Api.Hubs;
 using PhotoMap.Api.ServiceClients.StorageService;
 using PhotoMap.Api.Services;
+using PhotoMap.Api.Settings;
 using PhotoMap.Messaging;
 using PhotoMap.Messaging.CommandHandler;
 using PhotoMap.Messaging.CommandHandlerManager;
@@ -58,14 +60,15 @@ namespace PhotoMap.Api
             services.AddHostedService<HostedService>();
 
             services.AddSingleton<YandexDiskHub>();
+            services.AddSingleton<DropboxHub>();
 
             services.AddSingleton<ICommandHandler, ProgressMessageHandler>();
             services.AddSingleton<ICommandHandler, ResultsCommandHandler>();
-            services.AddSingleton<ICommandHandler, YandexDiskNotificationHandler>();
+            services.AddSingleton<ICommandHandler, NotificationHandler>();
             services.AddSingleton<IMessageSender, RabbitMqMessageSender>();
             services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
             services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
-            services.AddScoped<Database.Services.IUserService, Database.Services.UserService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IStorageService, StorageServiceClient>();
 
             services.AddDbContext<PhotoMapContext>();
@@ -103,6 +106,7 @@ namespace PhotoMap.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<YandexDiskHub>("/yandex-disk-hub");
+                endpoints.MapHub<DropboxHub>("/dropbox-hub");
                 endpoints.MapControllers();
             });
 

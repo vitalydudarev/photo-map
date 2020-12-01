@@ -1,9 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, InjectionToken } from '@angular/core';
+import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { GalleryComponent } from './gallery/gallery.component';
+import { GalleryComponent } from './modules/gallery/gallery.component';
 
 import { MatSidenavModule } from  '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
@@ -14,6 +14,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from  '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import { HttpClientModule } from '@angular/common/http';
 import { GalleryModule } from '@ks89/angular-modal-gallery';
@@ -22,32 +25,29 @@ import 'hammerjs'; // Mandatory for angular-modal-gallery 3.x.x or greater (`npm
 import 'mousetrap'; // Mandatory for angular-modal-gallery 3.x.x or greater (`npm i --save mousetrap`)
 import { FormsModule } from '@angular/forms';
 
-import { UserService } from './services/user.service';
-import { YandexDiskComponent } from './yandex-disk/yandex-disk.component';
-import { YandexDiskService } from './services/yandex-disk.service';
-import { UserPhotosService } from './services/user-photos.service';
-import { SignalRService } from './services/signalr.service';
-import { YandexDiskHubService } from './services/yandex-disk-hub.service';
-import { DataService } from './services/data.service';
-import { SharedModule } from './modules/shared/shared.module';
-import { OAuthConfiguration } from './models/oauth-configuration.model';
-import { environment } from 'src/environments/environment';
-import { OAuthService } from './services/oauth.service';
+import { UserService } from './core/services/user.service';
+import { YandexDiskComponent } from './modules/yandex-disk/yandex-disk.component';
+import { YandexDiskService } from './core/services/yandex-disk.service';
+import { UserPhotosService } from './core/services/user-photos.service';
+import { YandexDiskHubService } from './core/services/yandex-disk-hub.service';
+import { DataService } from './core/services/data.service';
 import { OAuthModule } from './oauth.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { MapComponent } from './map/map.component';
+import { MapComponent } from './modules/map/map.component';
 import { AgmCoreModule } from '@agm/core';
-import {AgmOverlays} from "agm-overlays";
-import {AgmMarkerClustererModule} from "@agm/markerclusterer";
-
-const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
+import { AgmOverlays } from "agm-overlays";
+import { AgmMarkerClustererModule } from "@agm/markerclusterer";
+import { SharedModule } from './modules/shared/shared.module';
+import { LocalStorageModule } from "angular-2-local-storage";
+import { DropboxComponent } from "./modules/dropbox/dropbox.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     GalleryComponent,
     YandexDiskComponent,
+    DropboxComponent,
     MapComponent
   ],
   imports: [
@@ -70,7 +70,7 @@ const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
 
     SharedModule,
 
-    OAuthModule.forRoot(environment.oAuth as OAuthConfiguration),
+    OAuthModule,
 
     NgbModule,
 
@@ -78,7 +78,14 @@ const oAuthConfiguration = new InjectionToken<OAuthConfiguration>(null);
         apiKey: 'AIzaSyDzEycFoLft4yGNSC-F54OUhBMwGr1He_4'
     }),
     AgmOverlays,
-    AgmMarkerClustererModule
+    AgmMarkerClustererModule,
+    LocalStorageModule.forRoot({
+      prefix: 'dropbox',
+      storageType: 'localStorage'
+    }),
+    MatSnackBarModule,
+    MatProgressBarModule,
+    MatButtonToggleModule
   ],
   providers: [
     UserService,

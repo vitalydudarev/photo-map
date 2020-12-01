@@ -79,17 +79,26 @@ namespace PhotoMap.Api.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<int?>("DropboxStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("DropboxToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("DropboxTokenExpiresOn")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("YandexDiskStatus")
+                    b.Property<int?>("YandexDiskStatus")
                         .HasColumnType("integer");
 
                     b.Property<string>("YandexDiskToken")
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("YandexDiskTokenExpiresOn")
+                    b.Property<DateTimeOffset?>("YandexDiskTokenExpiresOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");

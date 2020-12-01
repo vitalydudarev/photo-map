@@ -11,6 +11,8 @@ namespace PhotoMap.Api.Database.Services
 
         Task<Photo> GetAsync(int id);
 
+        Task<Photo> GetByFileNameAsync(string fileName);
+
         Task<PagedResponse<PhotoDto>> GetByUserIdAsync(int userId, int top, int skip);
 
         Task DeleteByUserId(int userId);

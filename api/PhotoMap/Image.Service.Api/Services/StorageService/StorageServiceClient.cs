@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Image.Service.Services.DTOs;
+using Image.Service.Settings;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 

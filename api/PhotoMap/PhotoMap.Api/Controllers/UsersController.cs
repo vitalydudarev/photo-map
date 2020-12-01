@@ -21,9 +21,18 @@ namespace PhotoMap.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> AddTokenAsync([FromBody] AddUserDto addUserDto)
+        public async Task<IActionResult> AddUserAsync([FromBody] AddUserDto addUserDto)
         {
             await _dbUserService.AddAsync(addUserDto);
+
+            return Ok();
+        }
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] UpdateUserDto updateUserDto)
+        {
+            await _dbUserService.UpdateAsync(id, updateUserDto);
 
             return Ok();
         }

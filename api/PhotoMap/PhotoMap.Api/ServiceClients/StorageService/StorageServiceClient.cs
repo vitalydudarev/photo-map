@@ -1,6 +1,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using PhotoMap.Api.Settings;
 
 namespace PhotoMap.Api.ServiceClients.StorageService
 {
@@ -22,6 +23,12 @@ namespace PhotoMap.Api.ServiceClients.StorageService
             var deserialized = await responseMessage.Content.ReadAsByteArrayAsync();
 
             return deserialized;
+        }
+
+        public async Task DeleteFileAsync(long fileId)
+        {
+            var url = _settings.ApiUrl + "/" + fileId;
+            var responseMessage = await _httpClient.DeleteAsync(url);
         }
 
         public async Task DeleteAllFilesAsync()

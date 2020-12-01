@@ -18,6 +18,12 @@ namespace PhotoMap.Api.Database.Configurations
                 .Property(a => a.YandexDiskTokenExpiresOn);
             builder
                 .Property(a => a.YandexDiskStatus);
+            builder
+                .Property(a => a.DropboxToken);
+            builder
+                .Property(a => a.DropboxTokenExpiresOn);
+            builder
+                .Property(a => a.DropboxStatus);
             builder.ToTable("Users");
         }
     }

@@ -75,9 +75,16 @@ namespace GraphicsLibrary
 
         public byte[] GetImageBytes()
         {
-            var encodedData = _image.Encode(SKEncodedImageFormat.Jpeg, Quality);
+            if (_image != null)
+            {
+                var encodedData = _image.Encode(SKEncodedImageFormat.Jpeg, Quality);
 
-            return encodedData.ToArray();
+                return encodedData.ToArray();
+            }
+
+            var data = SKImage.FromBitmap(_bitmap).Encode(SKEncodedImageFormat.Jpeg, Quality);
+
+            return data.ToArray();
         }
 
         public void Dispose()

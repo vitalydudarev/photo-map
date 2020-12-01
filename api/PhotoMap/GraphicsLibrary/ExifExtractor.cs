@@ -101,18 +101,12 @@ namespace GraphicsLibrary
 
         private static byte? ParseByte(Directory subIfd, int tag)
         {
-            if (subIfd.TryGetByte(tag, out var byteValue))
-                return byteValue;
-
-            return null;
+            return subIfd.TryGetByte(tag, out var byteValue) ? byteValue : (byte?) null;
         }
 
         private static int? ParseInt(Directory directory, int tag)
         {
-            if (directory.TryGetInt32(tag, out var intValue))
-                return intValue;
-
-            return null;
+            return directory.TryGetInt32(tag, out var intValue) ? intValue : (int?) null;
         }
 
         private static T ParseRational<T>(Rational rational)
@@ -127,13 +121,10 @@ namespace GraphicsLibrary
         private static T ParseRational<T>(Rational rational, Func<object, T> convert)
         {
             // causes boxing and unboxing
-            var orig = (rational.Numerator / (double) rational.Denominator);
+            var orig = rational.Numerator / (double) rational.Denominator;
             var boxed = (object) orig;
 
             return convert(boxed);
-
-            var unboxed = (T) boxed;
-            return (T)(object)(rational.Numerator / (double) rational.Denominator);
         }
 
         private static T? ParseRational<T>(Directory directory, int tag, Func<double, T> convert) where T : struct
@@ -151,16 +142,13 @@ namespace GraphicsLibrary
 
         private static LatLng ParseLatLng(Rational[]? array)
         {
-            if (array != null)
-            {
-                var degrees = ParseRational<double>(array[0]);
-                var minutes = ParseRational<double>(array[1]);
-                var seconds = ParseRational<double>(array[2]);
+            if (array == null) return null;
 
-                return new LatLng { Degrees = degrees, Minutes = minutes, Seconds = seconds };
-            }
+            var degrees = ParseRational<double>(array[0]);
+            var minutes = ParseRational<double>(array[1]);
+            var seconds = ParseRational<double>(array[2]);
 
-            return null;
+            return new LatLng { Degrees = degrees, Minutes = minutes, Seconds = seconds };
         }
 
         private static DateTime? ParseDateTime(Directory gpsDirectory, DateTimeStyles dateTimeStyles)
@@ -168,20 +156,17 @@ namespace GraphicsLibrary
             var timeStamp = gpsDirectory.GetRationalArray(GpsDirectory.TagTimeStamp);
             var dateStamp = gpsDirectory.GetString(GpsDirectory.TagDateStamp);
 
-            if (timeStamp != null && dateStamp != null)
-            {
-                var hour = ParseRational(timeStamp[0], Convert.ToInt32);
-                var minute = ParseRational(timeStamp[1], Convert.ToInt32);
-                var second = ParseRational(timeStamp[2], Convert.ToInt32);
+            if (timeStamp == null || dateStamp == null) return null;
 
-                static string Format(int i) => i < 10 ? $"0{i}" : i.ToString();
+            var hour = ParseRational(timeStamp[0], Convert.ToInt32);
+            var minute = ParseRational(timeStamp[1], Convert.ToInt32);
+            var second = ParseRational(timeStamp[2], Convert.ToInt32);
 
-                var dateTimeStr = $"{dateStamp} {Format(hour)}:{Format(minute)}:{Format(second)}Z";
+            static string Format(int i) => i < 10 ? $"0{i}" : i.ToString();
 
-                return ParseDateTime(dateTimeStr, dateTimeStyles);
-            }
+            var dateTimeStr = $"{dateStamp} {Format(hour)}:{Format(minute)}:{Format(second)}Z";
 
-            return null;
+            return ParseDateTime(dateTimeStr, dateTimeStyles);
         }
 
         private static DateTime? ParseDateTime(string dateTimeStr, DateTimeStyles dateTimeStyles)

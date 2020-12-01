@@ -1,11 +1,13 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using GraphicsLibrary;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PhotoMap.Api.Database.Services;
-using PhotoMap.Messaging.Commands;
+using PhotoMap.Common.Commands;
+using PhotoMap.Common.Models;
 using PhotoMap.Messaging.MessageSender;
 using Yandex.Disk.Api.Client;
 
@@ -34,24 +36,31 @@ namespace PhotoMap.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> RunProcessing([FromBody] int userId)
+        public async Task<IActionResult> StartProcessing([FromBody] int userId)
         {
             var user = await _userService.GetAsync(userId);
-            var runProcessingCommand = new RunProcessingCommand { UserId = userId, Token = user.YandexDiskAccessToken };
+            var startProcessingCommand = new StartProcessingCommand
+            {
+                UserIdentifier = new YandexDiskUserIdentifier { UserId = user.Id },
+                Token = user.YandexDiskAccessToken
+            };
 
-            _messageSender.Send(runProcessingCommand);
+            _messageSender.Send(startProcessingCommand);
 
             return Ok();
         }
 
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> StopProcessing(int userId)
+        public async Task<IActionResult> PauseProcessing(int userId)
         {
             var user = await _userService.GetAsync(userId);
-            var stopProcessingCommand = new StopProcessingCommand { UserId = userId };
+            var pauseProcessingCommand = new PauseProcessingCommand
+            {
+                UserIdentifier = new YandexDiskUserIdentifier { UserId = user.Id }
+            };
 
-            _messageSender.Send(stopProcessingCommand);
+            _messageSender.Send(pauseProcessingCommand);
 
             return NoContent();
         }
@@ -68,6 +77,12 @@ namespace PhotoMap.Api.Controllers
             var downloadUrl = await yandexDiskApiClient.GetDownloadUrlAsync(photo.Path, new CancellationToken());
 
             var bytes = await httpClient.GetByteArrayAsync(downloadUrl.Href);
+
+            if (photo.FileName.ToUpper().EndsWith("HEIC"))
+            {
+                var imageProcessor = new ImageProcessor(bytes);
+                return new FileContentResult(imageProcessor.GetImageBytes(), "image/jpg");
+            }
 
             return new FileContentResult(bytes, "image/jpg");
         }

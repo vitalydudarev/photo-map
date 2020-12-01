@@ -26,10 +26,16 @@ namespace PhotoMap.Api.Database.Services
             return await _context.Photos.FindAsync(id);
         }
 
+        public async Task<Photo> GetByFileNameAsync(string fileName)
+        {
+            return await _context.Photos.FirstOrDefaultAsync(a => a.FileName == fileName);
+        }
+
         public async Task<PagedResponse<PhotoDto>> GetByUserIdAsync(int userId, int top, int skip)
         {
             var photos = await _context.Photos
                 .Where(a => a.UserId == userId)
+                .OrderBy(a => a.DateTimeTaken)
                 .Skip(skip)
                 .Take(top)
                 .ToListAsync();
@@ -38,15 +44,14 @@ namespace PhotoMap.Api.Database.Services
 
             var values = photos.Select(a => new PhotoDto
             {
-                DateTimeTaken = a.DateTimeTaken,
+                DateTimeTaken = a.DateTimeTaken.UtcDateTime,
                 FileName = a.FileName,
                 Id = a.Id,
                 Latitude = a.Latitude,
                 Longitude = a.Longitude,
                 PhotoUrl = "yandex-disk/photos/" + a.Id,
-                ThumbnailLargeFileId = a.ThumbnailLargeFileId,
-                ThumbnailSmallFileId = a.ThumbnailSmallFileId,
-                ThumbnailUrl = "photos/" + a.ThumbnailSmallFileId
+                ThumbnailLargeUrl = "photos/" + a.ThumbnailLargeFileId,
+                ThumbnailSmallUrl = "photos/" + a.ThumbnailSmallFileId
             }).ToArray();
 
             return new PagedResponse<PhotoDto> { Values = values, Limit = top, Offset = skip, Total = totalRecords };

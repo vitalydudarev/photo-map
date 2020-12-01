@@ -22,20 +22,11 @@ namespace PhotoMap.Api.Database.Services
                 user = new User
                 {
                     Name = addUserDto.Name,
-                    YandexDiskToken = addUserDto.YandexDiskAccessToken,
-                    YandexDiskTokenExpiresOn = DateTimeOffset.UtcNow.AddSeconds(addUserDto.YandexDiskTokenExpiresIn)
                 };
+
                 await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync();
             }
-            else
-            {
-                user.YandexDiskToken = addUserDto.YandexDiskAccessToken;
-                user.YandexDiskTokenExpiresOn = DateTimeOffset.UtcNow.AddSeconds(addUserDto.YandexDiskTokenExpiresIn);
-
-                _context.Users.Update(user);
-            }
-
-            await _context.SaveChangesAsync();
         }
 
         public async Task<UserDto> GetAsync(int id)
@@ -49,8 +40,11 @@ namespace PhotoMap.Api.Database.Services
                 Id = user.Id,
                 Name = user.Name,
                 YandexDiskAccessToken = user.YandexDiskToken,
-                YandexDiskTokenExpiresOn = user.YandexDiskTokenExpiresOn,
-                YandexDiskStatus = user.YandexDiskStatus
+                YandexDiskTokenExpiresOn = user.YandexDiskTokenExpiresOn?.UtcDateTime,
+                YandexDiskStatus = user.YandexDiskStatus,
+                DropboxAccessToken = user.DropboxToken,
+                DropboxTokenExpiresOn = user.DropboxTokenExpiresOn?.UtcDateTime,
+                DropboxStatus = user.DropboxStatus
             };
         }
 
@@ -59,7 +53,25 @@ namespace PhotoMap.Api.Database.Services
             var user = await _context.Users.FindAsync(id);
             if (user != null)
             {
-                user.YandexDiskStatus = updateUserDto.Status;
+                if (!string.IsNullOrEmpty(updateUserDto.YandexDiskToken))
+                    user.YandexDiskToken = updateUserDto.YandexDiskToken;
+                if (updateUserDto.YandexDiskTokenExpiresIn.HasValue)
+                    user.YandexDiskTokenExpiresOn =
+                        DateTimeOffset.UtcNow.AddSeconds(updateUserDto.YandexDiskTokenExpiresIn.Value);
+                if (updateUserDto.YandexDiskStatus.HasValue)
+                    user.YandexDiskStatus = updateUserDto.YandexDiskStatus.Value;
+
+                if (!string.IsNullOrEmpty(updateUserDto.DropboxToken))
+                {
+                    user.DropboxToken = updateUserDto.DropboxToken;
+
+                    user.DropboxTokenExpiresOn = updateUserDto.DropboxTokenExpiresIn.HasValue
+                        ? DateTimeOffset.UtcNow.AddSeconds(updateUserDto.DropboxTokenExpiresIn.Value)
+                        : DateTimeOffset.MaxValue;
+                }
+
+                if (updateUserDto.DropboxStatus.HasValue)
+                    user.DropboxStatus = updateUserDto.DropboxStatus.Value;
 
                 _context.Users.Update(user);
             }

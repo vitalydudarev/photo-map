@@ -1,0 +1,19 @@
+<mat-card *ngIf="!needsAuthorization">You are authorized. Token expires on {{tokenExpires}}</mat-card>
+<mat-card *ngIf="needsAuthorization">You are not authorized.</mat-card>
+<mat-card>Status: {{status}} | {{progressString}}</mat-card>
+<mat-card *ngIf="hasError">Error: {{error}}</mat-card>
+<mat-card>
+    <div class="example-button-row">
+        <button mat-raised-button color="primary" (click)="authorize()">Authorize using Yandex.Disk account</button>
+        <button mat-raised-button color="primary" (click)="startStopProcessing()">
+            <mat-icon *ngIf="isRunning">pause</mat-icon>
+            <mat-icon *ngIf="!isRunning">play_arrow</mat-icon>
+            {{action}} photo processing
+        </button>
+        <button mat-raised-button color="warn" (click)="deleteAllData()">Delete all data</button>
+      </div>
+</mat-card>
+<mat-card *ngIf="isRunning">
+    <p>{{progressBarValue.toFixed(1)}}%</p>
+    <mat-progress-bar [mode]="progressBarMode" [value]="progressBarValue"></mat-progress-bar>
+</mat-card>
