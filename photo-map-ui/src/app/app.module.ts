@@ -19,10 +19,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import { HttpClientModule } from '@angular/common/http';
-import { GalleryModule } from '@ks89/angular-modal-gallery';
 
-import 'hammerjs'; // Mandatory for angular-modal-gallery 3.x.x or greater (`npm i --save hammerjs`)
-import 'mousetrap'; // Mandatory for angular-modal-gallery 3.x.x or greater (`npm i --save mousetrap`)
 import { FormsModule } from '@angular/forms';
 
 import { UserService } from './core/services/user.service';
@@ -62,8 +59,9 @@ import { DropboxComponent } from "./modules/dropbox/dropbox.component";
     MatCardModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
-
-    GalleryModule.forRoot(),
+    MatSnackBarModule,
+    MatProgressBarModule,
+    MatButtonToggleModule,
 
     SharedModule,
 
@@ -74,10 +72,7 @@ import { DropboxComponent } from "./modules/dropbox/dropbox.component";
     LocalStorageModule.forRoot({
       prefix: 'dropbox',
       storageType: 'localStorage'
-    }),
-    MatSnackBarModule,
-    MatProgressBarModule,
-    MatButtonToggleModule
+    })
   ],
   providers: [
     UserService,

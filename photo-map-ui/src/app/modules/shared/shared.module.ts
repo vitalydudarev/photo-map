@@ -7,12 +7,18 @@ import { PhotosMapViewComponent } from './photos-map-view/photos-map-view.compon
 import { AgmCoreModule } from '@agm/core';
 import { AgmOverlays } from 'agm-overlays';
 import { AgmMarkerClustererModule } from '@agm/markerclusterer';
+import { GalleryModule } from '@ks89/angular-modal-gallery';
+import { PhotosThumbViewComponent } from './photos-thumb-view/photos-thumb-view.component';
+
+import 'hammerjs'; // Mandatory for angular-modal-gallery 3.x.x or greater (`npm i --save hammerjs`)
+import 'mousetrap'; // Mandatory for angular-modal-gallery 3.x.x or greater (`npm i --save mousetrap`)
 
 
 @NgModule({
   declarations: [
     ScrollTopComponent,
-    PhotosMapViewComponent
+    PhotosMapViewComponent,
+    PhotosThumbViewComponent
   ],
   imports: [
     MatIconModule,
@@ -23,12 +29,14 @@ import { AgmMarkerClustererModule } from '@agm/markerclusterer';
     }),
     AgmOverlays,
     AgmMarkerClustererModule,
+    GalleryModule.forRoot(),
   ],
   providers: [
   ],
   exports: [
     ScrollTopComponent,
-    PhotosMapViewComponent
+    PhotosMapViewComponent,
+    PhotosThumbViewComponent
   ]
 })
 export class SharedModule { }

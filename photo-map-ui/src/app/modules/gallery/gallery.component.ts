@@ -1,130 +1,99 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from "rxjs";
+import { Subscription } from 'rxjs';
 
-import { GridLayout, Image, PlainGalleryConfig, PlainGalleryStrategy, DotsConfig } from '@ks89/angular-modal-gallery';
 import { UserPhotosService } from '../../core/services/user-photos.service';
-import { ButtonsStrategy, ButtonsConfig } from '@ks89/angular-modal-gallery';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpParams } from '@angular/common/http';
 import { Location } from '@angular/common';
+import { Photo } from 'src/app/core/models/photo.model';
 
 @Component({
-  selector: 'app-modal-gallery-page',
-  templateUrl: './gallery.component.html',
-  styleUrls: ['./gallery.component.scss']
+    selector: 'app-gallery-page',
+    templateUrl: './gallery.component.html',
+    styleUrls: ['./gallery.component.scss']
 })
 export class GalleryComponent implements OnInit, OnDestroy {
 
-  showSpinner: boolean = false;
-  images: Image[] = [];
+    photos: Photo[];
+    showSpinner: boolean = false;
 
-  dotsConfig: DotsConfig = {
-    visible: false
-  }
+    totalCount: number = 0;
+    pageIndex: number = 0;
+    pageSize: number = 100;
+    pageSizes: number[] = [100, 250, 500, 1000];
 
-  buttonsConfig: ButtonsConfig = {
-    visible: true,
-    strategy: ButtonsStrategy.SIMPLE
-  };
+    thumbViewMode: string = 'thumbViewMode';
+    mapViewMode: string = 'mapViewMode';
+    selectedViewMode: string = this.thumbViewMode;
 
-  plainGalleryGridConfig: PlainGalleryConfig = {
-    strategy: PlainGalleryStrategy.GRID,
-    layout: new GridLayout({ width: '256px', height: 'auto' }, { length: 20, wrap: true }),
-  };
+    private userId: number = 1;
+    private subscription: Subscription;
+    private pageConst = 'page';
+    private pageSizeConst = 'pageSize';
 
-  totalCount: number = 0;
-  pageIndex: number = 0;
-  pageSize: number = 100;
-  pageSizes: number[] = [100, 250, 500, 1000];
+    constructor(
+        private router: Router,
+        private location: Location,
+        private activatedRoute: ActivatedRoute,
+        private userPhotosService: UserPhotosService) {
+    }
 
-  tileViewMode: string = 'tileViewMode';
-  mapViewMode: string = 'mapViewMode';
-  selectedViewMode: string = this.tileViewMode;
+    ngOnInit(): void {
+        this.activatedRoute.queryParams.subscribe({
+            next: params => {
+                const pageIndex = params[this.pageConst];
+                const pageSize = params[this.pageSizeConst];
 
-  private subscription: Subscription;
-  private pageConst = 'page';
-  private pageSizeConst = 'pageSize';
+                if (pageIndex) {
+                    this.pageIndex = parseInt(pageIndex) - 1;
+                }
+                
+                if (pageSize) {
+                    this.pageSize = parseInt(pageSize);
+                }
+            }
+        });
 
-  constructor(
-    private router: Router,
-    private location: Location,
-    private activatedRoute: ActivatedRoute,
-    private userPhotosService: UserPhotosService) {
-  }
+        this.setImages();
+        this.addQueryString();
+    }
 
-  ngOnInit(): void {
-    this.activatedRoute.queryParams.subscribe({
-      next: params => {
-        const pageIndex = params[this.pageConst];
-        const pageSize = params[this.pageSizeConst];
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
 
-        if (pageIndex) {
-          this.pageIndex = parseInt(pageIndex) - 1;
-        }
-        
-        if (pageSize) {
-          this.pageSize = parseInt(pageSize);
-        }
-      }
-    });
+    onViewModeChanged(value: string) {
+        this.selectedViewMode = value;
+    }
 
-    this.setImages();
-    this.addQueryString();
-  }
+    pageUpdated(event: PageEvent) {
+        this.pageIndex = event.pageIndex;
+        this.pageSize = event.pageSize;
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
+        this.addQueryString();
 
-  onViewModeChanged(value: string) {
-    this.selectedViewMode = value;
-  }
+        this.setImages();
+    }
 
-  pageUpdated(event: PageEvent) {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
+    private addQueryString() {
+        const params = new HttpParams()
+            .append(this.pageConst, (this.pageIndex + 1).toString())
+            .append(this.pageSizeConst, this.pageSize.toString());
 
-    this.addQueryString();
+        this.location.go(this.router.url.split("?")[0], params.toString());
+    }
 
-    this.setImages();
-  }
+    private setImages() {
+        this.showSpinner = true;
+        console.log(this.userId);
 
-  private addQueryString() {
-    const params = new HttpParams()
-      .append(this.pageConst, (this.pageIndex + 1).toString())
-      .append(this.pageSizeConst, this.pageSize.toString());
-
-    this.location.go(this.router.url.split("?")[0], params.toString());
-  }
-
-  private setImages() {
-
-    this.showSpinner = true;
-
-    let i = 0;
-
-    const images: Image[] = [];
-
-    this.subscription = this.userPhotosService.getUserPhotos(1, this.pageSize, this.pageSize * this.pageIndex).subscribe(photos => {
-      this.totalCount = photos.total;
-
-      for (let photo of photos.values) {
-        const image = new Image(i, {
-            img: photo.photoUrl,
-            description: photo.fileName
-          },
-          {
-            img: photo.thumbnailLargeUrl,
-            description: photo.fileName
-          });
-
-        images.push(image);
-        i++;
-      }
-
-      this.images = images;
-      this.showSpinner = false;
-    });
-  }
+        this.subscription = this.userPhotosService.getUserPhotos(this.userId, this.pageSize, this.pageSize * this.pageIndex).subscribe({
+            next: pagedResponse => {
+                this.totalCount = pagedResponse.total;
+                this.photos = pagedResponse.values;
+                this.showSpinner = false;
+            }
+        });
+    }
 }

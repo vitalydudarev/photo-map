@@ -1,0 +1,12 @@
+@import "~bootstrap/scss/bootstrap-grid";
+
+:host ::ng-deep .plain-container {
+  display: table-cell !important;
+}
+
+::ng-deep #current-image {
+  max-height: 85vh !important;
+  max-width: 85vw !important;
+  height: auto !important;
+  width: auto !important;
+}

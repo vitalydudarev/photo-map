@@ -3,7 +3,7 @@
         <div class="d-flex align-items-start justify-content-between">
             <mat-button-toggle-group #group="matButtonToggleGroup" [(value)]="selectedViewMode"
                 (change)="onViewModeChanged(group.value)">
-                <mat-button-toggle value="{{tileViewMode}}">
+                <mat-button-toggle value="{{thumbViewMode}}">
                     <mat-icon>apps</mat-icon>
                 </mat-button-toggle>
                 <mat-button-toggle value="{{mapViewMode}}">
@@ -27,15 +27,6 @@
     <mat-spinner></mat-spinner>
 </div>
 
-<section>
-    <ks-modal-gallery
-        [id]="1"
-        [modalImages]="images"
-        [previewConfig]="{visible: false}"
-        [dotsConfig]="dotsConfig"
-        [buttonsConfig]="buttonsConfig"
-        [plainGalleryConfig]="plainGalleryGridConfig">
-    </ks-modal-gallery>
-</section>
+<app-photos-thumb-view *ngIf="photos" [photos]="photos"></app-photos-thumb-view>
 
 <app-scroll-top></app-scroll-top>
