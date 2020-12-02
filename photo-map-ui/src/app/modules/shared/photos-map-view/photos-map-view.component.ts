@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AgmInfoWindow } from '@agm/core';
 
 import { MarkerWrapper } from 'src/app/core/models/marker-wrapper.model';
@@ -9,20 +9,19 @@ import { Photo } from 'src/app/core/models/photo.model';
     templateUrl: './photos-map-view.component.html',
     styleUrls: ['./photos-map-view.component.scss']
 })
-export class PhotosMapViewComponent implements OnInit {
+export class PhotosMapViewComponent {
     @Input() photos: Photo[];
 
-    markers: MarkerWrapper[] = [];
+    get markers(): MarkerWrapper[] {
+        return this.getMarkers();
+    }
+
     center: { lat: number, lng: number } = { lat: 0, lng: 0 };
 
     private infoWindowOpened: AgmInfoWindow;
     private previousInfoWindow: AgmInfoWindow;
 
     constructor() {
-    }
-
-    ngOnInit(): void {
-        this.setMarkers();
     }
 
     onMarkerClicked(infoWindow: AgmInfoWindow) {
@@ -42,17 +41,21 @@ export class PhotosMapViewComponent implements OnInit {
         }
     }
 
-    private setMarkers() {
+    private getMarkers(): MarkerWrapper[] {
+        const markers: MarkerWrapper[] = [];
+
         for (let photo of this.photos) {
             if (photo.latitude && photo.longitude) {
                 const title = photo.fileName;
                 const marker = this.createMarker(title, photo.latitude, photo.longitude, photo.thumbnailSmallUrl);
 
-                this.markers.push(marker);
+                markers.push(marker);
             }
         }
 
         this.setMapCenter();
+
+        return markers;
     }
 
     private setMapCenter() {

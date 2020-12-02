@@ -86,7 +86,6 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
     private setImages() {
         this.showSpinner = true;
-        console.log(this.userId);
 
         this.subscription = this.userPhotosService.getUserPhotos(this.userId, this.pageSize, this.pageSize * this.pageIndex).subscribe({
             next: pagedResponse => {

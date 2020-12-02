@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { GridLayout, Image, PlainGalleryConfig, PlainGalleryStrategy, DotsConfig } from '@ks89/angular-modal-gallery';
 import { ButtonsStrategy, ButtonsConfig } from '@ks89/angular-modal-gallery';
@@ -9,11 +9,13 @@ import { Photo } from 'src/app/core/models/photo.model';
     templateUrl: './photos-thumb-view.component.html',
     styleUrls: ['./photos-thumb-view.component.scss']
 })
-export class PhotosThumbViewComponent implements OnInit {
+export class PhotosThumbViewComponent {
 
     @Input() photos: Photo[];
 
-    images: Image[] = [];
+    get images(): Image[] {
+        return this.getImages();
+    }
 
     dotsConfig: DotsConfig = {
         visible: false
@@ -32,11 +34,7 @@ export class PhotosThumbViewComponent implements OnInit {
     constructor() {
     }
 
-    ngOnInit(): void {
-        this.setImages();
-    }
-
-    private setImages() {
+    private getImages(): Image[] {
         let i = 0;
 
         const images: Image[] = [];
@@ -55,6 +53,6 @@ export class PhotosThumbViewComponent implements OnInit {
             i++;
         }
 
-        this.images = images;
+        return images;
     }
 }
