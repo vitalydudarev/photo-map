@@ -1,0 +1,22 @@
+<agm-map (mapClick)="onMapClicked($event)" style="height: 100%;" [latitude]="center.lat" [longitude]="center.lng">
+    <agm-marker-cluster [minimumClusterSize]="5" imagePath="https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m">
+        <agm-overlay *ngFor="let marker of markers"
+            [latitude]="marker.latitude"
+            [longitude]="marker.longitude"
+            (markerClick)="onMarkerClicked(infoWindow)">
+        <div style="width: 64px; height: 64px; background-color: blue;">
+            <img style="cursor: pointer; border: 2px solid white; height: inherit; width: inherit;" src="{{marker.icon.url}}" alt=""/>
+        </div>
+            <agm-info-window #infoWindow>
+                <div style='float:left'>
+                    <img src='{{marker.previewImageUrl}}' alt="">
+                </div>
+                <div style='float:right; padding: 10px;'>
+                    <b>Title</b>
+                    <br/>123 Address
+                    <br/> City,Country
+                </div>
+            </agm-info-window>
+        </agm-overlay>
+    </agm-marker-cluster>
+</agm-map>

@@ -35,9 +35,6 @@ import { OAuthModule } from './oauth.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { MapComponent } from './modules/map/map.component';
-import { AgmCoreModule } from '@agm/core';
-import { AgmOverlays } from "agm-overlays";
-import { AgmMarkerClustererModule } from "@agm/markerclusterer";
 import { SharedModule } from './modules/shared/shared.module';
 import { LocalStorageModule } from "angular-2-local-storage";
 import { DropboxComponent } from "./modules/dropbox/dropbox.component";
@@ -74,11 +71,6 @@ import { DropboxComponent } from "./modules/dropbox/dropbox.component";
 
     NgbModule,
 
-    AgmCoreModule.forRoot({
-        apiKey: 'AIzaSyDzEycFoLft4yGNSC-F54OUhBMwGr1He_4'
-    }),
-    AgmOverlays,
-    AgmMarkerClustererModule,
     LocalStorageModule.forRoot({
       prefix: 'dropbox',
       storageType: 'localStorage'
