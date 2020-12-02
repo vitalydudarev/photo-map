@@ -1,5 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, Input, OnInit } from '@angular/core';
 import { AgmInfoWindow } from '@agm/core';
 
 import { MarkerWrapper } from 'src/app/core/models/marker-wrapper.model';
@@ -10,13 +9,11 @@ import { Photo } from 'src/app/core/models/photo.model';
     templateUrl: './photos-map-view.component.html',
     styleUrls: ['./photos-map-view.component.scss']
 })
-export class PhotosMapViewComponent implements OnInit, OnDestroy {
+export class PhotosMapViewComponent implements OnInit {
     @Input() photos: Photo[];
 
     markers: MarkerWrapper[] = [];
     center: { lat: number, lng: number } = { lat: 0, lng: 0 };
-
-    private subscription: Subscription;
 
     private infoWindowOpened: AgmInfoWindow;
     private previousInfoWindow: AgmInfoWindow;
@@ -26,10 +23,6 @@ export class PhotosMapViewComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.setMarkers();
-    }
-
-    ngOnDestroy(): void {
-        this.subscription.unsubscribe();
     }
 
     onMarkerClicked(infoWindow: AgmInfoWindow) {

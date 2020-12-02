@@ -3,7 +3,6 @@ import { Subscription } from "rxjs";
 
 import { GridLayout, Image, PlainGalleryConfig, PlainGalleryStrategy, DotsConfig } from '@ks89/angular-modal-gallery';
 import { UserPhotosService } from '../../core/services/user-photos.service';
-import { environment } from 'src/environments/environment';
 import { ButtonsStrategy, ButtonsConfig } from '@ks89/angular-modal-gallery';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -44,7 +43,6 @@ export class GalleryComponent implements OnInit, OnDestroy {
   selectedViewMode: string = this.tileViewMode;
 
   private subscription: Subscription;
-  private apiUrl: string = `${environment.photoMapApiUrl}`;
   private pageConst = 'page';
   private pageSizeConst = 'pageSize';
 
@@ -113,11 +111,11 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
       for (let photo of photos.values) {
         const image = new Image(i, {
-            img: `${this.apiUrl}/${photo.photoUrl}`,
+            img: photo.photoUrl,
             description: photo.fileName
           },
           {
-            img: `${this.apiUrl}/${photo.thumbnailLargeUrl}`,
+            img: photo.thumbnailLargeUrl,
             description: photo.fileName
           });
 
