@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -70,6 +71,7 @@ namespace PhotoMap.Api
             services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IStorageService, StorageServiceClient>();
+            services.AddScoped<HostInfo>();
 
             services.AddDbContext<PhotoMapContext>();
 
@@ -88,6 +90,8 @@ namespace PhotoMap.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseMiddleware<HostInfoMiddleware>();
 
             app.UseHttpsRedirection();
 

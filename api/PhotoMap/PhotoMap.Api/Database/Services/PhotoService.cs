@@ -9,10 +9,12 @@ namespace PhotoMap.Api.Database.Services
     public class PhotoService : IPhotoService
     {
         private readonly PhotoMapContext _context;
+        private readonly HostInfo _hostInfo;
 
-        public PhotoService(PhotoMapContext context)
+        public PhotoService(PhotoMapContext context, HostInfo hostInfo)
         {
             _context = context;
+            _hostInfo = hostInfo;
         }
 
         public async Task AddAsync(Photo photo)
@@ -42,6 +44,8 @@ namespace PhotoMap.Api.Database.Services
 
             var totalRecords = await _context.Photos.CountAsync(a => a.UserId == userId);
 
+            var url = GetApiUrl();
+
             var values = photos.Select(a => new PhotoDto
             {
                 DateTimeTaken = a.DateTimeTaken.UtcDateTime,
@@ -49,9 +53,9 @@ namespace PhotoMap.Api.Database.Services
                 Id = a.Id,
                 Latitude = a.Latitude,
                 Longitude = a.Longitude,
-                PhotoUrl = "yandex-disk/photos/" + a.Id,
-                ThumbnailLargeUrl = "photos/" + a.ThumbnailLargeFileId,
-                ThumbnailSmallUrl = "photos/" + a.ThumbnailSmallFileId
+                PhotoUrl = $"{url}/yandex-disk/photos/" + a.Id,
+                ThumbnailLargeUrl = $"{url}/photos/" + a.ThumbnailLargeFileId,
+                ThumbnailSmallUrl = $"{url}/photos/" + a.ThumbnailSmallFileId
             }).ToArray();
 
             return new PagedResponse<PhotoDto> { Values = values, Limit = top, Offset = skip, Total = totalRecords };
@@ -69,6 +73,11 @@ namespace PhotoMap.Api.Database.Services
             _context.Photos.RemoveRange(entities);
 
             await _context.SaveChangesAsync();
+        }
+
+        private string GetApiUrl()
+        {
+            return _hostInfo.GetUrl() + "api";
         }
     }
 }
