@@ -6,8 +6,7 @@ import { Photo } from 'src/app/core/models/photo.model';
 
 @Component({
     selector: 'app-photos-map-view',
-    templateUrl: './photos-map-view.component.html',
-    styleUrls: ['./photos-map-view.component.scss']
+    templateUrl: './photos-map-view.component.html'
 })
 export class PhotosMapViewComponent implements OnChanges {
     @Input() photos: Photo[];
