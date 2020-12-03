@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AgmInfoWindow } from '@agm/core';
 
 import { MarkerWrapper } from 'src/app/core/models/marker-wrapper.model';
@@ -9,12 +9,10 @@ import { Photo } from 'src/app/core/models/photo.model';
     templateUrl: './photos-map-view.component.html',
     styleUrls: ['./photos-map-view.component.scss']
 })
-export class PhotosMapViewComponent {
+export class PhotosMapViewComponent implements OnChanges {
     @Input() photos: Photo[];
 
-    get markers(): MarkerWrapper[] {
-        return this.getMarkers();
-    }
+    markers: MarkerWrapper[] = [];
 
     center: { lat: number, lng: number } = { lat: 0, lng: 0 };
 
@@ -22,6 +20,13 @@ export class PhotosMapViewComponent {
     private previousInfoWindow: AgmInfoWindow;
 
     constructor() {
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        this.previousInfoWindow = null;
+        this.infoWindowOpened = null;
+
+        this.setMarkers();
     }
 
     onMarkerClicked(infoWindow: AgmInfoWindow) {
@@ -41,7 +46,7 @@ export class PhotosMapViewComponent {
         }
     }
 
-    private getMarkers(): MarkerWrapper[] {
+    private setMarkers() {
         const markers: MarkerWrapper[] = [];
 
         for (let photo of this.photos) {
@@ -53,9 +58,8 @@ export class PhotosMapViewComponent {
             }
         }
 
+        this.markers = markers;
         this.setMapCenter();
-
-        return markers;
     }
 
     private setMapCenter() {

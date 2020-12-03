@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 import { GridLayout, Image, PlainGalleryConfig, PlainGalleryStrategy, DotsConfig } from '@ks89/angular-modal-gallery';
 import { ButtonsStrategy, ButtonsConfig } from '@ks89/angular-modal-gallery';
@@ -9,13 +9,11 @@ import { Photo } from 'src/app/core/models/photo.model';
     templateUrl: './photos-thumb-view.component.html',
     styleUrls: ['./photos-thumb-view.component.scss']
 })
-export class PhotosThumbViewComponent {
+export class PhotosThumbViewComponent implements OnChanges {
 
     @Input() photos: Photo[];
 
-    get images(): Image[] {
-        return this.getImages();
-    }
+    images: Image[] = [];
 
     dotsConfig: DotsConfig = {
         visible: false
@@ -34,7 +32,11 @@ export class PhotosThumbViewComponent {
     constructor() {
     }
 
-    private getImages(): Image[] {
+    ngOnChanges(changes: SimpleChanges): void {
+        this.setImages();
+    }
+
+    private setImages() {
         let i = 0;
 
         const images: Image[] = [];
@@ -53,6 +55,6 @@ export class PhotosThumbViewComponent {
             i++;
         }
 
-        return images;
+        this.images = images;
     }
 }

@@ -27,6 +27,5 @@
     <mat-spinner></mat-spinner>
 </div>
 
-<app-photos-thumb-view *ngIf="photos" [photos]="photos"></app-photos-thumb-view>
-
-<app-scroll-top></app-scroll-top>
+<app-photos-thumb-view *ngIf="photos && selectedViewMode == thumbViewMode" [photos]="photos"></app-photos-thumb-view>
+<app-photos-map-view *ngIf="photos && selectedViewMode == mapViewMode" [photos]="photos"></app-photos-map-view>
