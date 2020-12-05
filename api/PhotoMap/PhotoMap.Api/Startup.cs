@@ -92,6 +92,7 @@ namespace PhotoMap.Api
             }
 
             app.UseMiddleware<HostInfoMiddleware>();
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 
