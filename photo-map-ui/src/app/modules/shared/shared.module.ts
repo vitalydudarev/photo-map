@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { ScrollTopComponent } from './scroll-top/scroll-top.component';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,11 +11,12 @@ import { PhotosThumbViewComponent } from './photos-thumb-view/photos-thumb-view.
 
 import 'hammerjs'; // Mandatory for angular-modal-gallery 3.x.x or greater (`npm i --save hammerjs`)
 import 'mousetrap'; // Mandatory for angular-modal-gallery 3.x.x or greater (`npm i --save mousetrap`)
+import { ScrollControlComponent } from './scroll-control/scroll-control.component';
 
 
 @NgModule({
   declarations: [
-    ScrollTopComponent,
+    ScrollControlComponent,
     PhotosMapViewComponent,
     PhotosThumbViewComponent
   ],
@@ -34,7 +34,7 @@ import 'mousetrap'; // Mandatory for angular-modal-gallery 3.x.x or greater (`np
   providers: [
   ],
   exports: [
-    ScrollTopComponent,
+    ScrollControlComponent,
     PhotosMapViewComponent,
     PhotosThumbViewComponent
   ]

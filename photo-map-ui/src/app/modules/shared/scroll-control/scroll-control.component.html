@@ -1,0 +1,8 @@
+<div>
+    <button mat-icon-button color="primary" (click)="scrollToTop()" class="scroll-control-hidden" [ngClass]="{'scroll-control-shown': canScrollUp}" style="bottom: 51px; right: 15px;">
+        <mat-icon>keyboard_arrow_up</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" (click)="scrollToBottom()" class="scroll-control-hidden" [ngClass]="{'scroll-control-shown': canScrollDown}" style="bottom: 15px; right: 15px;">
+        <mat-icon>keyboard_arrow_down</mat-icon>
+    </button>
+</div>
