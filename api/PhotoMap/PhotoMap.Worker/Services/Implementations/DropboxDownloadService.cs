@@ -154,9 +154,8 @@ namespace PhotoMap.Worker.Services.Implementations
         {
             _logger.LogInformation("Dropbox: saving state.");
             _logger.LogInformation(
-                $"Dropbox: files processed/total - {_state.LastProcessedFileId}/{_state.TotalFiles}");
+                $"Dropbox: files processed/total - {_state.LastProcessedFileIndex}/{_state.TotalFiles}");
 
-            _state.LastProcessedFileIndex = _lastProcessedFileIndex;
             _stateService.SaveState(_state);
         }
 

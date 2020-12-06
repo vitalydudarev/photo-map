@@ -2,13 +2,29 @@
     <mat-list-item *ngIf="needsAuthorization">You are not authorized.</mat-list-item>
     <mat-list-item *ngIf="!needsAuthorization">You are authorized. Token expires on {{tokenExpires}}</mat-list-item>
     <mat-divider></mat-divider>
-    <mat-list-item>Status: {{status}} | {{progressString}}</mat-list-item>
-    <mat-divider></mat-divider>
-    <mat-list-item *ngIf="hasError">Error: {{error}}</mat-list-item>
-    <mat-divider *ngIf="hasError"></mat-divider>
+    <div>
+        <mat-list-item>Status: {{status}} | {{progressString}}</mat-list-item>
+        <mat-divider></mat-divider>
+    </div>
+    <div *ngIf="hasError">
+        <mat-list-item>Error: {{error}}</mat-list-item>
+        <mat-divider></mat-divider>
+    </div>
+    <div *ngIf="isRunning">
+        <mat-card mat-list-item>
+            <p>{{progressBarValue.toFixed(1)}}%</p>
+            <mat-progress-bar [mode]="progressBarMode" [value]="progressBarValue"></mat-progress-bar>
+        </mat-card >
+        <mat-divider></mat-divider>
+    </div>
     <mat-list-item>
         <div class="button-row">
             <button mat-raised-button color="primary" (click)="goToLoginPage()">Authorize using Dropbox account</button>
+            <button mat-raised-button color="primary" (click)="startStopProcessing()">
+                <mat-icon *ngIf="isRunning">pause</mat-icon>
+                <mat-icon *ngIf="!isRunning">play_arrow</mat-icon>
+                {{action}} photo processing
+            </button>
         </div>
     </mat-list-item>
 </mat-list>

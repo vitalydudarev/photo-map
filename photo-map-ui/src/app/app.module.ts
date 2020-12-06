@@ -35,6 +35,8 @@ import { MapComponent } from './modules/map/map.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { LocalStorageModule } from "angular-2-local-storage";
 import { DropboxComponent } from "./modules/dropbox/dropbox.component";
+import { DropboxService } from './core/services/dropbox.service';
+import { DropboxHubService } from './core/services/dropbox-hub.service';
 
 @NgModule({
   declarations: [
@@ -79,7 +81,9 @@ import { DropboxComponent } from "./modules/dropbox/dropbox.component";
     YandexDiskService,
     UserPhotosService,
     YandexDiskHubService,
-    DataService
+    DataService,
+    DropboxService,
+    DropboxHubService
   ],
   bootstrap: [AppComponent]
 })

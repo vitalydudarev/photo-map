@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +47,14 @@ namespace PhotoMap.Api.Database.Services
 
             var url = GetApiUrl();
 
+            static string Source(string s) =>
+                s switch
+                {
+                    "Yandex.Disk" => "yandex-disk",
+                    "Dropbox" => "dropbox",
+                    _ => s
+                };
+
             var values = photos.Select(a => new PhotoDto
             {
                 DateTimeTaken = a.DateTimeTaken.UtcDateTime,
@@ -53,7 +62,7 @@ namespace PhotoMap.Api.Database.Services
                 Id = a.Id,
                 Latitude = a.Latitude,
                 Longitude = a.Longitude,
-                PhotoUrl = $"{url}/yandex-disk/photos/" + a.Id,
+                PhotoUrl = $"{url}/{Source(a.Source)}/photos/" + a.Id,
                 ThumbnailLargeUrl = $"{url}/photos/" + a.ThumbnailLargeFileId,
                 ThumbnailSmallUrl = $"{url}/photos/" + a.ThumbnailSmallFileId
             }).ToArray();

@@ -6,6 +6,7 @@ export const environment = {
   production: false,
   photoMapApiUrl: 'https://localhost:5001/api',
   yandexDiskHub: 'https://localhost:5001/yandex-disk-hub',
+  dropboxHub: 'https://localhost:5001/dropbox-hub',
   oAuth: {
     yandexDisk: {
       clientId: '66de926ff5be4d2da65e5eb64435687b',
