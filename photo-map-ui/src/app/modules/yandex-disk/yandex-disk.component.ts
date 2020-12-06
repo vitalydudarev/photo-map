@@ -11,7 +11,7 @@ import { DataService } from '../../core/services/data.service';
 import { OAuthConfiguration } from '../../core/models/oauth-configuration.model';
 import { OAuthService } from '../../core/services/oauth.service';
 import { environment } from '../../../environments/environment';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-yandex-disk',
@@ -41,7 +41,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private snackBar: MatSnackBar,
+    private toastService: ToastService,
     private oAuthService: OAuthService,
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
@@ -63,8 +63,8 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.add(from(this.yandexDiskHubService.stopHubConnection()).subscribe({
-      next: () => this.showSnackBar('Disconnected from SignalR hub.'),
-      error: () => this.showSnackBar('An error has occurred while disconnecting to SignalR hub.')
+      next: () => this.toastService.information('Disconnected from SignalR hub.'),
+      error: () => this.toastService.information('An error has occurred while disconnecting to SignalR hub.')
     }));
 
     this.subscriptions.unsubscribe();
@@ -81,9 +81,9 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
       const startProcessingSub = this.yandexDiskService.startProcessing(this.userId).subscribe({
         next: () => {
           this.setState(true, false, '');
-          this.showSnackBar('Started processing.')
+          this.toastService.information('Started processing.')
         },
-        error: () => this.showSnackBar('Failed to start processing.')
+        error: () => this.toastService.information('Failed to start processing.')
       });
   
       this.subscriptions.add(startProcessingSub);
@@ -91,9 +91,9 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
       const stopProcessingSub = this.yandexDiskService.stopProcessing(this.userId).subscribe({
         next: () => {
           this.setState(false, false);
-          this.showSnackBar('Stopped processing');
+          this.toastService.information('Stopped processing');
         },
-        error: () => this.showSnackBar('Failed to stop processing.')
+        error: () => this.toastService.information('Failed to stop processing.')
       });
   
       this.subscriptions.add(stopProcessingSub);
@@ -102,7 +102,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
 
   deleteAllData() {
     const deleteSub = this.dataService.deleteAllData().subscribe({
-      next: () => this.showSnackBar('Data deleted.')
+      next: () => this.toastService.information('Data deleted.')
     });
 
     this.subscriptions.add(deleteSub);
@@ -118,7 +118,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
           this.tokenExpires = new Date(this.user.yandexDiskTokenExpiresOn).toLocaleString();
         }
       },
-      error: () => this.showSnackBar('An error has occurred while getting user data.')
+      error: () => this.toastService.information('An error has occurred while getting user data.')
     });
 
     this.subscriptions.add(getUserSub);
@@ -138,7 +138,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     )
     .subscribe({
       next: () => this.router.navigate(['/yandex-disk']),
-      error: () => this.showSnackBar('An error has occurred while parsing URL.')
+      error: () => this.toastService.information('An error has occurred while parsing URL.')
     });
 
     this.subscriptions.add(routeSub);
@@ -152,8 +152,8 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
         return this.yandexDiskHubService.registerClient(this.userId);
       }))
       .subscribe({
-        next: () => this.showSnackBar('Connected to SignalR hub. Client registered.'),
-        error: () => this.showSnackBar('An error has occurred while connecting to SignalR hub.')
+        next: () => this.toastService.information('Connected to SignalR hub. Client registered.'),
+        error: () => this.toastService.information('An error has occurred while connecting to SignalR hub.')
       });
 
     this.subscriptions.add(startHubConnectionSub);
@@ -168,7 +168,7 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
       })
     ).subscribe({
       next: user => this.onGetUser(user),
-      error: () => this.showSnackBar('error occurred')
+      error: () => this.toastService.information('error occurred')
     });
 
     this.subscriptions.add(errorSub);
@@ -200,9 +200,5 @@ export class YandexDiskComponent implements OnInit, OnDestroy {
     this.hasError = hasError;
     this.error = error ? error : '';
     this.isRunning = isRunning;
-  }
-
-  private showSnackBar(message: string): void {
-    this.snackBar.open(message, 'Close', { duration: 1500 });
   }
 }
