@@ -1,18 +1,26 @@
 <mat-list>
-    <mat-list-item *ngIf="needsAuthorization">You are not authorized.</mat-list-item>
-    <mat-list-item *ngIf="!needsAuthorization">You are authorized. Token expires on {{tokenExpires}}</mat-list-item>
+    <mat-list-item *ngIf="needsAuthorization"><b>You are not authorized.</b></mat-list-item>
+    <mat-list-item *ngIf="!needsAuthorization"><b>You are authorized. Token expires on {{tokenExpires}}</b></mat-list-item>
     <mat-divider></mat-divider>
     <div>
-        <mat-list-item>Status: {{status}} | {{progressString}}</mat-list-item>
+        <mat-list-item>
+            <p><b>Status:</b> {{status}}</p>
+        </mat-list-item>
         <mat-divider></mat-divider>
     </div>
     <div *ngIf="hasError">
-        <mat-list-item>Error: {{error}}</mat-list-item>
+        <mat-list-item>
+            <p><b>Error:</b> {{error}}</p>
+        </mat-list-item>
         <mat-divider></mat-divider>
     </div>
     <div *ngIf="isRunning">
+        <mat-list-item>
+            <p><b>Processed:</b> {{progressString}}</p>
+        </mat-list-item>
+        <mat-divider></mat-divider>
         <mat-card mat-list-item>
-            <p>{{progressBarValue.toFixed(1)}}%</p>
+            <p><b>{{progressBarValue.toFixed(1)}}%</b></p>
             <mat-progress-bar [mode]="progressBarMode" [value]="progressBarValue"></mat-progress-bar>
         </mat-card >
         <mat-divider></mat-divider>

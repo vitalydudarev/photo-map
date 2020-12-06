@@ -30,7 +30,7 @@ export class DropboxComponent implements OnInit, OnDestroy {
   progressBarMode: string;
 
   get action(): string {
-    return this.isRunning ? 'Stop' : 'Start';
+    return this.isRunning ? 'Pause' : 'Start';
   }
 
   private subscriptions: Subscription = new Subscription();
@@ -173,7 +173,7 @@ export class DropboxComponent implements OnInit, OnDestroy {
     const progressSub = this.dropboxHubService.dropboxProgress().subscribe({
       next: (progress) => {
         this.progressBarMode = 'determinate';
-        this.progressString = `Processed ${progress.processed} of ${progress.total}`;
+        this.progressString = `${progress.processed} of ${progress.total}`;
         this.progressBarValue = (progress.processed / progress.total) * 100;
         
         if (progress.processed == progress.total) {
