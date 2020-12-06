@@ -1,6 +1,14 @@
-<mat-card *ngIf="!needsAuthorization">You are authorized. Token expires on {{tokenExpires}}</mat-card>
-<mat-card *ngIf="needsAuthorization">You are not authorized.</mat-card>
-<mat-card>Status: {{status}} | {{progressString}}</mat-card>
-<mat-card *ngIf="hasError">Error: {{error}}</mat-card>
-
-<button mat-raised-button (click)="goToLoginPage()">Authorize using Dropbox account</button>
+<mat-list>
+    <mat-list-item *ngIf="needsAuthorization">You are not authorized.</mat-list-item>
+    <mat-list-item *ngIf="!needsAuthorization">You are authorized. Token expires on {{tokenExpires}}</mat-list-item>
+    <mat-divider></mat-divider>
+    <mat-list-item>Status: {{status}} | {{progressString}}</mat-list-item>
+    <mat-divider></mat-divider>
+    <mat-list-item *ngIf="hasError">Error: {{error}}</mat-list-item>
+    <mat-divider *ngIf="hasError"></mat-divider>
+    <mat-list-item>
+        <div class="button-row">
+            <button mat-raised-button color="primary" (click)="goToLoginPage()">Authorize using Dropbox account</button>
+        </div>
+    </mat-list-item>
+</mat-list>

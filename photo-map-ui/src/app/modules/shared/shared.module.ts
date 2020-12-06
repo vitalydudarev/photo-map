@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
 import { PhotosMapViewComponent } from './photos-map-view/photos-map-view.component';
 import { AgmCoreModule } from '@agm/core';
 import { AgmOverlays } from 'agm-overlays';
@@ -23,6 +24,7 @@ import { ScrollControlComponent } from './scroll-control/scroll-control.componen
   imports: [
     MatIconModule,
     MatButtonModule,
+    MatDividerModule,
     CommonModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDzEycFoLft4yGNSC-F54OUhBMwGr1He_4'
