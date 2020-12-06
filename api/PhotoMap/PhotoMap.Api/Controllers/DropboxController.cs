@@ -1,4 +1,7 @@
+using System.Net.Http;
 using System.Threading.Tasks;
+using Dropbox.Api;
+using GraphicsLibrary;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,15 +17,18 @@ namespace PhotoMap.Api.Controllers
     public class DropboxController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IPhotoService _photoService;
         private readonly IMessageSender _messageSender;
         private readonly ILogger<DropboxController> _logger;
 
         public DropboxController(
             IUserService userService,
+            IPhotoService photoService,
             IMessageSender messageSender,
             ILogger<DropboxController> logger)
         {
             _userService = userService;
+            _photoService = photoService;
             _messageSender = messageSender;
             _logger = logger;
         }
@@ -56,6 +62,30 @@ namespace PhotoMap.Api.Controllers
             _messageSender.Send(pauseProcessingCommand);
 
             return NoContent();
+        }
+
+        [HttpGet("photos/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPhotoAsync(int id)
+        {
+            var photo = await _photoService.GetAsync(id);
+            var user = await _userService.GetAsync(photo.UserId);
+
+            var httpClient = new HttpClient();
+
+            var config = new DropboxClientConfig("PhotoMap") { HttpClient = httpClient };
+            var dropboxClient = new DropboxClient(user.DropboxAccessToken, config);
+
+            var fileMetadata = await dropboxClient.Files.DownloadAsync(photo.Path);
+            var fileContents = await fileMetadata.GetContentAsByteArrayAsync();
+
+            if (photo.FileName.ToUpper().EndsWith("HEIC"))
+            {
+                var imageProcessor = new ImageProcessor(fileContents);
+                return new FileContentResult(imageProcessor.GetImageBytes(), "image/jpg");
+            }
+
+            return new FileContentResult(fileContents, "image/jpg");
         }
     }
 }
