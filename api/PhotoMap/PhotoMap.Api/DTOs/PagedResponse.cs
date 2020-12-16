@@ -1,4 +1,4 @@
-namespace PhotoMap.Api
+namespace PhotoMap.Api.DTOs
 {
     public class PagedResponse<T>
     {

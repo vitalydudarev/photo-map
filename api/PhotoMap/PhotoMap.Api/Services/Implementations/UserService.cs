@@ -1,9 +1,11 @@
 using System;
 using System.Threading.Tasks;
+using PhotoMap.Api.Database;
 using PhotoMap.Api.Database.Entities;
 using PhotoMap.Api.DTOs;
+using PhotoMap.Api.Services.Interfaces;
 
-namespace PhotoMap.Api.Database.Services
+namespace PhotoMap.Api.Services.Implementations
 {
     public class UserService : IUserService
     {

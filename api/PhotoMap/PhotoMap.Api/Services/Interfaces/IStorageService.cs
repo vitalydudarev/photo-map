@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace PhotoMap.Api.ServiceClients.StorageService
+namespace PhotoMap.Api.Services.Interfaces
 {
     public interface IStorageService
     {

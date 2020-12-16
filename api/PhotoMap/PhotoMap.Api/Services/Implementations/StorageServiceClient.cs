@@ -1,9 +1,10 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using PhotoMap.Api.Services.Interfaces;
 using PhotoMap.Api.Settings;
 
-namespace PhotoMap.Api.ServiceClients.StorageService
+namespace PhotoMap.Api.Services.Implementations
 {
     public class StorageServiceClient : IStorageService
     {

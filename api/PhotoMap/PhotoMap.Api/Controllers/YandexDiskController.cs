@@ -5,7 +5,7 @@ using GraphicsLibrary;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using PhotoMap.Api.Database.Services;
+using PhotoMap.Api.Services.Interfaces;
 using PhotoMap.Common.Commands;
 using PhotoMap.Common.Models;
 using PhotoMap.Messaging.MessageSender;

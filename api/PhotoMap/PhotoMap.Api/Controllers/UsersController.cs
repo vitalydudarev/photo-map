@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using PhotoMap.Api.Database.Services;
 using PhotoMap.Api.DTOs;
+using PhotoMap.Api.Services.Interfaces;
 
 namespace PhotoMap.Api.Controllers
 {

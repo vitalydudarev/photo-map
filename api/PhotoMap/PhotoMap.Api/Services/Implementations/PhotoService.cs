@@ -1,11 +1,12 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using PhotoMap.Api.Database;
 using PhotoMap.Api.Database.Entities;
 using PhotoMap.Api.DTOs;
+using PhotoMap.Api.Services.Interfaces;
 
-namespace PhotoMap.Api.Database.Services
+namespace PhotoMap.Api.Services.Implementations
 {
     public class PhotoService : IPhotoService
     {

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using PhotoMap.Api.DTOs;
 
-namespace PhotoMap.Api.Database.Services
+namespace PhotoMap.Api.Services.Interfaces
 {
     public interface IUserService
     {

@@ -1,8 +1,7 @@
-using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace PhotoMap.Api
+namespace PhotoMap.Api.Middlewares
 {
     public class HostInfoMiddleware
     {
