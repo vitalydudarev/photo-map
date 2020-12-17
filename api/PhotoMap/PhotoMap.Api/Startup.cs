@@ -39,6 +39,8 @@ namespace PhotoMap.Api
             services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
             services.Configure<StorageServiceSettings>(Configuration.GetSection("Storage"));
 
+            services.AddSingleton(provider => new UserInfo { UserId = 1, Name = "Vitaly" });
+
             services.AddSingleton(a =>
             {
                 var settings = a.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
@@ -73,6 +75,7 @@ namespace PhotoMap.Api
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IStorageService, StorageServiceClient>();
             services.AddScoped<HostInfo>();
+            services.AddScoped<IFileProvider, LocalFileProvider>();
 
             services.AddDbContext<PhotoMapContext>();
 

@@ -5,22 +5,22 @@ using PhotoMap.Api.Services.Interfaces;
 namespace PhotoMap.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/photos")]
     public class PhotosController : ControllerBase
     {
-        private readonly IStorageService _storageService;
+        private readonly IFileProvider _fileProvider;
 
-        public PhotosController(IStorageService storageService)
+        public PhotosController(IFileProvider fileProvider)
         {
-            _storageService = storageService;
+            _fileProvider = fileProvider;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(long id)
+        [HttpGet("{fileId}")]
+        public async Task<IActionResult> GetAsync(long fileId)
         {
-            var bytes = await _storageService.GetFileAsync(id);
+            var fileContents = await _fileProvider.GetFileContents(fileId);
 
-            return new FileContentResult(bytes, "image/jpg");
+            return new FileContentResult(fileContents, "image/jpg");
         }
     }
 }

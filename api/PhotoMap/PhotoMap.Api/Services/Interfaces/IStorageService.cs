@@ -6,6 +6,8 @@ namespace PhotoMap.Api.Services.Interfaces
     {
         Task<byte[]> GetFileAsync(long fileId);
 
+        Task<FileInfo> GetFileInfoAsync(long fileId);
+
         Task DeleteFileAsync(long fileId);
 
         Task DeleteAllFilesAsync();
