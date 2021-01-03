@@ -1,4 +1,4 @@
-<agm-map (mapClick)="onMapClicked($event)" style="height: 100%;" [latitude]="center.lat" [longitude]="center.lng">
+<agm-map (mapClick)="onMapClicked($event)" style="height: 100%;" [zoom]="zoom" [latitude]="center.lat" [longitude]="center.lng">
     <agm-marker-cluster [minimumClusterSize]="5" imagePath="https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m">
         <agm-overlay *ngFor="let marker of markers"
             [latitude]="marker.latitude"

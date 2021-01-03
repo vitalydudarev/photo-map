@@ -1,8 +1,9 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { AgmInfoWindow } from '@agm/core';
 
 import { MarkerWrapper } from 'src/app/core/models/marker-wrapper.model';
 import { Photo } from 'src/app/core/models/photo.model';
+import { GoogleMapHelper } from 'src/app/core/helpers/google-map.helper';
 
 @Component({
     selector: 'app-photos-map-view',
@@ -10,9 +11,10 @@ import { Photo } from 'src/app/core/models/photo.model';
 })
 export class PhotosMapViewComponent implements OnChanges {
     @Input() photos: Photo[];
+    @ViewChild('map', {read: ElementRef, static: true}) map: ElementRef;
 
     markers: MarkerWrapper[] = [];
-
+    zoom: number;
     center: { lat: number, lng: number } = { lat: 0, lng: 0 };
 
     private infoWindowOpened: AgmInfoWindow;
@@ -25,7 +27,13 @@ export class PhotosMapViewComponent implements OnChanges {
         this.previousInfoWindow = null;
         this.infoWindowOpened = null;
 
-        this.setMarkers();
+        const markers = this.createMarkers();
+
+        const map = document.getElementsByClassName('agm-map-container-inner sebm-google-map-container-inner')[0];
+
+        this.zoom = GoogleMapHelper.getBoundsZoomLevel(markers, { height: map.clientHeight, width: map.clientWidth });
+        this.center = GoogleMapHelper.getCenter(markers);
+        this.markers = markers;
     }
 
     onMarkerClicked(infoWindow: AgmInfoWindow) {
@@ -45,10 +53,10 @@ export class PhotosMapViewComponent implements OnChanges {
         }
     }
 
-    private setMarkers() {
+    private createMarkers(): MarkerWrapper[] {
         const markers: MarkerWrapper[] = [];
 
-        for (let photo of this.photos) {
+        for (const photo of this.photos) {
             if (photo.latitude && photo.longitude) {
                 const title = photo.fileName;
                 const marker = this.createMarker(title, photo.latitude, photo.longitude, photo.thumbnailSmallUrl);
@@ -57,49 +65,7 @@ export class PhotosMapViewComponent implements OnChanges {
             }
         }
 
-        this.markers = markers;
-        this.setMapCenter();
-    }
-
-    private setMapCenter() {
-        const coords = this.calculateMapCenter();
-
-        this.center = {
-            lat: coords.lat,
-            lng: coords.lng,
-        }
-    }
-
-    private calculateMapCenter() {
-        let minLat: number = this.markers[0].latitude;
-        let minLng: number = this.markers[0].longitude;
-        let maxLat: number = this.markers[0].latitude;
-        let maxLng: number = this.markers[0].longitude;
-
-        for (let i = 1; i < this.markers.length; i++) {
-            const marker = this.markers[i];
-
-            if (marker.latitude < minLat) {
-                minLat = marker.latitude;
-            }
-
-            if (marker.latitude > maxLat) {
-                maxLat = marker.latitude;
-            }
-
-            if (marker.longitude < minLng) {
-                minLng = marker.longitude;
-            }
-
-            if (marker.longitude > maxLng) {
-                maxLng = marker.longitude;
-            }
-        }
-
-        const centerLat = (minLat + maxLat) / 2;
-        const centerLng = (minLng + maxLng) / 2;
-
-        return { lat: centerLat, lng: centerLng };
+        return markers;
     }
 
     private createMarker(title: string, latitude: number, longitude: number, thumbnailUrl: string): MarkerWrapper {
@@ -111,10 +77,10 @@ export class PhotosMapViewComponent implements OnChanges {
         };
 
         return {
-            latitude: latitude,
-            longitude: longitude,
-            title: title,
-            icon: icon,
+            latitude,
+            longitude,
+            title,
+            icon,
             previewImageUrl: thumbnailUrl
         } as MarkerWrapper;
     }
