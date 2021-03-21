@@ -38,6 +38,7 @@ namespace PhotoMap.Api
             services.AddControllers();
             services.Configure<RabbitMqSettings>(Configuration.GetSection("RabbitMQ"));
             services.Configure<StorageServiceSettings>(Configuration.GetSection("Storage"));
+            services.Configure<YandexDiskFileProviderSettings>(Configuration.GetSection("YandexDiskFileProvider"));
 
             services.AddSingleton(provider => new UserInfo { UserId = 1, Name = "Vitaly" });
 
@@ -75,7 +76,7 @@ namespace PhotoMap.Api
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IStorageService, StorageServiceClient>();
             services.AddScoped<HostInfo>();
-            services.AddScoped<IFileProvider, LocalFileProvider>();
+            services.AddScoped<IFileProvider, YandexDiskFileProvider>();
 
             services.AddDbContext<PhotoMapContext>();
 
