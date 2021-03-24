@@ -8,6 +8,8 @@
       <span>Photo Map</span>
       <a mat-button *ngFor="let item of menuItems" [routerLink]="item.route"> {{item.title}} </a>
       <span class="example-spacer"></span>
+      <a mat-button>Yandex.Disk: {{ yandexDiskAuthorized ? 'Authorized' : 'Not authorized' }}</a>
+      <a mat-button>Dropbox: {{ dropboxAuthorized ? 'Authorized' : 'Not authorized' }}</a>
       <button mat-icon-button class="example-icon favorite-icon">
         <mat-icon>favorite</mat-icon>
       </button>
