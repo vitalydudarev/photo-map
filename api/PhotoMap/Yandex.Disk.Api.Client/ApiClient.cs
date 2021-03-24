@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Yandex.Disk.Api.Client.Models;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -68,6 +70,19 @@ namespace Yandex.Disk.Api.Client
             var url = _urlBuilder.Build(Url, "resources/files", parameters);
 
             return await GetAsync<FilesResourceList>(url, cancellationToken);
+        }
+
+        public async Task UploadFileAsync(string path, byte[] fileContents, CancellationToken cancellationToken)
+        {
+            using (var fileContent = new ByteArrayContent(fileContents))
+            {
+                var url = Url + "/resources/upload?path=" + HttpUtility.UrlEncode(path);
+                var link = await GetAsync<Link>(url, cancellationToken);
+
+                var response = await _httpClient.PutAsync(link.Href, fileContent, cancellationToken);
+                if (response.StatusCode != HttpStatusCode.Created && response.StatusCode != HttpStatusCode.Accepted)
+                    throw new Exception("Error during uploading file.");
+            }
         }
 
         private async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken)
