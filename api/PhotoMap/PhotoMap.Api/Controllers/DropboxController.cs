@@ -1,10 +1,9 @@
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Dropbox.Api;
-using GraphicsLibrary;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using PhotoMap.Api.Services.Interfaces;
 using PhotoMap.Common.Commands;
 using PhotoMap.Common.Models;
@@ -19,18 +18,18 @@ namespace PhotoMap.Api.Controllers
         private readonly IUserService _userService;
         private readonly IPhotoService _photoService;
         private readonly IMessageSender _messageSender;
-        private readonly ILogger<DropboxController> _logger;
+        private readonly IConvertedImageHolder _convertedImageHolder;
 
         public DropboxController(
             IUserService userService,
             IPhotoService photoService,
             IMessageSender messageSender,
-            ILogger<DropboxController> logger)
+            IConvertedImageHolder convertedImageHolder)
         {
             _userService = userService;
             _photoService = photoService;
             _messageSender = messageSender;
-            _logger = logger;
+            _convertedImageHolder = convertedImageHolder;
         }
 
         [HttpPost]
@@ -81,8 +80,30 @@ namespace PhotoMap.Api.Controllers
 
             if (photo.FileName.ToUpper().EndsWith("HEIC"))
             {
-                var imageProcessor = new ImageProcessor(fileContents);
-                return new FileContentResult(imageProcessor.GetImageBytes(), "image/jpg");
+                var commandId = Guid.NewGuid();
+                var convertImageCommand = new ConvertImageCommand
+                {
+                    Id = commandId,
+                    FileContents = fileContents
+                };
+
+                _messageSender.Send(convertImageCommand);
+
+                const int maxTimeout = 5000;
+                int waitTime = 0;
+                byte[] convertedBytes;
+
+                do
+                {
+                    await Task.Delay(1000);
+                    convertedBytes = _convertedImageHolder.Get(commandId);
+                    waitTime += 1000;
+                } while (waitTime <= maxTimeout || convertedBytes == null);
+
+                if (convertedBytes != null)
+                    return new FileContentResult(convertedBytes, "image/jpg");
+
+                return BadRequest();
             }
 
             return new FileContentResult(fileContents, "image/jpg");

@@ -1,4 +1,4 @@
-namespace GraphicsLibrary.Exif
+namespace PhotoMap.Worker.Models.Image
 {
     public class ExifData
     {

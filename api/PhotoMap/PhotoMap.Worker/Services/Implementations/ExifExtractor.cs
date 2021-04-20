@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using GraphicsLibrary.Exif;
 using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
+using PhotoMap.Worker.Models.Image;
+using PhotoMap.Worker.Services.Definitions;
 using Directory = MetadataExtractor.Directory;
 
-namespace GraphicsLibrary
+namespace PhotoMap.Worker.Services.Implementations
 {
-    public class ExifExtractor
+    public class ExifExtractor : IExifExtractor
     {
         public ExifData GetDataAsync(byte[] bytes)
         {

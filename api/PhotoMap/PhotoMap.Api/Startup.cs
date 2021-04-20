@@ -77,6 +77,7 @@ namespace PhotoMap.Api
             services.AddScoped<IStorageService, StorageServiceClient>();
             services.AddScoped<HostInfo>();
             services.AddScoped<IFileProvider, YandexDiskFileProvider>();
+            services.AddSingleton<IConvertedImageHolder, ConvertedImageHolder>();
 
             services.AddDbContext<PhotoMapContext>();
 

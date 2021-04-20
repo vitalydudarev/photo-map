@@ -1,4 +1,4 @@
-namespace GraphicsLibrary
+namespace PhotoMap.Worker.Models.Image
 {
     public class BitmapOptions
     {

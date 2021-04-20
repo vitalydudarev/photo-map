@@ -2,9 +2,10 @@ using System;
 using System.IO;
 using System.Linq;
 using ImageMagick;
+using PhotoMap.Worker.Models.Image;
 using SkiaSharp;
 
-namespace GraphicsLibrary
+namespace PhotoMap.Worker.Services.Implementations
 {
     public class ImageProcessor : IDisposable
     {

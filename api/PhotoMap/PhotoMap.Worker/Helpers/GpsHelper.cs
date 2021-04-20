@@ -1,6 +1,6 @@
-using GraphicsLibrary.Exif;
+using LatLng = PhotoMap.Worker.Models.Image.LatLng;
 
-namespace GraphicsLibrary
+namespace PhotoMap.Worker.Helpers
 {
     public static class GpsHelper
     {

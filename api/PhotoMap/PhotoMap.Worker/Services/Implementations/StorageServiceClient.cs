@@ -25,6 +25,15 @@ namespace PhotoMap.Worker.Services.Implementations
             _url = storageServiceOptions.Value.ApiUrl;
         }
 
+        public async Task<byte[]> GetFileAsync(long fileId)
+        {
+            var url = _url + "/" + fileId;
+            var responseMessage = await _httpClient.GetAsync(url);
+            var deserialized = await responseMessage.Content.ReadAsByteArrayAsync();
+
+            return deserialized;
+        }
+
         public async Task<StorageServiceFileDto> SaveFileAsync(string fileName, byte[] fileContents)
         {
             using (var form = new MultipartFormDataContent())
@@ -33,6 +42,7 @@ namespace PhotoMap.Worker.Services.Implementations
                 {
                     using (var streamContent = new StreamContent(memoryStream))
                     {
+                        // TODO: remove ReadAsByteArrayAsync()
                         var content = await streamContent.ReadAsByteArrayAsync();
 
                         using (var fileContent = new ByteArrayContent(content))
@@ -53,6 +63,12 @@ namespace PhotoMap.Worker.Services.Implementations
                     }
                 }
             }
+        }
+
+        public async Task DeleteFileAsync(long fileId)
+        {
+            var url = _url + "/" + fileId;
+            var responseMessage = await _httpClient.DeleteAsync(url);
         }
     }
 }

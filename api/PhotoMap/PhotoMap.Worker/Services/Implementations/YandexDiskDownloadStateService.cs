@@ -13,9 +13,9 @@ namespace PhotoMap.Worker.Services.Implementations
     {
         private const string FileName = "yandex-disk-data.json";
         private readonly Dictionary<int, YandexDiskData> _map = new Dictionary<int, YandexDiskData>();
-        private readonly ILogger<IYandexDiskDownloadStateService> _logger;
+        private readonly ILogger<YandexDiskDownloadStateService> _logger;
 
-        public YandexDiskDownloadStateService(ILogger<IYandexDiskDownloadStateService> logger)
+        public YandexDiskDownloadStateService(ILogger<YandexDiskDownloadStateService> logger)
         {
             _logger = logger;
 
@@ -23,7 +23,7 @@ namespace PhotoMap.Worker.Services.Implementations
 
             if (File.Exists(FileName))
             {
-                _logger.LogInformation($"File {FileName} found.");
+                _logger.LogInformation("File {FileName} found", FileName);
 
                 var fileContents = File.ReadAllText(FileName);
                 var list = JsonConvert.DeserializeObject<List<YandexDiskData>>(fileContents);
@@ -33,7 +33,7 @@ namespace PhotoMap.Worker.Services.Implementations
             }
             else
             {
-                _logger.LogInformation($"File {FileName} not found.");
+                _logger.LogInformation("File {FileName} not found", FileName);
             }
         }
 
