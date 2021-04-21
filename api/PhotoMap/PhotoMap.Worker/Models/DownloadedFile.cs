@@ -8,8 +8,6 @@ namespace PhotoMap.Worker.Models
 
         public long FileId { get; set; }
 
-        public string FileUrl { get; set; }
-
         public string FileSource { get; set; }
 
         public string RelativeFilePath { get; set; }

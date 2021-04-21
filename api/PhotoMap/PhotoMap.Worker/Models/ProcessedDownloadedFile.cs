@@ -21,8 +21,6 @@ namespace PhotoMap.Worker.Models
 
         public Dictionary<int,long> Thumbs { get; set; }
 
-        public string PhotoUrl { get; set; }
-
         public DateTime? PhotoTakenOn { get; set; }
 
         public string ExifString { get; set; }

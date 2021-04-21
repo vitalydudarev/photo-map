@@ -90,7 +90,6 @@ namespace PhotoMap.Worker.Services.Implementations
                 FileName = downloadedFile.FileName,
                 FileSource = downloadedFile.FileSource,
                 Thumbs = sizeFileIdMap,
-                PhotoUrl = downloadedFile.FileUrl,
                 Path = downloadedFile.Path,
                 FileCreatedOn = downloadedFile.FileCreatedOn,
                 PhotoTakenOn = dateTimeTaken,

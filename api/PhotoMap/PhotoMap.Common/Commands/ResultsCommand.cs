@@ -17,8 +17,6 @@ namespace PhotoMap.Common.Commands
 
         public Dictionary<int, long> Thumbs { get; set; }
 
-        public string PhotoUrl { get; set; }
-
         public string Path { get; set; }
 
         public DateTime? FileCreatedOn { get; set; }

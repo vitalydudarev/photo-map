@@ -134,7 +134,6 @@ namespace PhotoMap.Worker.Handlers
                 FileName = file.FileName,
                 FileSource = file.FileSource,
                 Thumbs = file.Thumbs,
-                PhotoUrl = file.FileUrl,
                 Path = file.Path,
                 FileCreatedOn = file.FileCreatedOn,
                 PhotoTakenOn = file.PhotoTakenOn,
@@ -150,7 +149,6 @@ namespace PhotoMap.Worker.Handlers
             {
                 FileName = file.ResourceName,
                 FileId = file.StorageFileId,
-                FileUrl = file.FileUrl,
                 Path = file.Path,
                 FileSource = "Yandex.Disk",
                 RelativeFilePath = file.RelativeFilePath,

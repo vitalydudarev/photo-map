@@ -122,7 +122,7 @@ namespace PhotoMap.Worker.Services.Implementations
                 var createdOn = resource.Exif != null ? resource.Exif.DateTime : resource.PhotosliceTime;
 
                 var key = new YandexDiskFileKey(disk.User.Login, disk.User.Uid, resource.Name, filePath, savedFile.Id,
-                    resource.File, resource.Path, createdOn);
+                    resource.Path, createdOn);
 
                 _logger.LogInformation($"Finished downloading {resource.Name}.");
 
