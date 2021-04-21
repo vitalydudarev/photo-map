@@ -68,7 +68,7 @@ namespace PhotoMap.Api
             services.AddSingleton<DropboxHub>();
 
             services.AddSingleton<ICommandHandler, ProgressMessageHandler>();
-            services.AddSingleton<ICommandHandler, ResultsCommandHandler>();
+            services.AddSingleton<ICommandHandler, ImageProcessedEventHandler>();
             services.AddSingleton<ICommandHandler, NotificationHandler>();
             services.AddSingleton<IMessageSender, RabbitMqMessageSender>();
             services.AddSingleton<IMessageListener, RabbitMqMessageListener>();

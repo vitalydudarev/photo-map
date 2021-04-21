@@ -64,10 +64,9 @@ namespace PhotoMap.Worker.Handlers
                             startProcessingCommand.Token, cancellationToken, stoppingAction))
                         {
                             var downloadedFile = CreateProcessingCommand1(file);
-                            var processedDownloadedFile =
-                                await _imageProcessingService.ProcessImageAsync(downloadedFile);
-                            var resultsCommand = CreateResultsCommand(startProcessingCommand.UserIdentifier, processedDownloadedFile);
-                            _messageSender.Send(resultsCommand, Constants.PhotoMapApi);
+                            var processedDownloadedFile = await _imageProcessingService.ProcessImageAsync(downloadedFile);
+                            var imageProcessedEvent = CreateResultsCommand(startProcessingCommand.UserIdentifier, processedDownloadedFile);
+                            _messageSender.Send(imageProcessedEvent, Constants.PhotoMapApi);
                         }
                     }
                     catch (Exception e)
@@ -98,10 +97,9 @@ namespace PhotoMap.Worker.Handlers
                             startProcessingCommand.Token, stoppingAction, cancellationToken))
                         {
                             var downloadedFile = CreateProcessingCommand1(file);
-                            var processedDownloadedFile =
-                                await _imageProcessingService.ProcessImageAsync(downloadedFile);
-                            var resultsCommand = CreateResultsCommand(startProcessingCommand.UserIdentifier, processedDownloadedFile);
-                            _messageSender.Send(resultsCommand, Constants.PhotoMapApi);
+                            var processedDownloadedFile = await _imageProcessingService.ProcessImageAsync(downloadedFile);
+                            var imageProcessedEvent = CreateResultsCommand(startProcessingCommand.UserIdentifier, processedDownloadedFile);
+                            _messageSender.Send(imageProcessedEvent, Constants.PhotoMapApi);
                         }
                     }
                     catch (Exception e)
@@ -125,9 +123,9 @@ namespace PhotoMap.Worker.Handlers
             }
         }
 
-        private ResultsCommand CreateResultsCommand(IUserIdentifier userIdentifier, ProcessedDownloadedFile file)
+        private ImageProcessedEvent CreateResultsCommand(IUserIdentifier userIdentifier, ProcessedDownloadedFile file)
         {
-            return new ResultsCommand
+            return new ImageProcessedEvent
             {
                 UserIdentifier = userIdentifier,
                 FileId = file.FileId,

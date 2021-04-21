@@ -5,7 +5,7 @@ using PhotoMap.Messaging.Commands;
 
 namespace PhotoMap.Common.Commands
 {
-    public class ResultsCommand : CommandBase
+    public class ImageProcessedEvent : CommandBase
     {
         public IUserIdentifier UserIdentifier { get; set; }
 

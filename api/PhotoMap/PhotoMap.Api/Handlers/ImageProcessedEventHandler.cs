@@ -13,12 +13,12 @@ using PhotoMap.Messaging.Commands;
 
 namespace PhotoMap.Api.Handlers
 {
-    public class ResultsCommandHandler : CommandHandler<ResultsCommand>
+    public class ImageProcessedEventHandler : CommandHandler<ImageProcessedEvent>
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
-        private readonly ILogger<ResultsCommandHandler> _logger;
+        private readonly ILogger<ImageProcessedEventHandler> _logger;
 
-        public ResultsCommandHandler(IServiceScopeFactory serviceScopeFactory, ILogger<ResultsCommandHandler> logger)
+        public ImageProcessedEventHandler(IServiceScopeFactory serviceScopeFactory, ILogger<ImageProcessedEventHandler> logger)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _logger = logger;
@@ -26,46 +26,46 @@ namespace PhotoMap.Api.Handlers
 
         public override async Task HandleAsync(CommandBase command, CancellationToken cancellationToken)
         {
-            if (command is ResultsCommand resultsCommand)
+            if (command is ImageProcessedEvent imageProcessedEvent)
             {
                 var scope = _serviceScopeFactory.CreateScope();
                 var photoService = scope.ServiceProvider.GetService<IPhotoService>();
                 var storageService = scope.ServiceProvider.GetService<IStorageService>();
 
-                var thumbs = resultsCommand.Thumbs.OrderBy(a => a.Key).ToDictionary(a => a.Key, b => b.Value);
+                var thumbs = imageProcessedEvent.Thumbs.OrderBy(a => a.Key).ToDictionary(a => a.Key, b => b.Value);
                 var thumbSmall = thumbs.FirstOrDefault().Value;
                 var thumbLarge = thumbs.LastOrDefault().Value;
 
-                var entity = await photoService.GetByFileNameAsync(resultsCommand.FileName);
+                var entity = await photoService.GetByFileNameAsync(imageProcessedEvent.FileName);
                 if (entity != null)
                 {
                     await storageService.DeleteFileAsync(thumbSmall);
                     await storageService.DeleteFileAsync(thumbLarge);
 
-                    if (resultsCommand.FileId.HasValue)
-                        await storageService.DeleteFileAsync(resultsCommand.FileId.Value);
+                    if (imageProcessedEvent.FileId.HasValue)
+                        await storageService.DeleteFileAsync(imageProcessedEvent.FileId.Value);
 
-                    _logger.LogInformation($"File {resultsCommand.FileName} already exists.");
+                    _logger.LogInformation($"File {imageProcessedEvent.FileName} already exists.");
 
                     return;
                 }
 
                 var photoEntity = new Photo
                 {
-                    UserId = resultsCommand.UserIdentifier.UserId,
-                    PhotoFileId = resultsCommand.FileId,
-                    FileName = resultsCommand.FileName,
-                    Source = resultsCommand.FileSource,
+                    UserId = imageProcessedEvent.UserIdentifier.UserId,
+                    PhotoFileId = imageProcessedEvent.FileId,
+                    FileName = imageProcessedEvent.FileName,
+                    Source = imageProcessedEvent.FileSource,
                     ThumbnailSmallFileId = thumbSmall,
                     ThumbnailLargeFileId = thumbLarge,
-                    Path = resultsCommand.Path,
+                    Path = imageProcessedEvent.Path,
                     AddedOn = DateTimeOffset.UtcNow,
                     DateTimeTaken =
-                        resultsCommand.PhotoTakenOn ?? (resultsCommand.FileCreatedOn ?? DateTime.UtcNow),
-                    ExifString = JsonConvert.SerializeObject(resultsCommand.ExifString),
-                    Latitude = resultsCommand.Latitude,
-                    Longitude = resultsCommand.Longitude,
-                    HasGps = resultsCommand.Latitude.HasValue && resultsCommand.Longitude.HasValue
+                        imageProcessedEvent.PhotoTakenOn ?? (imageProcessedEvent.FileCreatedOn ?? DateTime.UtcNow),
+                    ExifString = JsonConvert.SerializeObject(imageProcessedEvent.ExifString),
+                    Latitude = imageProcessedEvent.Latitude,
+                    Longitude = imageProcessedEvent.Longitude,
+                    HasGps = imageProcessedEvent.Latitude.HasValue && imageProcessedEvent.Longitude.HasValue
                 };
 
                 await photoService.AddAsync(photoEntity);
