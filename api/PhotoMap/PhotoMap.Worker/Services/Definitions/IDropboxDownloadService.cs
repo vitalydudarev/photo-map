@@ -8,10 +8,10 @@ namespace PhotoMap.Worker.Services.Definitions
 {
     public interface IDropboxDownloadService
     {
-        IAsyncEnumerable<DropboxFile> DownloadAsync(
+        IAsyncEnumerable<DropboxFileInfo> DownloadAsync(
             IUserIdentifier userIdentifier,
             string apiToken,
             StoppingAction stoppingAction,
-            [EnumeratorCancellation] CancellationToken cancellationToken);
+            CancellationToken cancellationToken);
     }
 }

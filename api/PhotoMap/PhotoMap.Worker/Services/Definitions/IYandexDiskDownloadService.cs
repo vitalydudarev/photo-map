@@ -7,7 +7,7 @@ namespace PhotoMap.Worker.Services.Definitions
 {
     public interface IYandexDiskDownloadService
     {
-        IAsyncEnumerable<YandexDiskFileKey> DownloadFilesAsync(
+        IAsyncEnumerable<YandexDiskFileInfo> DownloadFilesAsync(
             IUserIdentifier userIdentifier,
             string accessToken,
             CancellationToken cancellationToken,

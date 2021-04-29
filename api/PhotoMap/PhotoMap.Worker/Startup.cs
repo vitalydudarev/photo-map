@@ -80,6 +80,7 @@ namespace PhotoMap.Worker
             services.AddSingleton<IDownloadManager, DownloadManager>();
             services.AddSingleton<IProgressReporter, ProgressReporter>();
             services.AddScoped<IImageProcessingService, ImageProcessingService>();
+            services.AddScoped<IImageUploadService, ImageUploadService>();
 
             // Yandex.Disk services
             services.AddSingleton<IYandexDiskDownloadStateService, YandexDiskDownloadStateService>();

@@ -21,7 +21,6 @@ namespace PhotoMap.Worker.Services.Implementations
     {
         private static readonly HttpClient HttpClient = new HttpClient();
         private DropboxClient _dropboxClient;
-        private readonly IStorageService _storageService;
         private readonly IDropboxDownloadStateService _stateService;
         private readonly IProgressReporter _progressReporter;
         private readonly ILogger<DropboxDownloadService> _logger;
@@ -33,18 +32,16 @@ namespace PhotoMap.Worker.Services.Implementations
         private const int ListFolderMaxLimit = 2000;
 
         public DropboxDownloadService(
-            IStorageService storageService,
             IDropboxDownloadStateService stateService,
             IProgressReporter progressReporter,
             ILogger<DropboxDownloadService> logger)
         {
-            _storageService = storageService;
             _stateService = stateService;
             _progressReporter = progressReporter;
             _logger = logger;
         }
 
-        public async IAsyncEnumerable<DropboxFile> DownloadAsync(
+        public async IAsyncEnumerable<DropboxFileInfo> DownloadAsync(
             IUserIdentifier userIdentifier,
             string apiToken,
             StoppingAction stoppingAction,
@@ -108,7 +105,7 @@ namespace PhotoMap.Worker.Services.Implementations
             SaveState();
         }
 
-        private async Task<DropboxFile> DownloadFileAsync(Metadata metadata, Account account)
+        private async Task<DropboxFileInfo> DownloadFileAsync(Metadata metadata, Account account)
         {
             var metadataName = metadata.Name;
 
@@ -123,17 +120,14 @@ namespace PhotoMap.Worker.Services.Implementations
                 _logger.LogInformation($"Dropbox: finished downloading {metadataName}.");
                 _logger.LogInformation($"Dropbox: started saving {metadataName}.");
 
-                var filePath = Path.Combine("Dropbox", account.Email, metadataName);
                 var createdOn = fileMetadata.Response.ClientModified;
 
-                var savedFileDto = await _storageService.SaveFileAsync(filePath, fileContents);
-
-                var dropboxFile = new DropboxFile(account.Email, account.AccountId,
-                    metadataName, filePath, savedFileDto.Id, path, createdOn, fileMetadata.Response.Id);
+                var downloadedFileInfo = new DropboxFileInfo(metadataName, path, createdOn, fileMetadata.Response.Id,
+                    account.Email, fileContents);
 
                 _logger.LogInformation($"Dropbox: finished saving {metadataName}.");
 
-                return dropboxFile;
+                return downloadedFileInfo;
             }
             catch (Exception e)
             {

@@ -42,9 +42,6 @@ namespace PhotoMap.Api.Handlers
                     await storageService.DeleteFileAsync(thumbSmall);
                     await storageService.DeleteFileAsync(thumbLarge);
 
-                    if (imageProcessedEvent.FileId.HasValue)
-                        await storageService.DeleteFileAsync(imageProcessedEvent.FileId.Value);
-
                     _logger.LogInformation($"File {imageProcessedEvent.FileName} already exists.");
 
                     return;
@@ -53,7 +50,7 @@ namespace PhotoMap.Api.Handlers
                 var photoEntity = new Photo
                 {
                     UserId = imageProcessedEvent.UserIdentifier.UserId,
-                    PhotoFileId = imageProcessedEvent.FileId,
+                    PhotoFileId = null,
                     FileName = imageProcessedEvent.FileName,
                     Source = imageProcessedEvent.FileSource,
                     ThumbnailSmallFileId = thumbSmall,

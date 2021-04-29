@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -19,7 +18,6 @@ namespace PhotoMap.Worker.Services.Implementations
         private static readonly HttpClient Client = new HttpClient();
         private readonly IProgressReporter _progressReporter;
         private readonly IYandexDiskDownloadStateService _yandexDiskDownloadStateService;
-        private readonly IStorageService _storageService;
         private readonly ILogger<YandexDiskDownloadService> _logger;
         private int _currentOffset;
         private int _totalFiles;
@@ -30,16 +28,14 @@ namespace PhotoMap.Worker.Services.Implementations
         public YandexDiskDownloadService(
             IProgressReporter progressReporter,
             IYandexDiskDownloadStateService yandexDiskDownloadStateService,
-            IStorageService storageService,
             ILogger<YandexDiskDownloadService> logger)
         {
             _progressReporter = progressReporter;
             _yandexDiskDownloadStateService = yandexDiskDownloadStateService;
-            _storageService = storageService;
             _logger = logger;
         }
 
-        public async IAsyncEnumerable<YandexDiskFileKey> DownloadFilesAsync(
+        public async IAsyncEnumerable<YandexDiskFileInfo> DownloadFilesAsync(
             IUserIdentifier userIdentifier,
             string accessToken,
             [EnumeratorCancellation] CancellationToken cancellationToken,
@@ -108,25 +104,21 @@ namespace PhotoMap.Worker.Services.Implementations
             SaveData();
         }
 
-        private async Task<YandexDiskFileKey> DownloadAsync(Resource resource, Disk disk)
+        private async Task<YandexDiskFileInfo> DownloadAsync(Resource resource, Disk disk)
         {
             _logger.LogInformation($"Started downloading {resource.Name}.");
 
             try
             {
                 var bytes = await Client.GetByteArrayAsync(resource.File);
-                var filePath = Path.Combine("Yandex.Disk", disk.User.Login, resource.Name);
-
-                var savedFile = await _storageService.SaveFileAsync(filePath, bytes);
-
                 var createdOn = resource.Exif != null ? resource.Exif.DateTime : resource.PhotosliceTime;
 
-                var key = new YandexDiskFileKey(disk.User.Login, disk.User.Uid, resource.Name, filePath, savedFile.Id,
-                    resource.Path, createdOn);
+                var downloadedFileInfo = new YandexDiskFileInfo(resource.Name, resource.Path, createdOn,
+                    disk.User.Login, bytes);
 
                 _logger.LogInformation($"Finished downloading {resource.Name}.");
 
-                return key;
+                return downloadedFileInfo;
             }
             catch (Exception e)
             {

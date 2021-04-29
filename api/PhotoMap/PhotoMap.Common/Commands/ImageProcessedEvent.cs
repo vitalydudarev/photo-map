@@ -9,8 +9,6 @@ namespace PhotoMap.Common.Commands
     {
         public IUserIdentifier UserIdentifier { get; set; }
 
-        public long? FileId { get; set; }
-
         public string FileName { get; set; }
 
         public string FileSource { get; set; }

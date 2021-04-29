@@ -20,21 +20,18 @@ namespace PhotoMap.Worker.Handlers
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ILogger<StartProcessingCommandHandler> _logger;
         private readonly IMessageSender2 _messageSender;
-        private readonly ImageProcessingSettings _imageProcessingSettings;
         private readonly IDownloadManager _downloadManager;
         private readonly IImageProcessingService _imageProcessingService;
 
         public StartProcessingCommandHandler(
             IServiceScopeFactory serviceScopeFactory,
             IMessageSender2 messageSender,
-            IOptions<ImageProcessingSettings> imageProcessingOptions,
             IDownloadManager downloadManager,
             IImageProcessingService imageProcessingService,
             ILogger<StartProcessingCommandHandler> logger)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _messageSender = messageSender;
-            _imageProcessingSettings = imageProcessingOptions.Value;
             _downloadManager = downloadManager;
             _imageProcessingService = imageProcessingService;
             _logger = logger;
@@ -63,8 +60,7 @@ namespace PhotoMap.Worker.Handlers
                         await foreach (var file in yandexDiskDownloadService.DownloadFilesAsync(userIdentifier,
                             startProcessingCommand.Token, cancellationToken, stoppingAction))
                         {
-                            var downloadedFile = CreateProcessingCommand1(file);
-                            var processedDownloadedFile = await _imageProcessingService.ProcessImageAsync(downloadedFile);
+                            var processedDownloadedFile = await _imageProcessingService.ProcessImageAsync(file);
                             var imageProcessedEvent = CreateResultsCommand(startProcessingCommand.UserIdentifier, processedDownloadedFile);
                             _messageSender.Send(imageProcessedEvent, Constants.PhotoMapApi);
                         }
@@ -96,8 +92,7 @@ namespace PhotoMap.Worker.Handlers
                         await foreach (var file in dropboxDownloadService.DownloadAsync(userIdentifier,
                             startProcessingCommand.Token, stoppingAction, cancellationToken))
                         {
-                            var downloadedFile = CreateProcessingCommand1(file);
-                            var processedDownloadedFile = await _imageProcessingService.ProcessImageAsync(downloadedFile);
+                            var processedDownloadedFile = await _imageProcessingService.ProcessImageAsync(file);
                             var imageProcessedEvent = CreateResultsCommand(startProcessingCommand.UserIdentifier, processedDownloadedFile);
                             _messageSender.Send(imageProcessedEvent, Constants.PhotoMapApi);
                         }
@@ -128,7 +123,6 @@ namespace PhotoMap.Worker.Handlers
             return new ImageProcessedEvent
             {
                 UserIdentifier = userIdentifier,
-                FileId = file.FileId,
                 FileName = file.FileName,
                 FileSource = file.FileSource,
                 Thumbs = file.Thumbs,
@@ -138,32 +132,6 @@ namespace PhotoMap.Worker.Handlers
                 ExifString = file.ExifString,
                 Latitude = file.Latitude,
                 Longitude = file.Longitude
-            };
-        }
-
-        private DownloadedFile CreateProcessingCommand1(YandexDiskFileKey file)
-        {
-            return new DownloadedFile
-            {
-                FileName = file.ResourceName,
-                FileId = file.StorageFileId,
-                Path = file.Path,
-                FileSource = "Yandex.Disk",
-                RelativeFilePath = file.RelativeFilePath,
-                FileCreatedOn = file.CreatedOn
-            };
-        }
-
-        private DownloadedFile CreateProcessingCommand1(DropboxFile file)
-        {
-            return new DownloadedFile
-            {
-                FileName = file.ResourceName,
-                FileId = file.StorageFileId,
-                Path = file.Path,
-                FileSource = "Dropbox",
-                RelativeFilePath = file.RelativeFilePath,
-                FileCreatedOn = file.CreatedOn
             };
         }
 

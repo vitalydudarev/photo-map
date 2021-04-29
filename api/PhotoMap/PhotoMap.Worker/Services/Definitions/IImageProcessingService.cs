@@ -5,6 +5,6 @@ namespace PhotoMap.Worker.Services.Definitions
 {
     public interface IImageProcessingService
     {
-        Task<ProcessedDownloadedFile> ProcessImageAsync(DownloadedFile downloadedFile);
+        Task<ProcessedDownloadedFile> ProcessImageAsync(DownloadedFileInfo downloadedFile);
     }
 }

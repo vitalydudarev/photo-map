@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,46 +16,35 @@ namespace PhotoMap.Worker.Services.Implementations
     {
         private readonly ILogger<ImageProcessingService> _logger;
         private readonly ImageProcessingSettings _imageProcessingSettings;
-        private readonly IStorageService _storageService;
+        private readonly IImageUploadService _imageUploadService;
 
         public ImageProcessingService(
             ILogger<ImageProcessingService> logger,
             IOptions<ImageProcessingSettings> imageProcessingOptions,
-            IStorageService storageService)
+            IImageUploadService imageUploadService)
         {
             _logger = logger;
             _imageProcessingSettings = imageProcessingOptions.Value;
-            _storageService = storageService;
+            _imageUploadService = imageUploadService;
         }
 
-        public async Task<ProcessedDownloadedFile> ProcessImageAsync(DownloadedFile downloadedFile)
+        public async Task<ProcessedDownloadedFile> ProcessImageAsync(DownloadedFileInfo downloadedFile)
         {
-            var fileContents = await _storageService.GetFileAsync(downloadedFile.FileId);
-            using var imageProcessor = new ImageProcessor(fileContents);
+            using var imageProcessor = new ImageProcessor(downloadedFile.FileContents);
             imageProcessor.Rotate();
-
-            var relativeFilePath = downloadedFile.RelativeFilePath;
-            var directory = Path.GetDirectoryName(relativeFilePath);
-            var extension = Path.GetExtension(relativeFilePath);
-            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(relativeFilePath);
 
             var sizeFileIdMap = new Dictionary<int, long>();
 
             foreach (var size in _imageProcessingSettings.Sizes)
             {
-                var fileName = $"{fileNameWithoutExtension}_{size}{extension}";
-                var path = Path.Combine(directory, "thumbs", fileName);
-
                 imageProcessor.Crop(size);
                 var bytes = imageProcessor.GetImageBytes();
 
-                var savedFile = await _storageService.SaveFileAsync(path, bytes);
+                var savedFile = await _imageUploadService.SaveThumbnailAsync(bytes, downloadedFile.ResourceName,
+                    downloadedFile.UserName, downloadedFile.Source, size);
 
                 sizeFileIdMap.Add(size, savedFile.Id);
             }
-
-            if (_imageProcessingSettings.DeleteAfterProcessing)
-                await _storageService.DeleteFileAsync(downloadedFile.FileId);
 
             DateTime? dateTimeTaken = null;
             string exifString = null;
@@ -65,7 +53,7 @@ namespace PhotoMap.Worker.Services.Implementations
 
             var exifExtractor = new ExifExtractor();
 
-            var exif = exifExtractor.GetDataAsync(fileContents);
+            var exif = exifExtractor.GetDataAsync(downloadedFile.FileContents);
             if (exif != null)
             {
                 dateTimeTaken = GetDate(exif);
@@ -86,12 +74,11 @@ namespace PhotoMap.Worker.Services.Implementations
 
             return new ProcessedDownloadedFile
             {
-                FileId = _imageProcessingSettings.DeleteAfterProcessing ? (long?) null : downloadedFile.FileId,
-                FileName = downloadedFile.FileName,
-                FileSource = downloadedFile.FileSource,
+                FileName = downloadedFile.ResourceName,
+                FileSource = downloadedFile.Source,
                 Thumbs = sizeFileIdMap,
                 Path = downloadedFile.Path,
-                FileCreatedOn = downloadedFile.FileCreatedOn,
+                FileCreatedOn = downloadedFile.CreatedOn,
                 PhotoTakenOn = dateTimeTaken,
                 ExifString = exifString,
                 Latitude = latitude,

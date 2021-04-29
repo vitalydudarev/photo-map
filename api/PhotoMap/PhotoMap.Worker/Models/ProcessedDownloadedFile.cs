@@ -7,8 +7,6 @@ namespace PhotoMap.Worker.Models
     {
         public string FileName { get; set; }
 
-        public long? FileId { get; set; }
-
         public string FileUrl { get; set; }
 
         public string FileSource { get; set; }
