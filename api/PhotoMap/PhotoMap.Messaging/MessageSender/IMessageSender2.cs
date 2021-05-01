@@ -1,9 +1,9 @@
-using PhotoMap.Messaging.Commands;
+using PhotoMap.Messaging.Events;
 
 namespace PhotoMap.Messaging.MessageSender
 {
     public interface IMessageSender2
     {
-        void Send(CommandBase commandBase, string consumerApi);
+        void Send(EventBase eventBase, string consumerApi);
     }
 }

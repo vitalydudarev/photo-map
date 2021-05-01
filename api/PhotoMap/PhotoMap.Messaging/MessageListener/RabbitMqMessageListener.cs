@@ -4,8 +4,8 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using PhotoMap.Messaging.CommandHandlerManager;
-using PhotoMap.Messaging.Commands;
+using PhotoMap.Messaging.EventHandlerManager;
+using PhotoMap.Messaging.Events;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
@@ -15,18 +15,18 @@ namespace PhotoMap.Messaging.MessageListener
     public class RabbitMqMessageListener : IMessageListener, IDisposable
     {
         private readonly RabbitMqConfiguration _rabbitMqConfiguration;
-        private readonly ICommandHandlerManager _commandHandlerManager;
+        private readonly IEventHandlerManager _eventHandlerManager;
         private readonly ILogger<RabbitMqMessageListener> _logger;
         private IConnection _connection;
         private IModel _channel;
 
         public RabbitMqMessageListener(
             RabbitMqConfiguration rabbitMqConfiguration,
-            ICommandHandlerManager commandHandlerManager,
+            IEventHandlerManager eventHandlerManager,
             ILogger<RabbitMqMessageListener> logger)
         {
             _rabbitMqConfiguration = rabbitMqConfiguration;
-            _commandHandlerManager = commandHandlerManager;
+            _eventHandlerManager = eventHandlerManager;
             _logger = logger;
 
             InitializeConnection();
@@ -43,8 +43,8 @@ namespace PhotoMap.Messaging.MessageListener
 
                 try
                 {
-                    var command = CommandBase.Deserialize(message);
-                    var commandHandler = _commandHandlerManager.GetHandler(command);
+                    var command = EventBase.Deserialize(message);
+                    var commandHandler = _eventHandlerManager.GetHandler(command);
                     if (commandHandler != null)
                     {
                         Task.Run(async () => await commandHandler.HandleAsync(command, cancellationToken),

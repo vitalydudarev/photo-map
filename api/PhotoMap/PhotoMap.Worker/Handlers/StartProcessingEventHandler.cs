@@ -3,32 +3,29 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using PhotoMap.Common.Commands;
 using PhotoMap.Common.Models;
-using PhotoMap.Messaging.CommandHandler;
-using PhotoMap.Messaging.Commands;
+using PhotoMap.Messaging.Events;
 using PhotoMap.Messaging.MessageSender;
 using PhotoMap.Worker.Models;
 using PhotoMap.Worker.Services.Definitions;
-using PhotoMap.Worker.Settings;
 
 namespace PhotoMap.Worker.Handlers
 {
-    public class StartProcessingCommandHandler : CommandHandler<StartProcessingCommand>
+    public class StartProcessingEventHandler : Messaging.EventHandler.EventHandler<StartProcessingEvent>
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
-        private readonly ILogger<StartProcessingCommandHandler> _logger;
+        private readonly ILogger<StartProcessingEventHandler> _logger;
         private readonly IMessageSender2 _messageSender;
         private readonly IDownloadManager _downloadManager;
         private readonly IImageProcessingService _imageProcessingService;
 
-        public StartProcessingCommandHandler(
+        public StartProcessingEventHandler(
             IServiceScopeFactory serviceScopeFactory,
             IMessageSender2 messageSender,
             IDownloadManager downloadManager,
             IImageProcessingService imageProcessingService,
-            ILogger<StartProcessingCommandHandler> logger)
+            ILogger<StartProcessingEventHandler> logger)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _messageSender = messageSender;
@@ -37,9 +34,9 @@ namespace PhotoMap.Worker.Handlers
             _logger = logger;
         }
 
-        public override async Task HandleAsync(CommandBase command, CancellationToken cancellationToken)
+        public override async Task HandleAsync(EventBase @event, CancellationToken cancellationToken)
         {
-            if (command is StartProcessingCommand startProcessingCommand)
+            if (@event is StartProcessingEvent startProcessingCommand)
             {
                 using var scope = _serviceScopeFactory.CreateScope();
 

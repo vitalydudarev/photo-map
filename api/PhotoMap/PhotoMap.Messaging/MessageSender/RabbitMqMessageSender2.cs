@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
-using PhotoMap.Messaging.Commands;
+using PhotoMap.Messaging.Events;
 using RabbitMQ.Client;
 
 namespace PhotoMap.Messaging.MessageSender
@@ -23,7 +23,7 @@ namespace PhotoMap.Messaging.MessageSender
             _logger = logger;
         }
 
-        public void Send(CommandBase commandBase, string consumerApi)
+        public void Send(EventBase eventBase, string consumerApi)
         {
             if (_configurations.TryGetValue(consumerApi, out var configuration))
             {
@@ -32,8 +32,8 @@ namespace PhotoMap.Messaging.MessageSender
 
                 try
                 {
-                    var serializedCommand = commandBase.Serialize();
-                    var body = Encoding.UTF8.GetBytes(serializedCommand);
+                    var serializedEvent = eventBase.Serialize();
+                    var body = Encoding.UTF8.GetBytes(serializedEvent);
 
                     var channel = _channels[consumerApi];
                     channel.BasicPublish(exchange: "",

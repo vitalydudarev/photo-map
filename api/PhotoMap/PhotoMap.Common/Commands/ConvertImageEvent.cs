@@ -1,9 +1,9 @@
 using System;
-using PhotoMap.Messaging.Commands;
+using PhotoMap.Messaging.Events;
 
 namespace PhotoMap.Common.Commands
 {
-    public class ConvertImageCommand : CommandBase
+    public class ConvertImageEvent : EventBase
     {
         public Guid Id { get; set; }
 

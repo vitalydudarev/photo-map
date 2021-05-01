@@ -7,8 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using PhotoMap.Messaging;
-using PhotoMap.Messaging.CommandHandler;
-using PhotoMap.Messaging.CommandHandlerManager;
+using PhotoMap.Messaging.EventHandler;
+using PhotoMap.Messaging.EventHandlerManager;
 using PhotoMap.Messaging.MessageListener;
 using PhotoMap.Messaging.MessageSender;
 using PhotoMap.Worker.Handlers;
@@ -69,9 +69,9 @@ namespace PhotoMap.Worker
             });
 
             // register command handlers
-            services.AddSingleton<ICommandHandler, StartProcessingCommandHandler>();
-            services.AddSingleton<ICommandHandler, PauseProcessingCommandHandler>();
-            services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
+            services.AddSingleton<IEventHandler, StartProcessingEventHandler>();
+            services.AddSingleton<IEventHandler, PauseProcessingEventHandler>();
+            services.AddSingleton<IEventHandlerManager, EventHandlerManager>();
 
             services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
             services.AddSingleton<IMessageSender2, RabbitMqMessageSender2>();

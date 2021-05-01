@@ -38,7 +38,7 @@ namespace PhotoMap.Api.Controllers
         public async Task<IActionResult> StartProcessing([FromBody] int userId)
         {
             var user = await _userService.GetAsync(userId);
-            var startProcessingCommand = new StartProcessingCommand
+            var startProcessingCommand = new StartProcessingEvent
             {
                 UserIdentifier = new YandexDiskUserIdentifier { UserId = user.Id },
                 Token = user.YandexDiskAccessToken
@@ -54,7 +54,7 @@ namespace PhotoMap.Api.Controllers
         public async Task<IActionResult> PauseProcessing(int userId)
         {
             var user = await _userService.GetAsync(userId);
-            var pauseProcessingCommand = new PauseProcessingCommand
+            var pauseProcessingCommand = new PauseProcessingEvent
             {
                 UserIdentifier = new YandexDiskUserIdentifier { UserId = user.Id }
             };
@@ -80,7 +80,7 @@ namespace PhotoMap.Api.Controllers
             if (photo.FileName.ToUpper().EndsWith("HEIC"))
             {
                 var commandId = Guid.NewGuid();
-                var convertImageCommand = new ConvertImageCommand
+                var convertImageCommand = new ConvertImageEvent
                 {
                     Id = commandId,
                     FileContents = bytes

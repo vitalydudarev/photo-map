@@ -7,13 +7,12 @@ using PhotoMap.Api.Hubs;
 using PhotoMap.Api.Services.Interfaces;
 using PhotoMap.Common.Commands;
 using PhotoMap.Common.Models;
-using PhotoMap.Messaging.CommandHandler;
-using PhotoMap.Messaging.Commands;
+using PhotoMap.Messaging.Events;
 using ProcessingStatus = PhotoMap.Api.Database.Entities.ProcessingStatus;
 
 namespace PhotoMap.Api.Handlers
 {
-    public class NotificationHandler : CommandHandler<Notification>
+    public class NotificationHandler : Messaging.EventHandler.EventHandler<Notification>
     {
         private readonly YandexDiskHub _yandexDiskHub;
         private readonly DropboxHub _dropboxHub;
@@ -29,9 +28,9 @@ namespace PhotoMap.Api.Handlers
             _serviceScopeFactory = serviceScopeFactory;
         }
 
-        public override async Task HandleAsync(CommandBase command, CancellationToken cancellationToken)
+        public override async Task HandleAsync(EventBase @event, CancellationToken cancellationToken)
         {
-            if (command is Notification notification)
+            if (@event is Notification notification)
             {
                 using var scope = _serviceScopeFactory.CreateScope();
                 var userService = scope.ServiceProvider.GetService<IUserService>();

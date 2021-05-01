@@ -1,9 +1,9 @@
 using PhotoMap.Common.Models;
-using PhotoMap.Messaging.Commands;
+using PhotoMap.Messaging.Events;
 
 namespace PhotoMap.Common.Commands
 {
-    public class Notification : CommandBase
+    public class Notification : EventBase
     {
         public IUserIdentifier UserIdentifier { get; set; }
         public string Message { get; set; }

@@ -8,12 +8,11 @@ using Newtonsoft.Json;
 using PhotoMap.Api.Database.Entities;
 using PhotoMap.Api.Services.Interfaces;
 using PhotoMap.Common.Commands;
-using PhotoMap.Messaging.CommandHandler;
-using PhotoMap.Messaging.Commands;
+using PhotoMap.Messaging.Events;
 
 namespace PhotoMap.Api.Handlers
 {
-    public class ImageProcessedEventHandler : CommandHandler<ImageProcessedEvent>
+    public class ImageProcessedEventHandler : Messaging.EventHandler.EventHandler<ImageProcessedEvent>
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ILogger<ImageProcessedEventHandler> _logger;
@@ -24,9 +23,9 @@ namespace PhotoMap.Api.Handlers
             _logger = logger;
         }
 
-        public override async Task HandleAsync(CommandBase command, CancellationToken cancellationToken)
+        public override async Task HandleAsync(EventBase @event, CancellationToken cancellationToken)
         {
-            if (command is ImageProcessedEvent imageProcessedEvent)
+            if (@event is ImageProcessedEvent imageProcessedEvent)
             {
                 var scope = _serviceScopeFactory.CreateScope();
                 var photoService = scope.ServiceProvider.GetService<IPhotoService>();

@@ -1,8 +1,8 @@
 using Newtonsoft.Json;
 
-namespace PhotoMap.Messaging.Commands
+namespace PhotoMap.Messaging.Events
 {
-    public class CommandBase
+    public class EventBase
     {
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
@@ -14,9 +14,9 @@ namespace PhotoMap.Messaging.Commands
             return JsonConvert.SerializeObject(this, JsonSerializerSettings);
         }
 
-        public static CommandBase Deserialize(string message)
+        public static EventBase Deserialize(string message)
         {
-            return JsonConvert.DeserializeObject<CommandBase>(message, JsonSerializerSettings);
+            return JsonConvert.DeserializeObject<EventBase>(message, JsonSerializerSettings);
         }
     }
 }

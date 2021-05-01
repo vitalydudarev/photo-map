@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 using Microsoft.Extensions.Logging;
-using PhotoMap.Messaging.Commands;
+using PhotoMap.Messaging.Events;
 using RabbitMQ.Client;
 
 namespace PhotoMap.Messaging.MessageSender
@@ -19,7 +19,7 @@ namespace PhotoMap.Messaging.MessageSender
             _logger = logger;
         }
 
-        public void Send(CommandBase commandBase)
+        public void Send(EventBase eventBase)
         {
             var connectionFactory = new ConnectionFactory
             {
@@ -41,8 +41,8 @@ namespace PhotoMap.Messaging.MessageSender
                 autoDelete: false,
                 arguments: null);
 
-            var serializedCommand = commandBase.Serialize();
-            var body = Encoding.UTF8.GetBytes(serializedCommand);
+            var serializedEvent = eventBase.Serialize();
+            var body = Encoding.UTF8.GetBytes(serializedEvent);
 
             _channel.BasicPublish(exchange: "",
                 routingKey: _rabbitMqConfiguration.ResponseQueueName,

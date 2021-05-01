@@ -2,29 +2,29 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using PhotoMap.Common.Commands;
-using PhotoMap.Messaging.CommandHandler;
-using PhotoMap.Messaging.Commands;
+using PhotoMap.Messaging.EventHandler;
+using PhotoMap.Messaging.Events;
 using PhotoMap.Messaging.MessageSender;
 using PhotoMap.Worker.Services.Implementations;
 
 namespace PhotoMap.Worker.Handlers
 {
-    public class ConvertImageCommandHandler : CommandHandler<ConvertImageCommand>
+    public class ConvertImageEventHandler : EventHandler<ConvertImageEvent>
     {
-        private readonly ILogger<ConvertImageCommandHandler> _logger;
+        private readonly ILogger<ConvertImageEventHandler> _logger;
         private readonly IMessageSender2 _messageSender;
 
-        public ConvertImageCommandHandler(
+        public ConvertImageEventHandler(
             IMessageSender2 messageSender,
-            ILogger<ConvertImageCommandHandler> logger)
+            ILogger<ConvertImageEventHandler> logger)
         {
             _messageSender = messageSender;
             _logger = logger;
         }
 
-        public override Task HandleAsync(CommandBase command, CancellationToken cancellationToken)
+        public override Task HandleAsync(EventBase @event, CancellationToken cancellationToken)
         {
-            if (command is ConvertImageCommand convertImageCommand)
+            if (@event is ConvertImageEvent convertImageCommand)
             {
                 var imageProcessor = new ImageProcessor(convertImageCommand.FileContents);
                 var convertImageBytes = imageProcessor.GetImageBytes();

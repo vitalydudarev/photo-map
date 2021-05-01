@@ -1,12 +1,10 @@
 using PhotoMap.Common.Models;
-using PhotoMap.Messaging.Commands;
+using PhotoMap.Messaging.Events;
 
 namespace PhotoMap.Common.Commands
 {
-    public class StartProcessingCommand : CommandBase
+    public class PauseProcessingEvent : EventBase
     {
         public IUserIdentifier UserIdentifier { get; set; }
-
-        public string Token { get; set; }
     }
 }

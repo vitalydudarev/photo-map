@@ -1,19 +1,19 @@
 using System.Threading;
 using System.Threading.Tasks;
 using PhotoMap.Common.Commands;
-using PhotoMap.Messaging.CommandHandler;
-using PhotoMap.Messaging.Commands;
+using PhotoMap.Messaging.EventHandler;
+using PhotoMap.Messaging.Events;
 using PhotoMap.Messaging.MessageSender;
 using PhotoMap.Worker.Services.Definitions;
 
 namespace PhotoMap.Worker.Handlers
 {
-    public class PauseProcessingCommandHandler : CommandHandler<PauseProcessingCommand>
+    public class PauseProcessingEventHandler : EventHandler<PauseProcessingEvent>
     {
         private readonly IMessageSender2 _messageSender;
         private readonly IDownloadManager _downloadManager;
 
-        public PauseProcessingCommandHandler(
+        public PauseProcessingEventHandler(
             IMessageSender2 messageSender,
             IDownloadManager downloadManager)
         {
@@ -21,9 +21,9 @@ namespace PhotoMap.Worker.Handlers
             _downloadManager = downloadManager;
         }
 
-        public override async Task HandleAsync(CommandBase command, CancellationToken cancellationToken)
+        public override async Task HandleAsync(EventBase @event, CancellationToken cancellationToken)
         {
-            if (command is PauseProcessingCommand pauseProcessingCommand)
+            if (@event is PauseProcessingEvent pauseProcessingCommand)
             {
                 _downloadManager.Remove(pauseProcessingCommand.UserIdentifier);
 

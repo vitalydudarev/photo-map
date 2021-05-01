@@ -15,8 +15,8 @@ using PhotoMap.Api.Services.Implementations;
 using PhotoMap.Api.Services.Interfaces;
 using PhotoMap.Api.Settings;
 using PhotoMap.Messaging;
-using PhotoMap.Messaging.CommandHandler;
-using PhotoMap.Messaging.CommandHandlerManager;
+using PhotoMap.Messaging.EventHandler;
+using PhotoMap.Messaging.EventHandlerManager;
 using PhotoMap.Messaging.MessageListener;
 using PhotoMap.Messaging.MessageSender;
 using Serilog;
@@ -67,12 +67,12 @@ namespace PhotoMap.Api
             services.AddSingleton<YandexDiskHub>();
             services.AddSingleton<DropboxHub>();
 
-            services.AddSingleton<ICommandHandler, ProgressMessageHandler>();
-            services.AddSingleton<ICommandHandler, ImageProcessedEventHandler>();
-            services.AddSingleton<ICommandHandler, NotificationHandler>();
+            services.AddSingleton<IEventHandler, ProgressMessageHandler>();
+            services.AddSingleton<IEventHandler, ImageProcessedEventHandler>();
+            services.AddSingleton<IEventHandler, NotificationHandler>();
             services.AddSingleton<IMessageSender, RabbitMqMessageSender>();
             services.AddSingleton<IMessageListener, RabbitMqMessageListener>();
-            services.AddSingleton<ICommandHandlerManager, CommandHandlerManager>();
+            services.AddSingleton<IEventHandlerManager, EventHandlerManager>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IStorageService, StorageServiceClient>();
             services.AddScoped<HostInfo>();

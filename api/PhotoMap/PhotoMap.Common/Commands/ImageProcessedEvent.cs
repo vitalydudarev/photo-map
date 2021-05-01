@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using PhotoMap.Common.Models;
-using PhotoMap.Messaging.Commands;
+using PhotoMap.Messaging.Events;
 
 namespace PhotoMap.Common.Commands
 {
-    public class ImageProcessedEvent : CommandBase
+    public class ImageProcessedEvent : EventBase
     {
         public IUserIdentifier UserIdentifier { get; set; }
 
