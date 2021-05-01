@@ -20,7 +20,7 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.4" />
-      <PackageReference Include="RabbitMQ.Client" Version="6.1.0" />
+      <PackageReference Include="RabbitMQ.Client" Version="6.2.1" />
       <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
       <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
@@ -28,7 +28,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\PhotoMap.Common\PhotoMap.Common.csproj" />
-      <ProjectReference Include="..\PhotoMap.Messaging\PhotoMap.Messaging.csproj" />
       <ProjectReference Include="..\Yandex.Disk.Api.Client\Yandex.Disk.Api.Client.csproj" />
     </ItemGroup>
 

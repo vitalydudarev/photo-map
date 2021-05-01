@@ -14,15 +14,14 @@
 
     <ItemGroup>
       <ProjectReference Include="..\PhotoMap.Common\PhotoMap.Common.csproj" />
-      <ProjectReference Include="..\PhotoMap.Messaging\PhotoMap.Messaging.csproj" />
       <ProjectReference Include="..\Yandex.Disk.Api.Client\Yandex.Disk.Api.Client.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Dropbox.Api" Version="5.5.0" />
       <PackageReference Include="Magick.NET-Q16-x64" Version="7.23.3" />
-      <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-      <PackageReference Include="RabbitMQ.Client" Version="6.1.0" />
+      <PackageReference Include="MetadataExtractor" Version="2.4.3" />
+      <PackageReference Include="PhotoMap.Messaging" Version="1.0.0" />
       <PackageReference Include="SkiaSharp" Version="2.80.2" />
     </ItemGroup>
 

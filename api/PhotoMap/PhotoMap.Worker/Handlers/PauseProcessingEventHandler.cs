@@ -21,7 +21,7 @@ namespace PhotoMap.Worker.Handlers
             _downloadManager = downloadManager;
         }
 
-        public override async Task HandleAsync(EventBase @event, CancellationToken cancellationToken)
+        public override Task HandleAsync(EventBase @event, CancellationToken cancellationToken)
         {
             if (@event is PauseProcessingEvent pauseProcessingCommand)
             {
@@ -35,6 +35,8 @@ namespace PhotoMap.Worker.Handlers
 
                 _messageSender.Send(startedNotification, Constants.PhotoMapApi);
             }
+
+            return Task.CompletedTask;
         }
     }
 }

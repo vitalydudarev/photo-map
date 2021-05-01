@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yandex.Disk.Api.Client", "Y
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoMap.Worker", "PhotoMap.Worker\PhotoMap.Worker.csproj", "{148A25C2-43D8-4334-A7E5-95367064DD15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoMap.Messaging", "PhotoMap.Messaging\PhotoMap.Messaging.csproj", "{CFFCF9E8-1B3D-4BDF-A682-79E33A577DDC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoMap.Common", "PhotoMap.Common\PhotoMap.Common.csproj", "{E97CEA02-8507-4CA7-AD7E-130CF5C0DBDE}"
 EndProject
 Global
@@ -28,10 +26,6 @@ Global
 		{148A25C2-43D8-4334-A7E5-95367064DD15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{148A25C2-43D8-4334-A7E5-95367064DD15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{148A25C2-43D8-4334-A7E5-95367064DD15}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CFFCF9E8-1B3D-4BDF-A682-79E33A577DDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CFFCF9E8-1B3D-4BDF-A682-79E33A577DDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CFFCF9E8-1B3D-4BDF-A682-79E33A577DDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CFFCF9E8-1B3D-4BDF-A682-79E33A577DDC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E97CEA02-8507-4CA7-AD7E-130CF5C0DBDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E97CEA02-8507-4CA7-AD7E-130CF5C0DBDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E97CEA02-8507-4CA7-AD7E-130CF5C0DBDE}.Release|Any CPU.ActiveCfg = Release|Any CPU

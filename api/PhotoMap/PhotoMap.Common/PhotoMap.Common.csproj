@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PhotoMap.Messaging\PhotoMap.Messaging.csproj" />
+      <PackageReference Include="PhotoMap.Messaging" Version="1.0.0" />
     </ItemGroup>
 
 </Project>
