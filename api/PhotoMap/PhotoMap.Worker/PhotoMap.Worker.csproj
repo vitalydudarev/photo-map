@@ -14,7 +14,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\PhotoMap.Common\PhotoMap.Common.csproj" />
-      <ProjectReference Include="..\Yandex.Disk.Api.Client\Yandex.Disk.Api.Client.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -23,6 +22,7 @@
       <PackageReference Include="MetadataExtractor" Version="2.4.3" />
       <PackageReference Include="PhotoMap.Messaging" Version="1.0.0" />
       <PackageReference Include="SkiaSharp" Version="2.80.2" />
+      <PackageReference Include="Yandex.Disk.Api.Client" Version="1.0.0" />
     </ItemGroup>
 
 

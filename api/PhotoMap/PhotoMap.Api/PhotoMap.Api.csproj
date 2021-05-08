@@ -24,11 +24,11 @@
       <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
       <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
+      <PackageReference Include="Yandex.Disk.Api.Client" Version="1.0.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\PhotoMap.Common\PhotoMap.Common.csproj" />
-      <ProjectReference Include="..\Yandex.Disk.Api.Client\Yandex.Disk.Api.Client.csproj" />
     </ItemGroup>
 
 </Project>
