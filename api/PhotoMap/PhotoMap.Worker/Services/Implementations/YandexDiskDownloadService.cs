@@ -5,11 +5,11 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using PhotoMap.Common.Models;
 using PhotoMap.Worker.Models;
 using PhotoMap.Worker.Services.Definitions;
 using Yandex.Disk.Api.Client;
 using Yandex.Disk.Api.Client.Models;
+using IUserIdentifier = PhotoMap.Worker.Models.IUserIdentifier;
 
 namespace PhotoMap.Worker.Services.Implementations
 {

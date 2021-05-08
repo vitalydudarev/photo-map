@@ -1,10 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
-using PhotoMap.Common.Commands;
 using PhotoMap.Messaging.EventHandler;
 using PhotoMap.Messaging.Events;
 using PhotoMap.Messaging.MessageSender;
 using PhotoMap.Worker.Services.Definitions;
+using Notification = PhotoMap.Worker.Commands.Notification;
+using PauseProcessingEvent = PhotoMap.Worker.Commands.PauseProcessingEvent;
+using ProcessingStatus = PhotoMap.Worker.Commands.ProcessingStatus;
 
 namespace PhotoMap.Worker.Handlers
 {

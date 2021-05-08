@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PhotoMap.Api.Services.Interfaces;
-using PhotoMap.Common.Commands;
-using PhotoMap.Common.Models;
 using PhotoMap.Messaging.MessageSender;
 using Yandex.Disk.Api.Client;
+using ConvertImageEvent = PhotoMap.Api.Commands.ConvertImageEvent;
+using PauseProcessingEvent = PhotoMap.Api.Commands.PauseProcessingEvent;
+using StartProcessingEvent = PhotoMap.Api.Commands.StartProcessingEvent;
+using YandexDiskUserIdentifier = PhotoMap.Api.Models.YandexDiskUserIdentifier;
 
 namespace PhotoMap.Api.Controllers
 {

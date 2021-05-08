@@ -13,10 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PhotoMap.Common\PhotoMap.Common.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Dropbox.Api" Version="5.5.0" />
       <PackageReference Include="Magick.NET-Q16-x64" Version="7.23.3" />
       <PackageReference Include="MetadataExtractor" Version="2.4.3" />

@@ -7,8 +7,8 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using PhotoMap.Api.Database.Entities;
 using PhotoMap.Api.Services.Interfaces;
-using PhotoMap.Common.Commands;
 using PhotoMap.Messaging.Events;
+using ImageProcessedEvent = PhotoMap.Api.Commands.ImageProcessedEvent;
 
 namespace PhotoMap.Api.Handlers
 {

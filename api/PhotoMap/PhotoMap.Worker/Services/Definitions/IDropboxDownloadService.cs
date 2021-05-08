@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading;
-using PhotoMap.Common.Models;
 using PhotoMap.Worker.Models;
+using IUserIdentifier = PhotoMap.Worker.Models.IUserIdentifier;
 
 namespace PhotoMap.Worker.Services.Definitions
 {

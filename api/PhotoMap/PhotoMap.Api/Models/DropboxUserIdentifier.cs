@@ -1,4 +1,4 @@
-namespace PhotoMap.Common.Models
+namespace PhotoMap.Api.Models
 {
     public class DropboxUserIdentifier : IUserIdentifier
     {

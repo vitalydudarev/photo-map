@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
@@ -11,9 +10,9 @@ using Dropbox.Api.Auth;
 using Dropbox.Api.Files;
 using Dropbox.Api.Users;
 using Microsoft.Extensions.Logging;
-using PhotoMap.Common.Models;
 using PhotoMap.Worker.Models;
 using PhotoMap.Worker.Services.Definitions;
+using IUserIdentifier = PhotoMap.Worker.Models.IUserIdentifier;
 
 namespace PhotoMap.Worker.Services.Implementations
 {

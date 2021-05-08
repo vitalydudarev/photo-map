@@ -1,7 +1,7 @@
 using System;
 using PhotoMap.Messaging.Events;
 
-namespace PhotoMap.Common.Commands
+namespace PhotoMap.Worker.Commands
 {
     public class ImageConverted : EventBase
     {

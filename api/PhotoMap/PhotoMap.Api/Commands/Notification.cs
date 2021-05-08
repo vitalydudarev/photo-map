@@ -1,7 +1,7 @@
-using PhotoMap.Common.Models;
 using PhotoMap.Messaging.Events;
+using IUserIdentifier = PhotoMap.Api.Models.IUserIdentifier;
 
-namespace PhotoMap.Common.Commands
+namespace PhotoMap.Api.Commands
 {
     public class Notification : EventBase
     {

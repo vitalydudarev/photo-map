@@ -2,9 +2,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using PhotoMap.Api.Services.Interfaces;
-using PhotoMap.Common.Commands;
 using PhotoMap.Messaging.EventHandler;
 using PhotoMap.Messaging.Events;
+using ImageConverted = PhotoMap.Api.Commands.ImageConverted;
 
 namespace PhotoMap.Api.Handlers
 {

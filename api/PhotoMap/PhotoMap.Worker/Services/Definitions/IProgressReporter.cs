@@ -1,4 +1,4 @@
-using PhotoMap.Common.Models;
+using IUserIdentifier = PhotoMap.Worker.Models.IUserIdentifier;
 
 namespace PhotoMap.Worker.Services.Definitions
 {

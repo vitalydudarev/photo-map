@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using PhotoMap.Common.Models;
 using PhotoMap.Messaging.Events;
+using IUserIdentifier = PhotoMap.Worker.Models.IUserIdentifier;
 
-namespace PhotoMap.Common.Commands
+namespace PhotoMap.Worker.Commands
 {
     public class ImageProcessedEvent : EventBase
     {

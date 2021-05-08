@@ -1,4 +1,4 @@
-namespace PhotoMap.Common.Commands
+namespace PhotoMap.Api.Commands
 {
     public enum ProcessingStatus
     {

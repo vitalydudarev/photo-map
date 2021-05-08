@@ -5,9 +5,11 @@ using Dropbox.Api;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PhotoMap.Api.Services.Interfaces;
-using PhotoMap.Common.Commands;
-using PhotoMap.Common.Models;
 using PhotoMap.Messaging.MessageSender;
+using ConvertImageEvent = PhotoMap.Api.Commands.ConvertImageEvent;
+using DropboxUserIdentifier = PhotoMap.Api.Models.DropboxUserIdentifier;
+using PauseProcessingEvent = PhotoMap.Api.Commands.PauseProcessingEvent;
+using StartProcessingEvent = PhotoMap.Api.Commands.StartProcessingEvent;
 
 namespace PhotoMap.Api.Controllers
 {

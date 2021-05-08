@@ -5,10 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using PhotoMap.Api.DTOs;
 using PhotoMap.Api.Hubs;
 using PhotoMap.Api.Services.Interfaces;
-using PhotoMap.Common.Commands;
-using PhotoMap.Common.Models;
 using PhotoMap.Messaging.Events;
+using DropboxUserIdentifier = PhotoMap.Api.Models.DropboxUserIdentifier;
+using Notification = PhotoMap.Api.Commands.Notification;
 using ProcessingStatus = PhotoMap.Api.Database.Entities.ProcessingStatus;
+using YandexDiskUserIdentifier = PhotoMap.Api.Models.YandexDiskUserIdentifier;
 
 namespace PhotoMap.Api.Handlers
 {

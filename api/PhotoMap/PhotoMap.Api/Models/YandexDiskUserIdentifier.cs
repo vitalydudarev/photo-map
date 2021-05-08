@@ -1,6 +1,6 @@
-namespace PhotoMap.Common.Models
+namespace PhotoMap.Api.Models
 {
-    public class YandexDiskUserIdentifier : IUserIdentifier
+    public class YandexDiskUserIdentifier : Api.Models.IUserIdentifier
     {
         public int UserId { get; set; }
 

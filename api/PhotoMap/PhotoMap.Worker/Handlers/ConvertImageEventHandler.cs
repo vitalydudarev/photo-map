@@ -1,11 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using PhotoMap.Common.Commands;
 using PhotoMap.Messaging.EventHandler;
 using PhotoMap.Messaging.Events;
 using PhotoMap.Messaging.MessageSender;
 using PhotoMap.Worker.Services.Implementations;
+using ConvertImageEvent = PhotoMap.Worker.Commands.ConvertImageEvent;
+using ImageConverted = PhotoMap.Worker.Commands.ImageConverted;
 
 namespace PhotoMap.Worker.Handlers
 {
